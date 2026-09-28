@@ -501,7 +501,7 @@
                 let data = db.get();
                 
                 // 개발자 이스터에그 트리거
-                if (name === 'endvipiscreat') {
+                if (name === 'endvip') {
                     name = '앤드맨 개발자';
                     if (!data.users.find(u => u.name === name)) {
                         data.users.push({ name: name, role: 'dev', score: 999999, avatar: '', lastLogin: Date.now() });
