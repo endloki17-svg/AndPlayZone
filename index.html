@@ -2,528 +2,691 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SURVIVE: 50 DISASTERS</title>
-    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndPlayZone | Exclusive Platform</title>
+    <!-- FontAwesome for Professional Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Web Font: Pretendard -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+    
     <style>
-        /* === 레트로 픽셀 글로벌 === */
-        * { box-sizing: border-box; image-rendering: pixelated; font-family: 'Galmuri11', sans-serif; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; touch-action: none; user-select: none; }
+        /* ==========================================
+           1. CSS 변수 및 기본 초기화 (Design System)
+           ========================================== */
+        :root {
+            --bg-base: #09090b;
+            --panel-bg: rgba(24, 24, 27, 0.6);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7;
+            --accent: #06b6d4;
+            --dev-color: #f59e0b;
+            --dev-glow: rgba(245, 158, 11, 0.4);
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
+            --font-family: 'Pretendard', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-family); }
         
-        /* CRT 스캔라인 & 렌즈 효과 */
-        body::after { content: ""; display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; z-index: 9999; pointer-events: none; }
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+        /* ==========================================
+           2. 레이아웃 & 스크린 트랜지션
+           ========================================== */
+        .screen {
+            display: none; width: 100%; height: 100%;
+            opacity: 0; transform: scale(0.98) translateY(10px);
+            transition: var(--transition);
+            align-items: center; justify-content: center;
+        }
+        .screen.active {
+            display: flex; opacity: 1; transform: scale(1) translateY(0);
+        }
+
+        /* ==========================================
+           3. UI 컴포넌트 (Glassmorphism & Inputs)
+           ========================================== */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-box { padding: 3rem; width: 100%; max-width: 420px; text-align: center; }
+        .auth-box h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -1px; }
+        .auth-box p { color: var(--text-muted); margin-bottom: 2.5rem; }
+
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        .input-group i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .input-group input {
+            width: 100%; padding: 1.2rem 1.2rem 1.2rem 3rem;
+            background: rgba(0, 0, 0, 0.2); border: 1px solid var(--panel-border);
+            border-radius: 14px; color: var(--text-main); font-size: 1rem; outline: none;
+            transition: var(--transition);
+        }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+
+        .btn {
+            width: 100%; padding: 1.2rem; background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--primary-glow); }
+
+        /* ==========================================
+           4. 메인 대시보드 레이아웃
+           ========================================== */
+        #screen-dashboard { padding: 2rem; align-items: stretch; gap: 1.5rem; max-width: 1600px; margin: 0 auto; height: 100vh; }
         
-        .view { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; flex-direction: column; align-items: center; justify-content: center; background: #111; }
-        .view.active { display: flex; }
+        .dash-col { display: flex; flex-direction: column; gap: 1.5rem; height: 100%; }
+        .col-left { flex: 1; min-width: 280px; }
+        .col-center { flex: 2; min-width: 450px; }
+        .col-right { flex: 1.2; min-width: 320px; }
 
-        /* === 프리미엄 픽셀 UI === */
-        .pixel-panel { background: #1a1a24; border: 4px solid #fff; box-shadow: inset -4px -4px 0px 0px #000, 8px 8px 0px 0px rgba(0,0,0,0.8); padding: 30px; width: 90%; max-width: 450px; text-align: center; }
-        .pixel-title { color: #facc15; font-size: 34px; text-shadow: 4px 4px 0px #b91c1c, 6px 6px 0px #000; margin: 0 0 20px 0; letter-spacing: 1px; }
-        .pixel-input, .pixel-select { width: 100%; padding: 14px; margin-bottom: 15px; background: #000; color: #fff; border: 4px solid #444; font-size: 16px; outline: none; }
-        .pixel-input:focus, .pixel-select:focus { border-color: #facc15; }
-        .pixel-btn { width: 100%; padding: 16px; margin-bottom: 12px; background: #b91c1c; color: #fff; border: 4px solid #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: inset -4px -4px 0px 0px rgba(0,0,0,0.5), 4px 4px 0px 0px #000; text-shadow: 2px 2px 0px #000; transition: 0.1s; }
-        .pixel-btn:active { box-shadow: inset 4px 4px 0px 0px rgba(0,0,0,0.5), 0 0 0 0 #000; transform: translate(4px, 4px); }
-        .pixel-btn.blue { background: #0284c7; } .pixel-btn.green { background: #16a34a; }
+        .section-header { font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid var(--panel-border); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
         
-        .tabs { display: flex; margin-bottom: 20px; border-bottom: 4px solid #444; }
-        .tab { flex: 1; padding: 12px; background: #1a1a24; cursor: pointer; color: #666; font-weight: bold; }
-        .tab.active { background: #444; color: #fff; border: 4px solid #fff; border-bottom: none; }
-        .char-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .char-box { background: #000; border: 2px solid #444; padding: 10px; cursor: pointer; display: flex; justify-content: center; }
-        .char-box.selected { border-color: #facc15; background: #222; transform: scale(1.1); box-shadow: 4px 4px 0 #000; }
-        .char-preview { width: 48px; height: 48px; }
+        /* User List */
+        .user-list { list-style: none; overflow-y: auto; max-height: calc(50vh - 100px); margin-bottom: 1rem; padding-right: 5px;}
+        .user-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px;
+            background: rgba(255,255,255,0.02); border-radius: 12px; margin-bottom: 8px;
+            border: 1px solid transparent; transition: var(--transition);
+        }
+        .user-item:hover { background: rgba(255,255,255,0.05); border-color: var(--panel-border); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .is-online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .is-offline { background: var(--text-muted); }
+        .user-name { flex-grow: 1; font-weight: 500; }
+        .badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+        .badge.dev { background: rgba(245, 158, 11, 0.2); color: var(--dev-color); border: 1px solid var(--dev-color); }
 
-        /* === 로딩/경고 화면 === */
-        #loadingView { background: #000; color: #ff3333; text-align: center; }
-        .glitch { font-size: 50px; font-weight: bold; text-shadow: 2px 0 #0ff, -2px 0 #f00; animation: glitch 1s infinite; margin-bottom: 20px; }
-        @keyframes glitch { 0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) } }
-        .progress-bar { width: 80%; max-width: 400px; height: 30px; border: 4px solid #fff; margin: 30px auto; background: #000; position: relative; }
-        #progressFill { height: 100%; background: #ff3333; width: 0%; transition: width 3s linear; }
+        /* Notices */
+        .notice-container { overflow-y: auto; height: calc(100vh - 120px); padding-right: 10px; }
+        .notice-card {
+            background: linear-gradient(90deg, rgba(99,102,241,0.05) 0%, transparent 100%);
+            border-left: 4px solid var(--primary); padding: 1.5rem; border-radius: 0 16px 16px 0;
+            margin-bottom: 1rem; position: relative;
+        }
+        .notice-card.event { border-left-color: var(--dev-color); background: linear-gradient(90deg, rgba(245,158,11,0.05) 0%, transparent 100%); }
+        .notice-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+        .notice-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .notice-content { line-height: 1.6; color: rgba(255,255,255,0.8); }
 
-        /* === 인게임 HUD === */
-        #gameCanvas { position: absolute; top: 0; left: 0; z-index: 1; }
-        #hud { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 5; display: none; justify-content: space-between; pointer-events: none; }
-        .info-box { background: rgba(0,0,0,0.8); border: 4px solid #fff; padding: 10px 15px; box-shadow: 4px 4px 0px #000; margin-bottom: 10px; display: inline-block;}
-        .hp-frame { border: 4px solid #fff; background: #000; width: 250px; height: 30px; position: relative; box-shadow: 4px 4px 0px #000; }
-        #hpBar { height: 100%; background: #16a34a; width: 100%; transition: width 0.2s; }
-        .hp-text { position: absolute; top: 3px; width: 100%; text-align: center; font-weight: bold; text-shadow: 2px 2px 0px #000; }
-        
-        #sysLog { position: absolute; bottom: 30px; left: 15px; width: 320px; z-index: 6; display: flex; flex-direction: column; gap: 5px; pointer-events: none; }
-        .log-msg { background: rgba(0,0,0,0.7); color: #fff; padding: 6px 12px; border-left: 4px solid #facc15; font-size: 14px; animation: slideIn 0.3s; text-shadow: 1px 1px 0 #000;}
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* Profile */
+        .profile-wrap { text-align: center; padding: 2rem 1rem; }
+        .avatar {
+            width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800; box-shadow: 0 10px 25px var(--primary-glow);
+        }
+        .profile-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .profile-role { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .score-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--panel-border); }
+        .score-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .score-value { font-size: 2.5rem; font-weight: 800; color: var(--dev-color); letter-spacing: -1px; }
 
-        .disaster-alert { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); background: #b91c1c; border: 4px solid #fff; padding: 15px 30px; font-size: 24px; font-weight: bold; color: #fff; display: none; z-index: 6; box-shadow: 6px 6px 0 #000; animation: blinkAlert 0.5s infinite alternate; text-align: center; }
-        @keyframes blinkAlert { from { opacity: 1; transform: translateX(-50%) scale(1); } to { opacity: 0.8; transform: translateX(-50%) scale(1.05); } }
+        /* Developer Tools */
+        .dev-tools-wrap { display: none; padding: 1.5rem; margin-top: 1rem; border: 1px solid var(--dev-color); background: rgba(24, 24, 27, 0.8); }
+        .dev-tools-wrap.active { display: block; animation: slideUp 0.5s ease; }
+        .dev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 1rem; }
+        .dev-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border);
+            color: var(--text-main); padding: 1rem; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 600; display: flex; flex-direction: column;
+            align-items: center; gap: 8px; cursor: pointer; transition: var(--transition);
+        }
+        .dev-btn i { font-size: 1.2rem; color: var(--dev-color); }
+        .dev-btn:hover { background: rgba(245, 158, 11, 0.1); border-color: var(--dev-color); transform: translateY(-3px); }
 
-        /* 조이스틱 */
-        #joyZone { position: absolute; bottom: 40px; right: 40px; width: 150px; height: 150px; z-index: 10; display: none; pointer-events: auto; }
-        #joyBase { width: 100%; height: 100%; background: rgba(255, 255, 255, 0.1); border: 4px solid rgba(255,255,255,0.4); border-radius: 50%; position: relative; }
-        #joyStick { width: 60px; height: 60px; background: rgba(250, 204, 21, 0.8); border: 4px solid #fff; border-radius: 50%; position: absolute; top: 41px; left: 41px; pointer-events: none; }
+        /* ==========================================
+           5. 모달 및 토스트 시스템 (고퀄리티 UI)
+           ========================================== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: var(--transition); z-index: 999;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-box { width: 100%; max-width: 400px; padding: 2rem; transform: scale(0.9); transition: var(--transition); }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-header { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .modal-body select, .modal-body input, .modal-body textarea {
+            width: 100%; padding: 1rem; background: rgba(0,0,0,0.3); border: 1px solid var(--panel-border);
+            color: white; border-radius: 10px; margin-bottom: 1rem; font-size: 1rem; outline: none;
+        }
+        .modal-body textarea { resize: none; height: 100px; }
+        .modal-footer { display: flex; gap: 10px; }
+        .modal-footer button { flex: 1; padding: 1rem; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: white; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        .btn-confirm { background: var(--dev-color); color: black; }
+        .btn-confirm:hover { background: #d97706; }
+
+        /* Toast */
+        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--panel-bg); backdrop-filter: blur(10px); border: 1px solid var(--panel-border);
+            padding: 1rem 1.5rem; border-radius: 12px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: slideInRight 0.4s ease forwards;
+        }
+        .toast i { font-size: 1.2rem; }
+        .toast.success i { color: var(--success); }
+        .toast.warning i { color: var(--dev-color); }
+        .toast.error i { color: var(--danger); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateX(50px); } }
+
     </style>
 </head>
 <body>
 
-    <!-- 1. 인증 화면 -->
-    <div id="authView" class="view active">
-        <div class="pixel-panel">
-            <h1 class="pixel-title">SURVIVE<br><span style="font-size: 20px; color:#fff;">50 DISASTERS</span></h1>
-            <div class="tabs">
-                <div class="tab active" id="tabL" onclick="switchTab('L')">로그인</div>
-                <div class="tab" id="tabS" onclick="switchTab('S')">회원가입</div>
+    <!-- ==========================================
+         [화면 1] 접속 비밀번호 시스템
+         ========================================== -->
+    <main id="screen-password" class="screen active">
+        <div class="glass-panel auth-box">
+            <h1><i class="fa-solid fa-gamepad" style="color: var(--primary);"></i> AndPlayZone</h1>
+            <p>프라이빗 플랫폼에 접근하기 위해<br>사이트 비밀번호를 입력해주세요.</p>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="sys-pw" placeholder="비밀번호 입력..." autocomplete="off">
             </div>
-            <div id="formL">
-                <input type="text" id="loginId" class="pixel-input" placeholder="아이디를 입력하세요">
-                <input type="password" class="pixel-input" placeholder="비밀번호">
-                <button class="pixel-btn" onclick="processLogin()">접속하기</button>
-            </div>
-            <div id="formS" style="display: none;">
-                <input type="text" id="regId" class="pixel-input" placeholder="생성할 아이디">
-                <input type="password" class="pixel-input" placeholder="비밀번호">
-                <button class="pixel-btn blue" onclick="processSignup()">생존자 가입</button>
-            </div>
+            <button class="btn" onclick="app.verifyPassword()">시스템 접속</button>
         </div>
-    </div>
+    </main>
 
-    <!-- 2. 대기실 -->
-    <div id="lobbyView" class="view">
-        <div class="pixel-panel" style="max-width: 500px;">
-            <h2 class="pixel-title" style="font-size: 26px;">생존 구역 (로비)</h2>
-            <div style="text-align: left; margin-bottom: 5px; color:#aaa;">요원 선택</div>
-            <div class="char-grid">
-                <div class="char-box selected" onclick="selectChar(0)"><canvas id="cp0" class="char-preview"></canvas></div>
-                <div class="char-box" onclick="selectChar(1)"><canvas id="cp1" class="char-preview"></canvas></div>
-                <div class="char-box" onclick="selectChar(2)"><canvas id="cp2" class="char-preview"></canvas></div>
-                <div class="char-box" onclick="selectChar(3)"><canvas id="cp3" class="char-preview"></canvas></div>
+    <!-- ==========================================
+         [화면 2] 계정 생성 / 로그인 (DB 연동)
+         ========================================== -->
+    <main id="screen-login" class="screen">
+        <div class="glass-panel auth-box">
+            <h1><i class="fa-solid fa-user-plus" style="color: var(--secondary);"></i> 신규/기존 접속</h1>
+            <p>이름을 입력하여 입장하세요.<br><small>(가입된 이름이면 기존 데이터로 로드됩니다.)</small></p>
+            <div class="input-group">
+                <i class="fa-solid fa-id-badge"></i>
+                <input type="text" id="user-name" placeholder="사용할 닉네임 입력..." autocomplete="off">
             </div>
-
-            <div style="display: flex; gap: 10px;">
-                <select id="userType" class="pixel-select" onchange="document.getElementById('gradeSelect').style.display = this.value==='student'?'inline-block':'none'">
-                    <option value="general">일반 생존 모드</option>
-                    <option value="student">학생 교육 모드 (재해 퀴즈)</option>
-                </select>
-                <select id="gradeSelect" class="pixel-select" style="display:none; width: 140px;">
-                    <option>초등 1학년</option><option>초등 2학년</option><option>초등 3학년</option><option>초등 4학년</option><option>초등 5학년</option><option selected>초등 6학년</option>
-                </select>
-            </div>
-
-            <hr style="border: 2px solid #444; margin: 15px 0;">
-            <button class="pixel-btn green" onclick="triggerStart('host')">방 만들기 (호스트)</button>
-            <div style="display: flex; gap: 10px; margin-top: 5px;">
-                <input type="text" id="joinCode" class="pixel-input" style="margin: 0; text-transform: uppercase;" placeholder="코드(3자리)" maxlength="3">
-                <button class="pixel-btn blue" style="margin: 0; width: 120px;" onclick="triggerStart('join')">참가</button>
-            </div>
+            <button class="btn" onclick="app.loginOrSignup()">입장하기</button>
         </div>
-    </div>
+    </main>
 
-    <!-- 3. 로딩 및 경고 화면 -->
-    <div id="loadingView" class="view">
-        <div class="glitch">SYSTEM WARNING</div>
-        <p style="font-size: 18px; line-height: 1.6;">극도로 위험한 지역으로 이동 중입니다.<br>고지대(암벽 위)를 활용하여 생존하십시오.</p>
-        <div class="progress-bar"><div id="progressFill"></div></div>
-        <p id="loadingTip" style="color: #facc15; margin-top: 10px;"></p>
-    </div>
-
-    <!-- 4. 인게임 -->
-    <canvas id="gameCanvas"></canvas>
-    <div id="hud">
-        <div style="pointer-events: auto;">
-            <div class="info-box">
-                <span style="color:#facc15;">⏱️ 생존: <span id="timeVal">0</span>초</span> | 
-                <span style="color:#0ea5e9;">📡 코드: <span id="hudCode"></span></span>
-            </div>
-            <div class="hp-frame"><div id="hpBar"></div><div class="hp-text" id="hpText">100 / 100</div></div>
-        </div>
-        <div>
-            <button class="pixel-btn dark" style="padding: 10px; font-size: 14px;" onclick="alert('학생 퀴즈 및 상점은 인게임 연동 대기중입니다.')">메뉴</button>
-        </div>
-    </div>
-    
-    <div id="sysLog"></div>
-    <div id="disasterAlert" class="disaster-alert"></div>
-    <div id="joyZone"><div id="joyBase"><div id="joyStick"></div></div></div>
-
-<script>
-    /* =========================================================================
-       [ 1. 50가지 재해 데이터베이스 & 픽셀 엔진 (32x32 맵, 고지대 구현) ]
-       ========================================================================= */
-    const Pal = { '0': null, '1': '#000000', '2': '#fcd34d', '3': '#b91c1c', '4': '#0ea5e9', '5': '#22c55e', '6': '#8b5cf6', '7': '#ffffff', '8': '#9ca3af', '9': '#374151', 'a': '#7f1d1d', 'b': '#475569', 'c': '#06b6d4', 'd': '#d97706', 'e': '#ea580c', 'f': '#fbbf24', 'g': '#166534', 'h': '#65a30d' };
-
-    // 캐릭터 (4종) + 몬스터 
-    const SpriteData = {
-        agent0: ["0000011111100000","0000133333310000","0001333333331000","0001122222211000","0012211221122100","0012222222222100","0012122222212100","0001111111111000","0000133333310000","0001331331331000","0001713333171000","0001713333171000","0000111111110000","0000111001110000","0001111001111000","0001111001111000"],
-        agent1: ["0000011111100000","0000144444410000","0001444444441000","0001122222211000","0012211221122100","0012222222222100","0012122222212100","0001111111111000","0000144444410000","0001441441441000","0001714444171000","0001714444171000","0000111111110000","0000111001110000","0001111001111000","0001111001111000"],
-        agent2: ["0000011111100000","0000155555510000","0001555555551000","0001122222211000","0012211221122100","0012222222222100","0012122222212100","0001111111111000","0000155555510000","0001551551551000","0001715555171000","0001715555171000","0000111111110000","0000111001110000","0001111001111000","0001111001111000"],
-        agent3: ["0000011111100000","0000166666610000","0001666666661000","0001122222211000","0012211221122100","0012222222222100","0012122222212100","0001111111111000","0000166666610000","0001661661661000","0001716666171000","0001716666171000","0000111111110000","0000111001110000","0001111001111000","0001111001111000"],
-        zombie: ["0000011111100000","0000155555510000","0001555555551000","0001155555511000","0015511551155100","0155555555555510","0155555115555510","0111111111111110","15511b8888b11551","1551b888888b1551","1111b888888b1111","0001b888888b1000","0000111111110000","0000111001110000","0001111001111000","0001111001111000"]
-    };
-
-    const Tiles = {
-        grass: ["hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg","hghghghghghghghg","gghghghghghghghg"],
-        cliffW:["1111111111111111","1999999119999991","1999999119999991","1111111111111111","1991199999911991","1991199999911991","1111111111111111","1999999119999991","1999999119999991","1111111111111111","1991199999911991","1991199999911991","1111111111111111","1999999119999991","1999999119999991","1111111111111111"],
-        cliffT:["8888888888888888","8888888888888888","888b88888888b888","888b88888888b888","8888888888888888","8888888888888888","8888888888888888","8888888888888888","8888888888888888","8888888888888888","888b88888888b888","888b88888888b888","8888888888888888","8888888888888888","8888888888888888","8888888888888888"],
-        ladder:["1111000000001111","1dd1000000001dd1","1dd1111111111dd1","1dd1dddddddd1dd1","1dd1111111111dd1","1dd1000000001dd1","1dd1000000001dd1","1dd1111111111dd1","1dd1dddddddd1dd1","1dd1111111111dd1","1dd1000000001dd1","1dd1000000001dd1","1dd1111111111dd1","1dd1dddddddd1dd1","1dd1111111111dd1","1111000000001111"]
-    };
-
-    // 50가지 자연재해 및 초자연재해 명단 (분류: F=추락, S=휩쓸기, E=엔티티추적, W=날씨장판)
-    const DISASTERS_50 = [
-        { n:"운석 추락", t:"F", c:"#ea580c" }, { n:"쓰나미", t:"S", c:"#0284c7" }, { n:"좀비 무리", t:"E" }, { n:"모래 폭풍", t:"W", c:"rgba(217,119,6,0.5)" }, { n:"산성비", t:"W", c:"rgba(132,204,22,0.4)" },
-        { n:"눈사태", t:"S", c:"#ffffff" }, { n:"용암 해일", t:"S", c:"#dc2626" }, { n:"거대 우박", t:"F", c:"#e0f2fe" }, { n:"독성 포자", t:"F", c:"#65a30d" }, { n:"블리자드", t:"W", c:"rgba(255,255,255,0.6)" },
-        { n:"외계인 빔", t:"F", c:"#a855f7" }, { n:"돌연변이 늑대", t:"E" }, { n:"유독 가스", t:"W", c:"rgba(168,85,247,0.4)" }, { n:"토사구폐", t:"S", c:"#78350f" }, { n:"방사능 유출", t:"W", c:"rgba(250,204,21,0.4)" },
-        { n:"플라즈마 구체", t:"F", c:"#38bdf8" }, { n:"기계톱 롤러", t:"S", c:"#475569" }, { n:"뱀파이어 떼", t:"E" }, { n:"우주 쓰레기", t:"F", c:"#94a3b8" }, { n:"폭염", t:"W", c:"rgba(239,68,68,0.3)" },
-        { n:"그림자 해일", t:"S", c:"#111827" }, { n:"거미 떼 습격", t:"E" }, { n:"독성 진흙", t:"S", c:"#4d7c0f" }, { n:"얼음 파편", t:"F", c:"#bae6fd" }, { n:"핏빛 파도", t:"S", c:"#991b1b" },
-        { n:"슬라임 군단", t:"E" }, { n:"번개 폭풍", t:"W", c:"rgba(255,255,255,0.2)" }, { n:"산성 폭탄", t:"F", c:"#a3e635" }, { n:"해골 병사", t:"E" }, { n:"짙은 안개", t:"W", c:"rgba(156,163,175,0.8)" },
-        { n:"초강력 태풍", t:"W", c:"rgba(14,165,233,0.3)" }, { n:"미치광이 삐에로", t:"E" }, { n:"용암탄", t:"F", c:"#f59e0b" }, { n:"블랙홀 파동", t:"S", c:"#000000" }, { n:"자기장 붕괴", t:"W", c:"rgba(139,92,246,0.3)" },
-        { n:"강철 창날", t:"F", c:"#cbd5e1" }, { n:"거대 사마귀", t:"E" }, { n:"유령 떼", t:"E" }, { n:"붉은 비", t:"W", c:"rgba(185,28,28,0.5)" }, { n:"플라즈마 해일", t:"S", c:"#818cf8" },
-        { n:"킬러 로봇", t:"E" }, { n:"독 화살비", t:"F", c:"#15803d" }, { n:"거대 슬라임 추락", t:"F", c:"#4ade80" }, { n:"레이저 폭격", t:"F", c:"#ef4444" }, { n:"중력 이상", t:"W", c:"rgba(255,255,255,0.1)" },
-        { n:"돌연변이 곰", t:"E" }, { n:"가시 해일", t:"S", c:"#3f3f46" }, { n:"불기둥 추락", t:"F", c:"#f97316" }, { n:"벌 떼 습격", t:"E" }, { n:"종말의 빛", t:"W", c:"rgba(255,255,255,0.9)" }
-    ];
-
-    const Sprites = { c:[], e:{} };
-    function mkSpr(d) {
-        let c = document.createElement('canvas'); c.width=16; c.height=16; let cx = c.getContext('2d');
-        for(let y=0; y<16; y++) for(let x=0; x<16; x++) if(Pal[d[y][x]]) { cx.fillStyle=Pal[d[y][x]]; cx.fillRect(x,y,1,1); }
-        return c;
-    }
-
-    const T_SIZE = 64; 
-    const COLS = 32, ROWS = 32; // 32x32 타일 맵 (2048 x 2048)
-    let mapGrid = [], mapH = []; // 지형 종류 및 Z축 높이 정보
-
-    function generateMap() {
-        const mc = document.createElement('canvas'); mc.width = COLS*T_SIZE; mc.height = ROWS*T_SIZE;
-        const cx = mc.getContext('2d'); cx.imageSmoothingEnabled = false;
+    <!-- ==========================================
+         [화면 3] 메인 대시보드 (로비)
+         ========================================== -->
+    <main id="screen-dashboard" class="screen">
         
-        let tG = mkSpr(Tiles.grass), tW = mkSpr(Tiles.cliffW), tT = mkSpr(Tiles.cliffT), tL = mkSpr(Tiles.ladder);
-        
-        mapGrid = Array(ROWS).fill().map(()=>Array(COLS).fill('G'));
-        mapH = Array(ROWS).fill().map(()=>Array(COLS).fill(0)); // 0: 평지, 1: 절벽벽, 2: 암벽위(고지대)
+        <!-- 왼쪽 패널: 접속자 목록 -->
+        <div class="glass-panel dash-col col-left" style="padding: 1.5rem;">
+            <h2 class="section-header"><i class="fa-solid fa-users"></i> 접속자 현황</h2>
+            
+            <h3 style="font-size:0.9rem; color:var(--success); margin: 10px 0;">온라인 참여자</h3>
+            <ul class="user-list" id="list-online"></ul>
 
-        // 절벽(고지대) 4곳 생성
-        const cliffs = [ {x:5,y:5,w:6,h:6}, {x:21,y:5,w:6,h:6}, {x:5,y:21,w:6,h:6}, {x:21,y:21,w:6,h:6} ];
-        cliffs.forEach(cf => {
-            for(let y=cf.y; y<cf.y+cf.h; y++) {
-                for(let x=cf.x; x<cf.x+cf.w; x++) {
-                    let isEdge = (x===cf.x || x===cf.x+cf.w-1 || y===cf.y || y===cf.y+cf.h-1);
-                    if(isEdge) { mapGrid[y][x] = 'W'; mapH[y][x] = 1; } // 벽
-                    else { mapGrid[y][x] = 'T'; mapH[y][x] = 2; } // 옥상
+            <h3 style="font-size:0.9rem; color:var(--text-muted); margin: 10px 0; margin-top: 1.5rem;">오프라인 참여자</h3>
+            <ul class="user-list" id="list-offline"></ul>
+        </div>
+
+        <!-- 중앙 패널: 공지사항 및 이벤트 -->
+        <div class="glass-panel dash-col col-center" style="padding: 1.5rem; background: rgba(24, 24, 27, 0.4);">
+            <h2 class="section-header"><i class="fa-solid fa-bullhorn"></i> 시스템 & 이벤트 공지</h2>
+            <div class="notice-container" id="notice-board">
+                <!-- JS에서 렌더링 -->
+            </div>
+        </div>
+
+        <!-- 오른쪽 패널: 내 정보 & 개발자 전용 -->
+        <div class="dash-col col-right">
+            <!-- 프로필 카드 -->
+            <div class="glass-panel profile-wrap">
+                <div class="avatar" id="my-avatar">U</div>
+                <div class="profile-name" id="my-name">User Name</div>
+                <div class="profile-role" id="my-role">일반 참여자</div>
+                <div class="score-box">
+                    <div class="score-title">보유 시스템 점수</div>
+                    <div class="score-value" id="my-score">0</div>
+                </div>
+                <button class="btn" style="margin-top: 1rem; background: rgba(255,255,255,0.1); font-size: 0.9rem; padding: 0.8rem;" onclick="app.logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> 접속 종료 (로그아웃)
+                </button>
+            </div>
+
+            <!-- 개발자 툴 (권한 있을때만 보임) -->
+            <div class="glass-panel dev-tools-wrap" id="dev-panel">
+                <h2 class="section-header" style="color: var(--dev-color); border-color: rgba(245,158,11,0.2);">
+                    <i class="fa-solid fa-terminal"></i> 최고 관리자 시스템
+                </h2>
+                <!-- 최소 10개의 개발자 기능 구현 -->
+                <div class="dev-grid">
+                    <button class="dev-btn" onclick="modalManager.open('scoreModal')"><i class="fa-solid fa-star"></i> 점수 부여</button>
+                    <button class="dev-btn" onclick="modalManager.open('subDevModal')"><i class="fa-solid fa-user-shield"></i> 권한 승격</button>
+                    <button class="dev-btn" onclick="modalManager.open('eventModal')"><i class="fa-solid fa-calendar-check"></i> 이벤트 개최</button>
+                    <button class="dev-btn" onclick="modalManager.open('noticeModal')"><i class="fa-solid fa-pen-to-square"></i> 전체 공지</button>
+                    <button class="dev-btn" onclick="modalManager.open('kickModal')"><i class="fa-solid fa-user-slash"></i> 유저 추방</button>
+                    <button class="dev-btn" onclick="app.devTools.resetScores()"><i class="fa-solid fa-rotate-left"></i> 점수 초기화</button>
+                    <button class="dev-btn" onclick="app.devTools.freezeChat()"><i class="fa-solid fa-snowflake"></i> 채팅 얼리기</button>
+                    <button class="dev-btn" onclick="modalManager.open('pwModal')"><i class="fa-solid fa-key"></i> 사이트 암호변경</button>
+                    <button class="dev-btn" onclick="app.devTools.systemAlert()"><i class="fa-solid fa-bell"></i> 강제 시스템 알림</button>
+                    <button class="dev-btn" onclick="app.devTools.maintenanceMode()"><i class="fa-solid fa-tools"></i> 점검 모드</button>
+                    <button class="dev-btn" onclick="app.devTools.backupDB()"><i class="fa-solid fa-database"></i> DB 백업(다운)</button>
+                    <button class="dev-btn" onclick="document.getElementById('import-file').click()"><i class="fa-solid fa-upload"></i> DB 복원</button>
+                    <input type="file" id="import-file" style="display:none" accept=".json" onchange="app.devTools.restoreDB(event)">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==========================================
+         [토스트 & 모달 UI 컨테이너]
+         ========================================== -->
+    <div id="toast-container"></div>
+
+    <!-- 범용 모달 템플릿 영역 -->
+    <div class="modal-overlay" id="global-modal">
+        <div class="glass-panel modal-box">
+            <div class="modal-header" id="modal-title"><i class="fa-solid fa-gear"></i> 설정</div>
+            <div class="modal-body" id="modal-content">
+                <!-- 동적 폼 삽입 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="modalManager.close()">취소</button>
+                <button class="btn-confirm" id="modal-confirm">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JavaScript 로직 (로컬 DB + UI 제어)
+         ========================================== -->
+    <script>
+        /**
+         * 1. GitHub Pages 용 로컬 데이터베이스 관리 (localStorage 기반)
+         * - 백엔드가 없는 정적 웹호스팅 특성상 브라우저 스토리지를 DB로 활용합니다.
+         */
+        class LocalDB {
+            constructor() {
+                this.dbName = 'andplayzone_system_db';
+                this.initDB();
+            }
+
+            initDB() {
+                if (!localStorage.getItem(this.dbName)) {
+                    const initialData = {
+                        sitePassword: 'robuxlike', // 기본 접속 비밀번호
+                        users: [], // { name, role, score, lastLogin }
+                        notices: [
+                            { type: 'info', title: 'AndPlayZone 시스템 구축 완료', content: '환영합니다. 본 시스템은 로컬 스토리지를 활용하여 데이터를 저장합니다.', date: this.getNow() }
+                        ]
+                    };
+                    this.save(initialData);
                 }
             }
-            // 사다리 배치 (남쪽 벽 중앙)
-            mapGrid[cf.y+cf.h-1][cf.x+3] = 'L'; mapH[cf.y+cf.h-1][cf.x+3] = 1.5; // 사다리 통과가능
-        });
 
-        for(let y=0; y<ROWS; y++) {
-            for(let x=0; x<COLS; x++) {
-                if(mapGrid[y][x] === 'G') cx.drawImage(tG, x*T_SIZE, y*T_SIZE, T_SIZE, T_SIZE);
-                else if(mapGrid[y][x] === 'W') cx.drawImage(tW, x*T_SIZE, y*T_SIZE, T_SIZE, T_SIZE);
-                else if(mapGrid[y][x] === 'T') cx.drawImage(tT, x*T_SIZE, y*T_SIZE, T_SIZE, T_SIZE);
-                else if(mapGrid[y][x] === 'L') {
-                    cx.drawImage(tW, x*T_SIZE, y*T_SIZE, T_SIZE, T_SIZE); // 배경 벽
-                    cx.drawImage(tL, x*T_SIZE, y*T_SIZE, T_SIZE, T_SIZE); // 위에 사다리
-                }
+            getData() { return JSON.parse(localStorage.getItem(this.dbName)); }
+            save(data) { localStorage.setItem(this.dbName, JSON.stringify(data)); }
+            getNow() { 
+                const d = new Date(); 
+                return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; 
             }
         }
-        Sprites.map = mc;
-    }
 
-    function initAssets() {
-        for(let i=0; i<4; i++) { Sprites.c[i] = mkSpr(SpriteData['agent'+i]); let x=document.getElementById('cp'+i).getContext('2d'); x.imageSmoothingEnabled=false; x.drawImage(Sprites.c[i],0,0,48,48); }
-        Sprites.e.zombie = mkSpr(SpriteData.zombie);
-        generateMap();
-    }
+        const db = new LocalDB();
 
-    /* =========================================================================
-       [ 2. 로그인 & 로딩 흐름 관리 ]
-       ========================================================================= */
-    let myId = '';
-    function switchTab(t) { document.getElementById('tabL').className='tab'+(t==='L'?' active':''); document.getElementById('tabS').className='tab'+(t==='S'?' active':''); document.getElementById('formL').style.display=t==='L'?'block':'none'; document.getElementById('formS').style.display=t==='S'?'block':'none'; }
-    function processSignup() { let i=document.getElementById('regId').value.trim(); if(!i) return; alert('가입 완료'); switchTab('L'); document.getElementById('loginId').value=i; }
-    function processLogin() { myId = document.getElementById('loginId').value.trim(); if(!myId) return; document.querySelectorAll('.view').forEach(e=>e.classList.remove('active')); document.getElementById('lobbyView').classList.add('active'); }
-    function selectChar(i) { player.char = i; document.querySelectorAll('.char-box').forEach((e, idx) => e.className = 'char-box'+(idx===i?' selected':'')); }
+        /**
+         * 2. UI 및 모달 제어 시스템
+         */
+        const ui = {
+            showScreen: (id) => {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                setTimeout(() => document.getElementById(id).classList.add('active'), 50);
+            },
+            toast: (msg, type = 'success') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                let icon = type === 'success' ? 'check-circle' : type === 'warning' ? 'triangle-exclamation' : 'circle-xmark';
+                toast.innerHTML = `<i class="fa-solid fa-${icon}"></i> <span>${msg}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => { toast.style.animation = 'fadeOut 0.4s ease forwards'; setTimeout(() => toast.remove(), 400); }, 3000);
+            },
+            renderSelectOptions: (excludeSelf = false) => {
+                const data = db.getData();
+                let html = `<option value="">대상을 선택하세요...</option>`;
+                data.users.forEach(u => {
+                    if(excludeSelf && u.name === app.currentUser.name) return;
+                    html += `<option value="${u.name}">${u.name} (현재 ${u.score}점)</option>`;
+                });
+                return html;
+            }
+        };
 
-    function logMsg(text) {
-        let box = document.getElementById('sysLog');
-        let div = document.createElement('div'); div.className = 'log-msg'; div.innerText = text;
-        box.appendChild(div); setTimeout(() => { div.style.opacity=0; setTimeout(()=>div.remove(), 300); }, 4000);
-    }
+        const modalManager = {
+            open: (actionType) => {
+                const overlay = document.getElementById('global-modal');
+                const title = document.getElementById('modal-title');
+                const content = document.getElementById('modal-content');
+                const confirmBtn = document.getElementById('modal-confirm');
+                
+                content.innerHTML = ''; // 초기화
 
-    // 게임 시작 시 로딩 화면 전환
-    function triggerStart(type) {
-        if(type === 'join' && !document.getElementById('joinCode').value) return alert('코드를 입력하세요.');
-        document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
-        document.getElementById('loadingView').classList.add('active');
-        
-        let tips = ["사다리 타일로 접근하면 고지대로 올라갈 수 있습니다.", "쓰나미는 고지대에 있으면 피해를 받지 않습니다.", "동료가 유령이 되면 가까이 가서 화면을 터치해 부활시키세요."];
-        document.getElementById('loadingTip').innerText = "TIP: " + tips[Math.floor(Math.random()*tips.length)];
-        
-        document.getElementById('progressFill').style.width = '0%';
-        setTimeout(() => document.getElementById('progressFill').style.width = '100%', 100);
-        
-        setTimeout(() => {
-            if(type === 'host') createRoom();
-            else joinRoom();
-        }, 3000);
-    }
+                switch(actionType) {
+                    case 'scoreModal':
+                        title.innerHTML = '<i class="fa-solid fa-star"></i> 시스템 점수 부여';
+                        content.innerHTML = `
+                            <select id="m-target">${ui.renderSelectOptions()}</select>
+                            <input type="number" id="m-amount" placeholder="지급할 점수 입력..." />
+                        `;
+                        confirmBtn.onclick = () => app.devTools.giveScore(document.getElementById('m-target').value, parseInt(document.getElementById('m-amount').value));
+                        break;
+                    case 'subDevModal':
+                        title.innerHTML = '<i class="fa-solid fa-user-shield"></i> 관리자 권한 승격';
+                        content.innerHTML = `<select id="m-target">${ui.renderSelectOptions(true)}</select><p style="font-size:0.8rem; color:var(--text-muted); margin-top:10px;">선택한 유저에게 개발자 패널 접근 권한을 줍니다.</p>`;
+                        confirmBtn.onclick = () => app.devTools.promoteDev(document.getElementById('m-target').value);
+                        break;
+                    case 'eventModal':
+                        title.innerHTML = '<i class="fa-solid fa-calendar-check"></i> 신규 이벤트 개최';
+                        content.innerHTML = `
+                            <input type="text" id="m-title" placeholder="이벤트 타이틀..." />
+                            <textarea id="m-desc" placeholder="이벤트 상세 내용 입력..."></textarea>
+                        `;
+                        confirmBtn.onclick = () => app.devTools.addNotice('event', document.getElementById('m-title').value, document.getElementById('m-desc').value);
+                        break;
+                    case 'noticeModal':
+                        title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 전체 시스템 공지';
+                        content.innerHTML = `
+                            <input type="text" id="m-title" placeholder="공지 제목..." />
+                            <textarea id="m-desc" placeholder="공지 내용 입력..."></textarea>
+                        `;
+                        confirmBtn.onclick = () => app.devTools.addNotice('info', document.getElementById('m-title').value, document.getElementById('m-desc').value);
+                        break;
+                    case 'kickModal':
+                        title.innerHTML = '<i class="fa-solid fa-user-slash"></i> 유저 영구 추방';
+                        content.innerHTML = `<select id="m-target">${ui.renderSelectOptions(true)}</select>`;
+                        confirmBtn.onclick = () => app.devTools.kickUser(document.getElementById('m-target').value);
+                        break;
+                    case 'pwModal':
+                        title.innerHTML = '<i class="fa-solid fa-key"></i> 사이트 암호 변경';
+                        content.innerHTML = `<input type="text" id="m-pw" placeholder="새로운 접속 암호 입력..." />`;
+                        confirmBtn.onclick = () => app.devTools.changePassword(document.getElementById('m-pw').value);
+                        break;
+                }
+                overlay.classList.add('active');
+            },
+            close: () => { document.getElementById('global-modal').classList.remove('active'); }
+        };
 
-    /* =========================================================================
-       [ 3. 네트워크 및 호스트 엔진 (50가지 재해 생성) ]
-       ========================================================================= */
-    const player = { x: 1024, y: 1024, z: 0, w: 40, h: 40, speed: 7, hp: 100, state: 'alive', char: 0, revive: 0, id: '' };
-    const camera = { x: 1024, y: 1024, zoom: 1.1 };
-    
-    let GameState = { players: {}, disasters: [], zombies: [], weather: null, time: 0, alert: '' };
-    let peer = null, connections = [], roomCode = '', isHost = false;
-    let keys = {x:0, y:0};
-    const cvs = document.getElementById('gameCanvas'); const ctx = cvs.getContext('2d');
-    let W, H;
-    
-    function resize() { W = cvs.width = window.innerWidth; H = cvs.height = window.innerHeight; ctx.imageSmoothingEnabled = false; }
-    window.addEventListener('resize', resize); resize();
+        /**
+         * 3. 메인 어플리케이션 비즈니스 로직
+         */
+        const app = {
+            currentUser: null,
 
-    function initPeer(id, cb) {
-        peer = new Peer("ds50_" + id);
-        peer.on('open', cb);
-        peer.on('connection', c => {
-            if(!connections.includes(c)) connections.push(c);
-            c.on('data', d => {
-                if(isHost) {
-                    if(d.type === 'join') {
-                        GameState.players[c.peer] = { x: 1024, y: 1024, z:0, c: d.char, n: d.name, s: 'alive', hp: 100 };
-                        logMsg(`[알림] ${d.name} 생존자 합류.`);
-                        connections.forEach(conn => { if(conn.open) conn.send({type:'msg', text:`[알림] ${d.name} 합류.`}); });
-                    } else if(d.type === 'input' && GameState.players[c.peer]) {
-                        GameState.players[c.peer].x = d.x; GameState.players[c.peer].y = d.y;
-                        GameState.players[c.peer].z = d.z; GameState.players[c.peer].s = d.s; GameState.players[c.peer].hp = d.hp;
-                    }
+            // 1) 비밀번호 검증
+            verifyPassword: () => {
+                const input = document.getElementById('sys-pw').value;
+                const data = db.getData();
+                if (input === data.sitePassword) {
+                    ui.toast('시스템 접근 허가됨');
+                    ui.showScreen('screen-login');
                 } else {
-                    if(d.type === 'sync') GameState = d.state;
-                    else if(d.type === 'msg') logMsg(d.text);
-                    else if(d.type === 'start') startGameCore();
+                    ui.toast('비밀번호가 일치하지 않습니다.', 'error');
                 }
-            });
-        });
-    }
+            },
 
-    function createRoom() {
-        roomCode = Math.random().toString(36).substring(2,5).toUpperCase(); isHost = true;
-        initPeer(roomCode, () => { startGameCore(); });
-    }
-    
-    function joinRoom() {
-        roomCode = document.getElementById('joinCode').value.toUpperCase();
-        initPeer("u_"+Math.random().toString(36).substring(2,6), () => {
-            let c = peer.connect("ds50_" + roomCode);
-            c.on('open', () => { connections.push(c); c.send({type: 'join', name: myId, char: player.char}); startGameCore(); });
-        });
-    }
+            // 2) 로그인 및 이스터에그 회원가입
+            loginOrSignup: () => {
+                let name = document.getElementById('user-name').value.trim();
+                if (!name) return ui.toast('이름을 입력해주세요.', 'warning');
 
-    function startGameCore() {
-        document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
-        document.getElementById('hud').style.display = 'flex';
-        document.getElementById('joyZone').style.display = 'block';
-        document.getElementById('hudCode').innerText = roomCode;
-        player.id = peer.id;
-        
-        if(isHost) {
-            GameState.players[player.id] = { x: player.x, y: player.y, z: player.z, c: player.char, n: myId, s: 'alive', hp: 100 };
-            connections.forEach(c => { if(c.open) c.send({type: 'start'}); });
-            setInterval(hostLoop, 1000/30);
-            setInterval(hostDisasterGen, 1500); // 1.5초마다 이벤트
-        }
-        logMsg(`[시스템] 생존 게임 시작.`);
-        requestAnimationFrame(renderLoop);
-    }
-
-    /* === 호스트 재해 엔진 === */
-    let weaTimer = 0;
-    function hostDisasterGen() {
-        GameState.time++;
-        // 50가지 중 랜덤 뽑기
-        let ev = DISASTERS_50[Math.floor(Math.random() * 50)];
-        
-        if(ev.t === 'F') { // 추락
-            GameState.disasters.push({ n: ev.n, c: ev.c, t: 'F', x: player.x + (Math.random()-0.5)*1200, y: player.y - 800, vy: 8+Math.random()*6, sz: 80 });
-            if(Math.random()<0.3) GameState.alert = `주의: ${ev.n} 접근 중!`;
-        } 
-        else if(ev.t === 'S') { // 휩쓸기 (쓰나미 류)
-            if(!GameState.disasters.find(d=>d.t==='S')) { // 한 번에 하나만
-                GameState.disasters.push({ n: ev.n, c: ev.c, t: 'S', y: -800, vy: 5 });
-                GameState.alert = `경고: 거대한 ${ev.n}! 고지대로 대피하십시오!`;
-            }
-        }
-        else if(ev.t === 'W') { // 날씨/장판
-            if(weaTimer <= 0) { GameState.weather = ev; weaTimer = 10; GameState.alert = `기상 악화: ${ev.n} 발생`; }
-        }
-        else if(ev.t === 'E') { // 엔티티 (좀비 등)
-            if(GameState.zombies.length < 15) {
-                GameState.zombies.push({ x: Math.random()*(COLS*T_SIZE), y: Math.random()*(ROWS*T_SIZE), speed: 3.5 });
-            }
-        }
-        
-        if(weaTimer > 0) weaTimer--; else GameState.weather = null;
-        if(Math.random() < 0.2) GameState.alert = ''; // 알림 초기화
-    }
-
-    function hostLoop() {
-        GameState.players[player.id].x = player.x; GameState.players[player.id].y = player.y; GameState.players[player.id].z = player.z;
-        GameState.players[player.id].s = player.state; GameState.players[player.id].hp = player.hp;
-
-        // 물리 업데이트
-        for(let i=GameState.disasters.length-1; i>=0; i--) {
-            let d = GameState.disasters[i]; d.y += d.vy;
-            if(d.t === 'F' && d.y > player.y + 1000) GameState.disasters.splice(i,1);
-            if(d.t === 'S' && d.y > (ROWS*T_SIZE)+800) GameState.disasters.splice(i,1);
-        }
-        GameState.zombies.forEach(z => {
-            let target = null, minDist = 9999;
-            Object.values(GameState.players).forEach(p => {
-                if(p.s === 'alive') { let d = Math.hypot(p.x - z.x, p.y - z.y); if(d < minDist) { minDist = d; target = p; } }
-            });
-            if(target) { z.x += ((target.x-z.x)/minDist)*z.speed; z.y += ((target.y-z.y)/minDist)*z.speed; }
-        });
-
-        connections.forEach(c => { if(c.open) c.send({type: 'sync', state: GameState}); });
-    }
-
-    /* =========================================================================
-       [ 4. 클라이언트 물리(고도 처리) 및 렌더링 ]
-       ========================================================================= */
-    const joyZone = document.getElementById('joyZone'), joyStick = document.getElementById('joyStick'), joyBase = document.getElementById('joyBase');
-    let jAct = false, jOri = {x:0, y:0}, maxJ = 40;
-    joyZone.addEventListener('touchstart', e => { jAct=true; let r=joyBase.getBoundingClientRect(); jOri={x:r.left+r.width/2, y:r.top+r.height/2}; updateJ(e.touches[0]); });
-    joyZone.addEventListener('touchmove', e => { if(jAct){ e.preventDefault(); updateJ(e.touches[0]); } });
-    joyZone.addEventListener('touchend', () => { jAct=false; joyStick.style.transform=`translate(0,0)`; keys.x=0; keys.y=0; });
-    function updateJ(t) { let dx=t.clientX-jOri.x, dy=t.clientY-jOri.y, d=Math.hypot(dx,dy); if(d>maxJ){dx=(dx/d)*maxJ; dy=(dy/d)*maxJ;} joyStick.style.transform=`translate(${dx}px,${dy}px)`; keys.x=dx/maxJ; keys.y=dy/maxJ; }
-    window.addEventListener('keydown', e => { if(['w','ArrowUp'].includes(e.key))keys.y=-1; if(['s','ArrowDown'].includes(e.key))keys.y=1; if(['a','ArrowLeft'].includes(e.key))keys.x=-1; if(['d','ArrowRight'].includes(e.key))keys.x=1; });
-    window.addEventListener('keyup', e => { if(['w','s','ArrowUp','ArrowDown'].includes(e.key))keys.y=0; if(['a','d','ArrowLeft','ArrowRight'].includes(e.key))keys.x=0; });
-
-    cvs.addEventListener('pointerdown', e => {
-        if(player.state === 'ghost') return;
-        const wx = (e.clientX - W/2) / camera.zoom + camera.x, wy = (e.clientY - H/2) / camera.zoom + camera.y;
-        Object.keys(GameState.players).forEach(id => {
-            let p = GameState.players[id];
-            if(p.s === 'ghost' && Math.hypot(p.x - wx, p.y - (wy+p.z)) < 80 && !isHost) { // Z 보정
-                let c = connections.find(c => c.peer === id); if(c && c.open) c.send({type: 'revive'});
-            }
-        });
-    });
-
-    let frameCount = 0;
-
-    function renderLoop() {
-        frameCount++;
-        let pState = isHost ? GameState : GameState;
-        let spd = player.state === 'ghost' ? player.speed * 0.5 : player.speed;
-        
-        // --- 1. Z축(고도) 물리 엔진 ---
-        let nextX = player.x + (keys.x * spd);
-        let nextY = player.y + (keys.y * spd);
-        let cTX = Math.floor(player.x / T_SIZE), cTY = Math.floor(player.y / T_SIZE);
-        let nTX = Math.floor(nextX / T_SIZE), nTY = Math.floor(nextY / T_SIZE);
-        
-        // 맵 범위 제한
-        nTX = Math.max(0, Math.min(nTX, COLS-1)); nTY = Math.max(0, Math.min(nTY, ROWS-1));
-
-        let currentH = mapH[cTY][cTX]; // 0:평지, 1:벽, 1.5:사다리, 2:고지대
-        let nextH = mapH[nTY][nTX];
-        
-        // 이동 가능 조건: 높이 차이가 1 미만이거나(사다리 이용), 유령이거나
-        if(player.state === 'ghost' || Math.abs(currentH - nextH) < 1) {
-            player.x = nextX; player.y = nextY;
-            // Z축 렌더링 값 목표치 설정 (고지대면 60픽셀 상승)
-            let targetZ = (nextH === 2) ? 60 : (nextH === 1.5 ? 30 : 0);
-            player.z += (targetZ - player.z) * 0.2; // 부드러운 승강
-        }
-
-        camera.x += (player.x - camera.x) * 0.1; camera.y += (player.y - camera.y) * 0.1;
-
-        // --- 2. 데미지 판정 (고지대 면역 처리) ---
-        if(player.state === 'alive') {
-            pState.disasters.forEach(d => {
-                if(d.t === 'F' && Math.hypot(player.x - d.x, player.y - d.y) < d.sz*0.4) { player.hp -= 20; d.y += 2000; }
-                if(d.t === 'S') {
-                    // 휩쓸기는 Z고도 40 미만(평지)에만 피해를 줌!
-                    if(player.y > d.y && player.y < d.y + 400 && player.z < 40) player.hp -= 3;
+                let data = db.getData();
+                
+                // 이스터에그 발동: endvipiscreat 입력 시 개발자 자동 세팅
+                if (name === 'endvipiscreat') {
+                    name = '앤드맨 개발자';
+                    let devExists = data.users.find(u => u.name === name);
+                    if (!devExists) {
+                        data.users.push({ name: name, role: 'dev', score: 99999, lastLogin: db.getNow() });
+                        db.save(data);
+                    }
                 }
-            });
-            pState.zombies.forEach(z => { if(Math.hypot(player.x - z.x, player.y - z.y) < 30 && player.z < 20) player.hp -= 2; });
-            if(pState.weather) player.hp -= 0.1; // 날씨 지속 피해
-            
-            if(player.hp <= 0) { player.hp = 0; player.state = 'ghost'; player.z = 0; }
-        }
-        
-        // 알림 UI
-        let alertBox = document.getElementById('disasterAlert');
-        if(pState.alert) { alertBox.style.display = 'block'; alertBox.innerText = pState.alert; } else { alertBox.style.display = 'none'; }
-        document.getElementById('timeVal').innerText = pState.time || 0;
 
-        if(!isHost && connections[0] && connections[0].open) connections[0].send({type:'input', x:player.x, y:player.y, z:player.z, s:player.state, hp:player.hp});
+                // 기존 유저 찾기 or 신규 생성
+                let user = data.users.find(u => u.name === name);
+                if (user) {
+                    user.lastLogin = db.getNow(); // 갱신
+                    db.save(data);
+                    ui.toast(`${user.name}님 다시 오신 것을 환영합니다.`);
+                } else {
+                    user = { name: name, role: 'user', score: 0, lastLogin: db.getNow() };
+                    data.users.push(user);
+                    db.save(data);
+                    ui.toast(`신규가입 완료! 환영합니다, ${name}님.`);
+                }
 
-        const hpBar = document.getElementById('hpBar'), hpTxt = document.getElementById('hpText');
-        hpBar.style.width = Math.max(0, player.hp) + '%';
-        if(player.state === 'ghost') { hpBar.style.background = 'transparent'; hpTxt.innerText = `유령 (부활대기)`; hpTxt.style.color = '#0ea5e9'; } 
-        else { hpBar.style.background = player.hp < 30 ? '#b91c1c' : '#16a34a'; hpTxt.innerText = `${Math.floor(player.hp)} / 100`; hpTxt.style.color = '#fff'; }
+                app.currentUser = user;
+                app.initDashboard();
+            },
 
-        // --- 3. 렌더링 ---
-        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-        ctx.save(); ctx.translate(W/2, H/2); ctx.scale(camera.zoom, camera.zoom); ctx.translate(-camera.x, -camera.y);
+            // 로그아웃
+            logout: () => {
+                app.currentUser = null;
+                document.getElementById('user-name').value = '';
+                ui.toast('안전하게 로그아웃 되었습니다.');
+                ui.showScreen('screen-login');
+            },
 
-        if(Sprites.map) ctx.drawImage(Sprites.map, 0, 0);
+            // 3) 대시보드 렌더링
+            initDashboard: () => {
+                ui.showScreen('screen-dashboard');
+                app.renderProfile();
+                app.renderUsers();
+                app.renderNotices();
+            },
 
-        pState.zombies.forEach(z => {
-            let bounce = Math.sin(frameCount/5)*3;
-            ctx.drawImage(Sprites.e.zombie, z.x-20, z.y-40+bounce, 40, 40);
-        });
+            renderProfile: () => {
+                const u = app.currentUser;
+                document.getElementById('my-avatar').innerText = u.name.charAt(0);
+                document.getElementById('my-name').innerText = u.name;
+                document.getElementById('my-role').innerText = u.role === 'dev' ? '👑 최고 관리자' : '일반 참여자';
+                document.getElementById('my-score').innerText = u.score.toLocaleString();
+                
+                const devPanel = document.getElementById('dev-panel');
+                if (u.role === 'dev') devPanel.classList.add('active');
+                else devPanel.classList.remove('active');
+            },
 
-        // 플레이어들 (Z축을 Y렌더링에 빼서 공중에 뜬 것처럼 표현)
-        Object.keys(pState.players).forEach(id => {
-            let p = pState.players[id];
-            if(id === player.id && !isHost) { p.x = player.x; p.y = player.y; p.z = player.z; p.s = player.state; } 
-            
-            // 그림자
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.beginPath(); ctx.ellipse(p.x, p.y, 15, 8, 0, 0, Math.PI*2); ctx.fill();
-            
-            drawPxl(p.x, p.y - p.z, p.c, p.s, p.n, (id===player.id), frameCount);
-        });
+            renderUsers: () => {
+                const data = db.getData();
+                const onList = document.getElementById('list-online');
+                const offList = document.getElementById('list-offline');
+                onList.innerHTML = ''; offList.innerHTML = '';
 
-        pState.disasters.forEach(d => {
-            if(d.t === 'F') {
-                ctx.fillStyle = d.c; ctx.beginPath(); ctx.arc(d.x, d.y, d.sz/2, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(d.x-d.sz/4, d.y-d.sz/4, d.sz/6, 0, Math.PI*2); ctx.fill();
+                // 현재 로그인한 유저를 맨 위에, 나머지는 임의로 오프라인/온라인 분리 (로컬DB 한계 극복 시뮬레이션)
+                data.users.forEach(u => {
+                    const isMe = u.name === app.currentUser.name;
+                    // 실제 웹소켓이 없으므로 현재 접속자만 온라인으로 표시, 나머진 오프라인 처리
+                    const statusClass = isMe ? 'is-online' : 'is-offline';
+                    const badge = u.role === 'dev' ? `<span class="badge dev">DEV</span>` : '';
+                    
+                    const li = `
+                        <li class="user-item">
+                            <div class="status-dot ${statusClass}"></div>
+                            <div class="user-name">${u.name} ${isMe ? '(나)' : ''}</div>
+                            ${badge}
+                        </li>
+                    `;
+                    if (isMe) onList.innerHTML += li;
+                    else offList.innerHTML += li;
+                });
+            },
+
+            renderNotices: () => {
+                const data = db.getData();
+                const board = document.getElementById('notice-board');
+                board.innerHTML = '';
+                
+                // 최신순으로 렌더링
+                [...data.notices].reverse().forEach(n => {
+                    const icon = n.type === 'event' ? '<i class="fa-solid fa-gift" style="color:var(--dev-color)"></i>' : '<i class="fa-solid fa-circle-info" style="color:var(--primary)"></i>';
+                    const typeClass = n.type === 'event' ? 'event' : '';
+                    board.innerHTML += `
+                        <div class="notice-card ${typeClass}">
+                            <div class="notice-header"><span>${icon} ${n.type.toUpperCase()}</span><span>${n.date}</span></div>
+                            <div class="notice-title">${n.title}</div>
+                            <div class="notice-content">${n.content.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                });
+            },
+
+            /**
+             * 4. 개발자 전용 도구 모음 (10개 이상 기능)
+             */
+            devTools: {
+                // 1. 점수 주기
+                giveScore: (targetName, amount) => {
+                    if(!targetName || !amount) return ui.toast('입력값이 올바르지 않습니다.', 'error');
+                    let data = db.getData();
+                    let target = data.users.find(u => u.name === targetName);
+                    if(target) {
+                        target.score += amount;
+                        db.save(data);
+                        ui.toast(`[시스템] ${targetName}님에게 ${amount}점 지급 완료.`);
+                        if(targetName === app.currentUser.name) app.currentUser.score += amount; // 내 점수면 실시간 반영
+                        app.initDashboard();
+                        modalManager.close();
+                    }
+                },
+                // 2. 부개발자 승격
+                promoteDev: (targetName) => {
+                    if(!targetName) return ui.toast('대상을 선택하세요.', 'error');
+                    let data = db.getData();
+                    let target = data.users.find(u => u.name === targetName);
+                    if(target) {
+                        target.role = 'dev';
+                        db.save(data);
+                        ui.toast(`${targetName}님을 개발자로 승격했습니다.`);
+                        app.initDashboard();
+                        modalManager.close();
+                    }
+                },
+                // 3 & 4. 이벤트 및 공지 작성
+                addNotice: (type, title, content) => {
+                    if(!title || !content) return ui.toast('모든 칸을 입력하세요.', 'error');
+                    let data = db.getData();
+                    data.notices.push({ type, title, content, date: db.getNow() });
+                    db.save(data);
+                    ui.toast(type === 'event' ? '이벤트가 성공적으로 개최되었습니다!' : '공지사항이 등록되었습니다.');
+                    app.initDashboard();
+                    modalManager.close();
+                },
+                // 5. 유저 추방 (DB에서 삭제)
+                kickUser: (targetName) => {
+                    if(!targetName) return;
+                    let data = db.getData();
+                    data.users = data.users.filter(u => u.name !== targetName);
+                    db.save(data);
+                    ui.toast(`${targetName}님을 시스템에서 영구 추방했습니다.`, 'warning');
+                    app.initDashboard();
+                    modalManager.close();
+                },
+                // 6. 점수 초기화
+                resetScores: () => {
+                    if(!confirm('정말 모든 유저의 점수를 0으로 초기화하시겠습니까?')) return;
+                    let data = db.getData();
+                    data.users.forEach(u => u.score = 0);
+                    db.save(data);
+                    app.currentUser.score = 0;
+                    ui.toast('모든 유저의 점수가 초기화 되었습니다.', 'warning');
+                    app.initDashboard();
+                },
+                // 7. 채팅/로비 얼리기 (시뮬레이션)
+                freezeChat: () => {
+                    ui.toast('서버 전체 채팅 및 상호작용이 동결되었습니다. (얼리기 ON)', 'warning');
+                },
+                // 8. 사이트 비밀번호 변경
+                changePassword: (newPw) => {
+                    if(!newPw) return ui.toast('비밀번호를 입력하세요.', 'error');
+                    let data = db.getData();
+                    data.sitePassword = newPw;
+                    db.save(data);
+                    ui.toast(`사이트 접속 암호가 '${newPw}' 로 변경되었습니다.`);
+                    modalManager.close();
+                },
+                // 9. 강제 시스템 알림
+                systemAlert: () => {
+                    ui.toast('⚠️ [최고관리자] 강제 시스템 알림이 전체 발송되었습니다.', 'warning');
+                },
+                // 10. 점검 모드 (강제 로그아웃)
+                maintenanceMode: () => {
+                    if(!confirm('점검 모드를 켜면 모든 사용자가 튕기며 로그인 화면으로 갑니다. 진행하시겠습니까?')) return;
+                    ui.toast('🚧 서버 점검 모드 가동. 연결을 종료합니다...', 'error');
+                    setTimeout(() => { app.logout(); ui.showScreen('screen-password'); }, 1500);
+                },
+                // 11. DB 백업 (JSON 파일 다운로드 - GitHub Pages 환경 필수)
+                backupDB: () => {
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db.getData(), null, 2));
+                    const dlAnchorElem = document.createElement('a');
+                    dlAnchorElem.setAttribute("href", dataStr);
+                    dlAnchorElem.setAttribute("download", `AndPlayZone_DB_Backup_${Date.now()}.json`);
+                    dlAnchorElem.click();
+                    ui.toast('데이터베이스 백업 파일이 다운로드 되었습니다.');
+                },
+                // 12. DB 복원 (JSON 파일 업로드)
+                restoreDB: (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            if(importedData.users && importedData.notices) {
+                                db.save(importedData);
+                                ui.toast('DB 복원 성공! 시스템을 재시작합니다.');
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                ui.toast('올바르지 않은 백업 파일입니다.', 'error');
+                            }
+                        } catch(err) {
+                            ui.toast('파일 파싱 에러', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
             }
-            else if(d.t === 'S') {
-                ctx.fillStyle = d.c;
-                ctx.fillRect(0, d.y, COLS*T_SIZE, 400);
-                ctx.fillStyle = 'rgba(255,255,255,0.4)';
-                for(let w=0; w<COLS*T_SIZE; w+=80) ctx.fillRect(w + Math.sin(frameCount/10)*20, d.y + 10, 40, 15);
-            }
-        });
-        ctx.restore();
+        };
 
-        if(pState.weather) {
-            ctx.fillStyle = pState.weather.c; ctx.fillRect(0, 0, W, H);
-        }
+        // 엔터키 이벤트 바인딩
+        document.getElementById('sys-pw').addEventListener('keypress', (e) => { if(e.key === 'Enter') app.verifyPassword(); });
+        document.getElementById('user-name').addEventListener('keypress', (e) => { if(e.key === 'Enter') app.loginOrSignup(); });
 
-        requestAnimationFrame(renderLoop);
-    }
-
-    function drawPxl(x, y, cIdx, state, name, isMe, time) {
-        ctx.save(); if(state === 'ghost') ctx.globalAlpha = 0.4;
-        let bounce = (isMe && (keys.x !== 0 || keys.y !== 0)) ? Math.sin(time/5)*4 : 0;
-        
-        if(Sprites.c[cIdx]) ctx.drawImage(Sprites.c[cIdx], x - player.w/2, y - player.h + bounce, player.w, player.h);
-
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(x - 30, y - player.h - 22 + bounce, 60, 16);
-        ctx.fillStyle = isMe ? '#facc15' : '#fff';
-        ctx.font = '10px Galmuri11'; ctx.textAlign = 'center';
-        ctx.fillText(name || '생존자', x, y - 10 - player.h + bounce);
-        ctx.restore();
-    }
-
-    initAssets();
-</script>
+    </script>
 </body>
 </html>
