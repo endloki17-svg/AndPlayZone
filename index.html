@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AndPlayZone | V3 Ultimate Mega Edition</title>
+    <title>AndPlayZone | V3.5 Expansion</title>
     <!-- FontAwesome Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Web Font: Pretendard & Hack -->
+    <!-- Web Font -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
@@ -15,7 +15,7 @@
            [1] SUPREME DESIGN SYSTEM & CYBERPUNK VARIABLES
            ========================================================= */
         :root {
-            --bg-deep: #090a0f;
+            --bg-deep: #050608;
             --bg-panel: rgba(16, 18, 27, 0.7);
             --bg-panel-solid: #151824;
             --border-glow: rgba(99, 102, 241, 0.4);
@@ -54,44 +54,28 @@
             display: flex; flex-direction: column;
         }
 
-        /* Animated Background Particles */
-        .bg-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a1c29 0%, #090a0f 100%); }
-        .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: float 12s infinite alternate; }
+        /* 🚀 향상된 커스텀 스크롤바 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 243, 255, 0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
+
+        .bg-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a1c29 0%, #050608 100%); }
+        .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3; animation: float 12s infinite alternate; }
         .orb-1 { width: 350px; height: 350px; background: var(--primary); top: -100px; left: -100px; }
         .orb-2 { width: 450px; height: 450px; background: var(--neon-purple); bottom: -150px; right: -100px; animation-delay: -6s; }
         
         @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 60px) scale(1.2); } }
 
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 243, 255, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
-
         /* =========================================================
            [2] CORE UI COMPONENTS
            ========================================================= */
-        .glass {
-            background: var(--bg-panel);
-            backdrop-filter: var(--glass);
-            -webkit-backdrop-filter: var(--glass);
-            border: 1px solid var(--border-light);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-        }
+        .glass { background: var(--bg-panel); backdrop-filter: var(--glass); -webkit-backdrop-filter: var(--glass); border: 1px solid var(--border-light); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
 
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; opacity: 0; transform: scale(1.02);
-            transition: var(--transition);
-            z-index: 10; align-items: center; justify-content: center;
-        }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; opacity: 0; transform: scale(1.02); transition: var(--transition); z-index: 10; align-items: center; justify-content: center; }
         .screen.active { display: flex; opacity: 1; transform: scale(1); z-index: 20; }
 
-        .btn {
-            padding: 1rem 1.5rem; border: none; border-radius: var(--radius-md);
-            font-size: 1.05rem; font-weight: 800; color: white; cursor: pointer;
-            transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            position: relative; overflow: hidden;
-        }
+        .btn { padding: 1rem 1.5rem; border: none; border-radius: var(--radius-md); font-size: 1.05rem; font-weight: 800; color: white; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; }
         .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.4s; }
         .btn:hover::after { left: 150%; }
         
@@ -100,22 +84,18 @@
         
         .input-group { position: relative; width: 100%; margin-bottom: 1.5rem; }
         .input-group i { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--neon-blue); font-size: 1.2rem; }
-        .input-field {
-            width: 100%; padding: 1.2rem 1.2rem 1.2rem 3.5rem; border-radius: var(--radius-md);
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(0, 243, 255, 0.3); color: white;
-            font-size: 1.1rem; transition: var(--transition); outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        }
+        .input-field { width: 100%; padding: 1.2rem 1.2rem 1.2rem 3.5rem; border-radius: var(--radius-md); background: rgba(0,0,0,0.6); border: 1px solid rgba(0, 243, 255, 0.3); color: white; font-size: 1.1rem; transition: var(--transition); outline: none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         .input-field:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0,0,0,0.5); }
 
         /* =========================================================
-           [3] ENHANCED BOOT SEQUENCE & AUTH SCREENS
+           [3] ENHANCED EPIC BOOT SEQUENCE (더 길게)
            ========================================================= */
-        #screen-boot { flex-direction: column; background: #050505; color: var(--neon-green); font-family: var(--font-mono); justify-content: center; align-items: flex-start; padding: 2rem; z-index: 999; }
+        #screen-boot { flex-direction: column; background: #030303; color: var(--neon-green); font-family: var(--font-mono); justify-content: center; align-items: flex-start; padding: 2rem; z-index: 999; }
         .term-line { font-size: 1.1rem; margin-bottom: 8px; text-shadow: 0 0 5px var(--neon-green); line-height: 1.4; word-break: break-all; }
         .cursor-blink { animation: blink 1s step-end infinite; background: var(--neon-green); color: black; padding: 0 5px; margin-left: 5px; }
         @keyframes blink { 50% { opacity: 0; } }
         
-        .progress-bar-wrap { width: 100%; max-width: 400px; height: 20px; border: 1px solid var(--neon-green); margin-top: 20px; padding: 2px; display: none; }
+        .progress-bar-wrap { width: 100%; max-width: 500px; height: 20px; border: 1px solid var(--neon-green); margin-top: 20px; padding: 2px; display: none; }
         .progress-bar-fill { height: 100%; background: var(--neon-green); width: 0%; transition: 0.1s linear; box-shadow: 0 0 10px var(--neon-green); }
 
         .auth-box { width: 90%; max-width: 420px; padding: 2.5rem; border-radius: var(--radius-xl); text-align: center; border: 1px solid var(--neon-blue); }
@@ -155,7 +135,15 @@
         /* Center: Multi-Tab Area */
         .panel-center { flex: 1; min-width: 0; position: relative; }
         
-        /* 스크롤 가능한 탭 메뉴 (모바일 대응) */
+        /* 🐛 [버그 수정] 가운데만 어두워지게 만들기 위해 mobile-overlay를 센터 패널 내부에 절대위치로 배치 */
+        .mobile-overlay { 
+            position: absolute; top:0; left:0; right:0; bottom:0; 
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            z-index: 50; /* 사이드바나 헤더보다 아래, 컨텐츠보다 위 */
+            display: none; opacity: 0; transition: opacity 0.3s ease; 
+        }
+        .mobile-overlay.active { display: block; opacity: 1; }
+
         .nav-tabs-wrapper { background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border-light); overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
         .nav-tabs { display: flex; min-width: max-content; }
         .tab-btn { padding: 1.2rem 1rem; background: none; border: none; color: var(--text-muted); font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; }
@@ -177,7 +165,7 @@
         .chat-msg.me .msg-bubble { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(0,243,255,0.1)); border-color: rgba(0,243,255,0.3); border-radius: 16px 0 16px 16px; box-shadow: 0 5px 15px rgba(0,243,255,0.1); }
         .msg-sys { align-self: center; background: rgba(255, 215, 0, 0.1); border: 1px solid var(--dev-color); color: var(--dev-color); padding: 0.6rem 1.5rem; border-radius: 30px; font-size: 0.85rem; font-weight: bold; max-width: 90%; text-align: center; box-shadow: 0 0 15px rgba(255,215,0,0.1); }
 
-        .chat-input-area { padding: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border-light); display: flex; gap: 10px; }
+        .chat-input-area { padding: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border-light); display: flex; gap: 10px; z-index: 10; }
         .chat-input-area input { flex: 1; padding: 1rem 1.2rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; font-size: 1rem; outline: none; transition: 0.3s; }
         .chat-input-area input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.2); }
         .btn-circle { width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.1); color: white; font-size: 1.2rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -195,7 +183,18 @@
         .bot-icon { color: var(--success); font-size: 1.5rem; animation: spin 4s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* [Tab 3: Shop & Titles] */
+        /* [Tab 3: Trade / Exchange (신규)] */
+        .trade-wrapper { padding: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center; overflow-y: auto; }
+        .coin-box { background: rgba(0,0,0,0.5); border: 1px solid var(--dev-color); border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 0 20px rgba(255,215,0,0.1); }
+        .coin-price { font-size: 2.5rem; font-family: var(--font-mono); font-weight: 900; color: var(--dev-color); margin: 15px 0; transition: 0.3s; }
+        .coin-price.up { color: var(--success); text-shadow: 0 0 10px var(--success); }
+        .coin-price.down { color: var(--danger); text-shadow: 0 0 10px var(--danger); }
+        .trade-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .trade-actions button { flex: 1; padding: 1rem; font-size: 1.1rem; border-radius: var(--radius-sm); border: none; font-weight: bold; cursor: pointer; }
+        .btn-buy { background: var(--success); color: black; }
+        .btn-sell { background: var(--danger); color: white; }
+
+        /* [Tab 4: Shop] */
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; padding: 1.5rem; overflow-y: auto; }
         .shop-item { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.5rem; text-align: center; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
         .shop-item:hover { border-color: var(--neon-purple); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(188,19,254,0.2); }
@@ -203,14 +202,14 @@
         .shop-price { color: var(--dev-color); font-weight: 900; font-size: 1.1rem; margin: 10px 0; font-family: var(--font-mono); }
         .shop-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
 
-        /* [Tab 4: Quests] */
+        /* [Tab 5: Quests] */
         .quest-list { padding: 1.5rem; overflow-y: auto; }
         .quest-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
         .quest-info h4 { margin-bottom: 5px; color: var(--neon-blue); }
         .quest-info p { font-size: 0.85rem; color: var(--text-muted); }
         .quest-reward { color: var(--dev-color); font-weight: bold; font-family: var(--font-mono); }
 
-        /* [Tab 5: System Logs] */
+        /* [Tab 6: System Logs] */
         .log-container { flex: 1; background: #000; padding: 1rem; overflow-y: auto; font-family: var(--font-mono); font-size: 0.85rem; color: #a0a0a0; }
         .log-entry { margin-bottom: 6px; border-bottom: 1px dashed #333; padding-bottom: 6px; }
         .log-time { color: var(--neon-blue); }
@@ -249,26 +248,15 @@
         .dev-btn.danger:hover { background: var(--danger); color: white; box-shadow: 0 5px 15px rgba(255,23,68,0.4); }
 
         /* =========================================================
-           [5] RESPONSIVE & BUG FIXES (MOBILE OVERLAY FIX)
+           [5] RESPONSIVE (사이드바 z-index 및 렌더링 최적화)
            ========================================================= */
         @media (max-width: 1024px) {
             #screen-main { flex-direction: column; padding: 0; gap: 0; }
-            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); z-index: 50; }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); z-index: 100; position: relative; }
             
-            /* [버그 수정됨] 모바일에서 패널을 띄울 때 배경을 덮는 오버레이.
-               backdrop-filter를 제거하고 확실한 z-index 계층 분리를 통해 하얗게 뜨거나 가려지는 현상 완벽 해결 */
-            .mobile-overlay { 
-                position: fixed; top:0; left:0; right:0; bottom:0; 
-                background: rgba(0,0,0,0.85); 
-                z-index: 9990; 
-                display: none; opacity: 0; 
-                transition: opacity 0.3s ease; 
-            }
-            .mobile-overlay.active { display: block; opacity: 1; }
-
             .panel-left, .panel-right { 
-                position: fixed; top: 0; height: 100vh; 
-                z-index: 9999; /* 오버레이보다 항상 위 */
+                position: fixed; top: 0; bottom: 0; height: 100vh; 
+                z-index: 1000; /* 오버레이보다 무조건 위! */
                 background: rgba(12, 14, 20, 0.98); 
                 transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             }
@@ -282,10 +270,10 @@
         /* =========================================================
            [6] MODALS & TOASTS
            ========================================================= */
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition); }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-overlay-global { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition); }
+        .modal-overlay-global.active { opacity: 1; pointer-events: all; }
         .modal-content { width: 90%; max-width: 420px; background: var(--bg-panel-solid); border: 1px solid var(--neon-blue); border-radius: var(--radius-xl); padding: 2rem; transform: scale(0.9) translateY(20px); transition: var(--transition); box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,243,255,0.1); }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+        .modal-overlay-global.active .modal-content { transform: scale(1) translateY(0); }
         .modal-header { font-size: 1.3rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--neon-blue); text-transform: uppercase; }
         
         .form-control { width: 100%; padding: 1.2rem; background: rgba(0,0,0,0.5); border: 1px solid var(--border-light); color: white; border-radius: var(--radius-md); margin-bottom: 1rem; font-size: 1.05rem; outline:none; transition: 0.3s; }
@@ -313,7 +301,7 @@
         <div class="orb orb-2"></div>
     </div>
 
-    <!-- [SCREEN 0] EPIC BOOT SEQUENCE -->
+    <!-- [SCREEN 0] EPIC BOOT SEQUENCE (길어진 버전) -->
     <div id="screen-boot" class="screen active">
         <div id="boot-text"></div>
         <div class="progress-bar-wrap" id="boot-progress-wrap">
@@ -326,7 +314,7 @@
         <div class="glass auth-box">
             <i class="fa-solid fa-shield-virus auth-logo"></i>
             <h1 class="auth-title">System Auth</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem; font-family: var(--font-mono);">Awaiting admin clearance code...</p>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-family: var(--font-mono);">Awaiting clearance code...</p>
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
                 <input type="password" id="inp-pw" class="input-field" placeholder="Enter Security Key" autocomplete="off">
@@ -342,10 +330,11 @@
         <div class="glass auth-box" style="border-color: var(--neon-purple);">
             <i class="fa-brands fa-space-awesome auth-logo" style="color: var(--neon-purple); filter: drop-shadow(0 0 15px var(--neon-purple));"></i>
             <h1 class="auth-title" style="background: linear-gradient(to right, var(--neon-purple), var(--neon-pink)); -webkit-background-clip: text;">Identity</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">신규 유저는 자동으로 [개발자 서버]에 배정됩니다.</p>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">신규 접속자는 자동으로 메인 채널에 등록됩니다.</p>
             <div class="input-group">
                 <i class="fa-solid fa-user-astronaut" style="color: var(--neon-purple);"></i>
-                <input type="text" id="inp-name" class="input-field" placeholder="닉네임 (endvip = ROOT)" autocomplete="off" maxlength="12">
+                <!-- 힌트 문구 지움 -->
+                <input type="text" id="inp-name" class="input-field" placeholder="닉네임 입력..." autocomplete="off" maxlength="15">
             </div>
             <button class="btn" style="width: 100%; background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));" onclick="App.Auth.login()">
                 CONNECT TO NEXUS <i class="fa-solid fa-satellite-dish"></i>
@@ -353,14 +342,12 @@
         </div>
     </div>
 
-    <!-- [SCREEN 3] MEGA DASHBOARD V3 -->
-    <div class="mobile-overlay" id="mobile-overlay" onclick="App.UI.closePanels()"></div>
-    
+    <!-- [SCREEN 3] MEGA DASHBOARD V3.5 -->
     <div id="screen-main" class="screen">
         <!-- Mobile Header -->
         <div class="mobile-header">
             <button class="btn-circle" onclick="App.UI.toggleLeft()" style="width:40px; height:40px; font-size: 1rem;"><i class="fa-solid fa-server"></i></button>
-            <h2 style="font-size: 1.1rem; font-weight: 900; margin: 0; font-family: var(--font-mono); color: var(--neon-blue);">NEXUS_CORE V3</h2>
+            <h2 style="font-size: 1.1rem; font-weight: 900; margin: 0; font-family: var(--font-mono); color: var(--neon-blue);">NEXUS_CORE V3.5</h2>
             <button class="btn-circle" onclick="App.UI.toggleRight()" style="width:40px; height:40px; font-size: 1rem;"><i class="fa-solid fa-user-shield"></i></button>
         </div>
 
@@ -368,22 +355,27 @@
         <div class="glass layout-panel panel-left" id="panel-left">
             <div class="server-header">
                 <div class="server-tag"><i class="fa-solid fa-globe"></i> 접속된 채널</div>
-                <h3 style="font-size: 1.1rem; font-weight: 900;">[서버-1] 개발자 메인 룸</h3>
-                <p style="font-size: 0.8rem; color: var(--success); margin-top: 5px;"><i class="fa-solid fa-signal"></i> Ping: 8ms (최적화됨)</p>
+                <h3 style="font-size: 1.1rem; font-weight: 900;">[서버-1] 메인 라운지</h3>
+                <p style="font-size: 0.8rem; color: var(--success); margin-top: 5px;"><i class="fa-solid fa-signal"></i> Ping: 5ms (최적화됨)</p>
             </div>
             <ul class="user-list" id="list-users"></ul>
         </div>
 
         <!-- CENTER PANEL: Multi-Tabs -->
         <div class="glass layout-panel panel-center">
+            
+            <!-- 🐛 버그 수정된 오버레이: 패널 정중앙 영역만 커버함 -->
+            <div class="mobile-overlay" id="mobile-overlay" onclick="App.UI.closePanels()"></div>
+
             <!-- Scrollable Nav Tabs -->
             <div class="nav-tabs-wrapper">
                 <div class="nav-tabs">
                     <button class="tab-btn active" onclick="App.UI.switchTab('tab-chat', this)"><i class="fa-solid fa-message"></i> 채널 통신</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-game', this)"><i class="fa-solid fa-gem"></i> 코어 마이닝</button>
+                    <button class="tab-btn" onclick="App.UI.switchTab('tab-trade', this)"><i class="fa-solid fa-chart-line"></i> 가상 거래소</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-shop', this)"><i class="fa-solid fa-store"></i> 암시장 상점</button>
-                    <button class="tab-btn" onclick="App.UI.switchTab('tab-quest', this)"><i class="fa-solid fa-list-check"></i> 일일 임무</button>
-                    <button class="tab-btn" id="tab-log-btn" style="display:none;" onclick="App.UI.switchTab('tab-logs', this)"><i class="fa-solid fa-terminal"></i> 터미널 로그</button>
+                    <button class="tab-btn" onclick="App.UI.switchTab('tab-quest', this)"><i class="fa-solid fa-list-check"></i> 퀘스트</button>
+                    <button class="tab-btn" id="tab-log-btn" style="display:none;" onclick="App.UI.switchTab('tab-logs', this)"><i class="fa-solid fa-terminal"></i> 서버 로그</button>
                 </div>
             </div>
 
@@ -391,7 +383,7 @@
             <div id="tab-chat" class="tab-content active">
                 <div class="chat-messages" id="chat-box"></div>
                 <div class="chat-input-area">
-                    <button class="btn-circle" onclick="App.UI.toast('기능 준비 중입니다.', 'info')"><i class="fa-solid fa-paperclip"></i></button>
+                    <button class="btn-circle" onclick="App.UI.toast('파일 업로드는 상점 해금 필요', 'info')"><i class="fa-solid fa-paperclip"></i></button>
                     <input type="text" id="inp-chat" placeholder="메시지 입력... (/help)" autocomplete="off">
                     <button class="btn-circle" style="background: var(--neon-blue); color: #000;" onclick="App.Chat.send()"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
@@ -412,7 +404,29 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Shop -->
+            <!-- Tab 3: Trade / Exchange (신규 가상화폐 기능) -->
+            <div id="tab-trade" class="tab-content">
+                <div class="trade-wrapper">
+                    <h2 style="color: var(--neon-purple); margin-bottom: 10px;"><i class="fa-brands fa-bitcoin"></i> NEXUS COIN 거래소</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">시세는 5초마다 실시간으로 변동됩니다. 쌀 때 사서 비쌀 때 파세요!</p>
+                    
+                    <div class="coin-box">
+                        <div style="font-size: 0.9rem; color: #aaa; text-transform: uppercase;">현재 시세 (1 COIN)</div>
+                        <div class="coin-price" id="trade-price">1,000 C</div>
+                        
+                        <div style="margin-top: 20px; font-size: 1.1rem;">
+                            보유 코인: <strong id="trade-owned" style="color: var(--neon-blue);">0</strong> 개
+                        </div>
+                        
+                        <div class="trade-actions">
+                            <button class="btn-buy" onclick="App.Trade.buy()">1개 매수</button>
+                            <button class="btn-sell" onclick="App.Trade.sell()">1개 매도</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Shop -->
             <div id="tab-shop" class="tab-content">
                 <div class="shop-grid">
                     <div class="shop-item">
@@ -436,17 +450,24 @@
                         <div class="shop-price">300,000 C</div>
                         <button class="btn btn-cyber" style="padding: 0.8rem; font-size: 0.85rem;" onclick="App.Shop.buy('level_jump', 300000)">구매하기</button>
                     </div>
+                    <div class="shop-item">
+                        <i class="fa-solid fa-building-columns shop-icon" style="color: var(--neon-blue);"></i>
+                        <h3>스위스 은행 계좌</h3>
+                        <p class="shop-desc">접속 중일 때 30초마다 보유 크레딧의 1% 이자가 붙습니다!</p>
+                        <div class="shop-price">1,000,000 C</div>
+                        <button class="btn btn-cyber" style="padding: 0.8rem; font-size: 0.85rem;" onclick="App.Shop.buy('bank', 1000000)">구매하기</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Tab 4: Quests -->
+            <!-- Tab 5: Quests -->
             <div id="tab-quest" class="tab-content">
                 <div class="quest-list" id="quest-container">
                     <!-- JS Injected -->
                 </div>
             </div>
 
-            <!-- Tab 5: System Logs (Dev Only) -->
+            <!-- Tab 6: System Logs (Dev Only) -->
             <div id="tab-logs" class="tab-content log-container">
                 <div style="color: var(--danger); font-weight: bold; margin-bottom: 15px;">[ROOT TERMINAL] AUDIT LOGS...</div>
                 <div id="log-list"></div>
@@ -487,20 +508,19 @@
                 </button>
             </div>
 
-            <!-- THE MEGA DEVELOPER PANEL V3 -->
+            <!-- THE MEGA DEVELOPER PANEL -->
             <div class="dev-panel" id="dev-panel">
                 <div class="dev-title"><i class="fa-solid fa-wand-magic-sparkles"></i> ROOT 마스터 패널</div>
                 
-                <div class="dev-group-title">1. 유저/자산 제어</div>
+                <div class="dev-group-title">1. 자산 제어</div>
                 <div class="dev-grid">
-                    <button class="dev-btn" onclick="App.Modal.open('giveScore')"><i class="fa-solid fa-coins"></i> 크레딧 지급</button>
-                    <button class="dev-btn" onclick="App.Modal.open('takeScore')"><i class="fa-solid fa-hand-holding-dollar"></i> 크레딧 몰수</button>
-                    <button class="dev-btn" onclick="App.Modal.open('giveExp')"><i class="fa-solid fa-arrow-trend-up"></i> 경험치 어뷰징</button>
+                    <button class="dev-btn" onclick="App.Modal.open('giveScore')"><i class="fa-solid fa-coins"></i> 크레딧 에딧</button>
+                    <button class="dev-btn" onclick="App.Modal.open('giveExp')"><i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작</button>
                 </div>
 
                 <div class="dev-group-title">2. 서버 폭파 & 보안</div>
                 <div class="dev-grid">
-                    <button class="dev-btn" onclick="App.Modal.open('promoteDev')"><i class="fa-solid fa-user-tie"></i> 관리자 승격</button>
+                    <button class="dev-btn" onclick="App.Modal.open('promoteDev')"><i class="fa-solid fa-user-tie"></i> 관리자 임명</button>
                     <button class="dev-btn danger" onclick="App.Modal.open('demoteDev')"><i class="fa-solid fa-user-slash"></i> 권한 박탈</button>
                     <button class="dev-btn danger" onclick="App.Modal.open('kickUser')"><i class="fa-solid fa-gavel"></i> 서버 강제 추방</button>
                     <button class="dev-btn danger" onclick="App.Dev.nukeServer()"><i class="fa-solid fa-radiation"></i> 서버 폭파 연출</button>
@@ -508,7 +528,7 @@
 
                 <div class="dev-group-title">3. 글로벌 시스템</div>
                 <div class="dev-grid">
-                    <button class="dev-btn" onclick="App.Modal.open('sysNotice')"><i class="fa-solid fa-bullhorn"></i> 긴급 공지 방송</button>
+                    <button class="dev-btn" onclick="App.Modal.open('sysNotice')"><i class="fa-solid fa-bullhorn"></i> 긴급 방송</button>
                     <button class="dev-btn" onclick="App.Dev.freezeChat()"><i class="fa-solid fa-snowflake"></i> 채팅방 얼리기</button>
                     <button class="dev-btn" onclick="App.Modal.open('changePw')"><i class="fa-solid fa-key"></i> 서버 암호 변경</button>
                     <button class="dev-btn" onclick="App.Dev.wipeDB()"><i class="fa-solid fa-skull"></i> DB 공장 초기화</button>
@@ -518,7 +538,7 @@
     </div>
 
     <!-- [GLOBAL MODAL] -->
-    <div class="modal-overlay" id="global-modal">
+    <div class="modal-overlay-global" id="global-modal">
         <div class="modal-content">
             <div class="modal-header" id="modal-title">TITLE</div>
             <div id="modal-body"></div>
@@ -534,11 +554,11 @@
 
     <script>
         /**
-         * MegaDB V3
+         * MegaDB (V3 유지 - 기존 유저 데이터 보존)
          */
         class MegaDB {
             constructor() {
-                this.dbName = 'AndPlayZone_Ultimate_V3';
+                this.dbName = 'AndPlayZone_Ultimate_V3'; // ★ 이전 코드와 동일하게 유지하여 데이터 복구 완벽 보장
                 this.init();
             }
             init() {
@@ -547,9 +567,9 @@
             }
             reset() {
                 this.save({
-                    password: 'robuxlike', // [요청 반영] 기본 암호 robuxlike 적용
+                    password: 'robuxlike', 
                     chatFrozen: false,
-                    users: [], // {name, role, score, level, exp, title, status, miners}
+                    users: [], // {name, role, score, level, exp, title, status, miners, coins, hasBank}
                     chats: [],
                     logs: []
                 });
@@ -568,22 +588,30 @@
         const db = new MegaDB();
 
         /**
-         * Main Application Object V3
+         * Main Application Object V3.5
          */
         const App = {
             user: null,
             autoMinerInterval: null,
+            tradeInterval: null,
+            bankInterval: null,
 
-            // [1. Epic Boot Sequence] - 초록색 해킹 로딩 업그레이드
+            // [1. Epic Boot Sequence] - 로딩 텍스트를 더 늘리고 지연 시간을 늘림
             Boot: {
                 start: () => {
                     const lines = [
                         "[SYS] INITIALIZING KERNEL MODULES...",
-                        "[SEC] BYPASSING FIREWALL: OK",
-                        "[DB] CONNECTING TO NEXUS V3...",
-                        "RESOLVING IP: 192.168.0.???",
-                        "ENCRYPTING CONNECTION STRINGS...",
-                        "WELCOME."
+                        "[SYS] ALLOCATING MEMORY BLOCKS [OK]",
+                        "[SEC] INITIATING FIREWALL BYPASS PROTOCOL...",
+                        "[SEC] FIREWALL BREACHED. ROOT ACCESS GRANTED.",
+                        "[DB] CONNECTING TO NEXUS CORE V3.5...",
+                        "[DB] SYNCHRONIZING USER DATA ARCHIVES...",
+                        "[NET] RESOLVING IP: 192.168.0.???",
+                        "[NET] ESTABLISHING ENCRYPTED TUNNEL (AES-256)...",
+                        "[SYS] DOWNLOADING GRAPHICAL ASSETS...",
+                        "[SYS] COMPILING SHADERS...",
+                        "----------------------------------------",
+                        "WELCOME TO AND_PLAY_ZONE_V3.5_EXPANSION."
                     ];
                     const container = document.getElementById('boot-text');
                     const barWrap = document.getElementById('boot-progress-wrap');
@@ -597,24 +625,25 @@
                             p.innerHTML = `> ${lines[i]}<span class="cursor-blink">_</span>`;
                             container.appendChild(p);
                             i++;
+                            // 타이핑 속도 조금 더 느리게 조절 (랜덤 150~350ms)
                             setTimeout(typeLine, Math.random() * 200 + 150);
                         } else {
                             barWrap.style.display = 'block';
                             let prog = 0;
                             let intv = setInterval(() => {
-                                prog += Math.random() * 15;
+                                prog += Math.random() * 12;
                                 if(prog >= 100) { prog = 100; clearInterval(intv); }
                                 barFill.style.width = prog + '%';
                                 if(prog === 100) {
                                     setTimeout(() => {
                                         document.getElementById('screen-boot').classList.remove('active');
                                         document.getElementById('screen-pw').classList.add('active');
-                                    }, 500);
+                                    }, 600);
                                 }
-                            }, 50);
+                            }, 60);
                         }
                     };
-                    setTimeout(typeLine, 300);
+                    setTimeout(typeLine, 400);
                 }
             },
 
@@ -636,12 +665,12 @@
 
                     let data = db.get();
                     
-                    // Easter Egg
+                    // Easter Egg: endvip 로 로그인 시 루트 권한
                     if (name.toLowerCase() === 'endvip') {
                         name = '👑 최고 개발자 (Root)';
                         let exist = data.users.find(u => u.name === name);
                         if (!exist) {
-                            data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, title: '창조주', status: 'God Mode', miners: 0 });
+                            data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, title: '창조주', status: 'God Mode', miners: 0, coins: 0, hasBank: false });
                             db.log('NEW_DEV_SPAWN', 'CRITICAL', 'endvip triggered.');
                         }
                         App.UI.toast("🛠️ 루트 권한 획득 성공.", "info");
@@ -649,11 +678,15 @@
 
                     let userData = data.users.find(u => u.name === name);
                     if (!userData) {
-                        userData = { name, role: 'user', score: 0, level: 1, exp: 0, title: '초보자', status: '접속함', miners: 0 };
+                        userData = { name, role: 'user', score: 0, level: 1, exp: 0, title: '초보자', status: '접속함', miners: 0, coins: 0, hasBank: false };
                         data.users.push(userData);
                         db.log('USER_JOIN', 'INFO', `New user: ${name}`);
                         data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `[+] <b>${name}</b> 님이 시스템에 합류했습니다!` });
                     }
+
+                    // V3 -> V3.5 스키마 마이그레이션 (기존 유저 동기화용)
+                    if(userData.coins === undefined) userData.coins = 0;
+                    if(userData.hasBank === undefined) userData.hasBank = false;
 
                     db.save(data);
                     App.user = userData;
@@ -667,6 +700,8 @@
                 logout: () => {
                     db.log('USER_LOGOUT', 'INFO', `${App.user.name} out.`);
                     if(App.autoMinerInterval) clearInterval(App.autoMinerInterval);
+                    if(App.tradeInterval) clearInterval(App.tradeInterval);
+                    if(App.bankInterval) clearInterval(App.bankInterval);
                     App.user = null;
                     document.getElementById('inp-name').value = '';
                     document.getElementById('screen-main').classList.remove('active');
@@ -703,15 +738,32 @@
                         document.getElementById('miner-status').style.display = 'flex';
                         document.getElementById('miner-count').innerText = App.user.miners;
                         App.autoMinerInterval = setInterval(() => {
-                            let earn = App.user.miners * 50; // 봇 1대당 50크레딧 (5초마다)
+                            let earn = App.user.miners * 50; 
                             let data = db.get();
                             let me = data.users.find(u => u.name === App.user.name);
                             me.score += earn;
                             db.save(data);
                             App.user.score = me.score;
                             App.UI.renderProfile();
-                            App.UI.toast(`🤖 오토 봇이 ${earn} C 를 채굴했습니다.`, 'success');
                         }, 5000);
+                    }
+                },
+                startBank: () => {
+                    if(App.bankInterval) clearInterval(App.bankInterval);
+                    if(App.user.hasBank) {
+                        App.bankInterval = setInterval(() => {
+                            if(App.user.score > 0) {
+                                let interest = Math.floor(App.user.score * 0.01); // 1% 이자
+                                if(interest < 1) interest = 1;
+                                let data = db.get();
+                                let me = data.users.find(u => u.name === App.user.name);
+                                me.score += interest;
+                                db.save(data);
+                                App.user.score = me.score;
+                                App.UI.renderProfile();
+                                App.UI.toast(`🏦 은행 이자 발생: +${interest.toLocaleString()} C`, 'success');
+                            }
+                        }, 30000); // 30초마다 이자 발생
                     }
                 }
             },
@@ -740,23 +792,84 @@
                 }
             },
 
+            // [3.5 신규 기능: 가상 화폐 거래소]
+            Trade: {
+                currentPrice: 1000,
+                startMarket: () => {
+                    if(App.tradeInterval) clearInterval(App.tradeInterval);
+                    document.getElementById('trade-owned').innerText = App.user.coins || 0;
+                    
+                    App.tradeInterval = setInterval(() => {
+                        let change = Math.floor(Math.random() * 300) - 150; // -150 ~ +150 변동
+                        App.Trade.currentPrice += change;
+                        if(App.Trade.currentPrice < 10) App.Trade.currentPrice = 10; // 최소가 방어
+                        
+                        const el = document.getElementById('trade-price');
+                        el.innerText = App.Trade.currentPrice.toLocaleString() + ' C';
+                        
+                        if(change > 0) {
+                            el.className = 'coin-price up';
+                            el.innerText = '▲ ' + el.innerText;
+                        } else {
+                            el.className = 'coin-price down';
+                            el.innerText = '▼ ' + el.innerText;
+                        }
+                    }, 5000);
+                },
+                buy: () => {
+                    let data = db.get();
+                    let me = data.users.find(u => u.name === App.user.name);
+                    if(me.score < App.Trade.currentPrice) return App.UI.toast("크레딧이 부족합니다.", "error");
+                    
+                    me.score -= App.Trade.currentPrice;
+                    me.coins = (me.coins || 0) + 1;
+                    
+                    db.save(data);
+                    App.user = me;
+                    App.UI.renderProfile();
+                    document.getElementById('trade-owned').innerText = me.coins;
+                    App.UI.toast(`1 COIN 매수 완료.`, "success");
+                },
+                sell: () => {
+                    let data = db.get();
+                    let me = data.users.find(u => u.name === App.user.name);
+                    if((me.coins || 0) < 1) return App.UI.toast("보유한 코인이 없습니다.", "error");
+                    
+                    me.score += App.Trade.currentPrice;
+                    me.coins -= 1;
+                    
+                    db.save(data);
+                    App.user = me;
+                    App.UI.renderProfile();
+                    document.getElementById('trade-owned').innerText = me.coins;
+                    App.UI.toast(`1 COIN 매도 완료. 수익 획득!`, "success");
+                }
+            },
+
             Shop: {
                 buy: (itemId, price) => {
                     let data = db.get();
                     let me = data.users.find(u => u.name === App.user.name);
                     if(me.score < price) return App.UI.toast("크레딧이 부족합니다.", "error");
 
+                    if(itemId === 'bank' && me.hasBank) return App.UI.toast("이미 은행 계좌를 보유하고 있습니다.", "error");
+
                     me.score -= price;
                     
                     if(itemId === 'bot') {
                         me.miners = (me.miners || 0) + 1;
-                        App.UI.toast("🤖 오토 채굴 봇을 구매했습니다!", "success");
+                        App.UI.toast("🤖 오토 봇 누적 가동!", "success");
+                        App.Logic.startAutoMiner();
                     } else if(itemId === 'title_hacker') {
                         me.title = '해커';
-                        App.UI.toast("🥷 칭호가 [해커]로 변경되었습니다.", "success");
+                        App.UI.toast("🥷 칭호 장착 완료", "success");
                     } else if(itemId === 'level_jump') {
                         me.level += 5;
-                        App.UI.toast("🚀 레벨이 5 상승했습니다!", "success");
+                        App.UI.toast("🚀 5레벨 점핑 성공!", "success");
+                    } else if(itemId === 'bank') {
+                        me.hasBank = true;
+                        App.UI.toast("🏦 스위스 은행 계좌 개설! 이자가 지급됩니다.", "success");
+                        App.Logic.startBank();
                     }
                     
                     db.save(data);
@@ -798,13 +911,13 @@
                     const text = inp.value.trim();
                     if (!text) return;
                     
-                    if (text === '/help') { App.UI.toast("명령어: /clear (화면 지우기)"); inp.value=''; return; }
+                    if (text === '/help') { App.UI.toast("명령어: /clear (채팅 지우기)"); inp.value=''; return; }
                     if (text === '/clear') { document.getElementById('chat-box').innerHTML = ''; inp.value=''; return; }
 
                     const newMsg = { sender: App.user.name, type: 'text', content: text, time: App.Utils.time() };
                     let data = db.get();
                     data.chats.push(newMsg);
-                    if(data.chats.length > 150) data.chats.shift();
+                    if(data.chats.length > 200) data.chats.shift(); // 채팅 히스토리 용량 확장
                     db.save(data);
                     
                     App.Chat.renderAll();
@@ -907,15 +1020,15 @@
                         </div>
                         <div class="quest-item">
                             <div class="quest-info">
-                                <h4>커뮤니케이터</h4><p>채널 통신에서 메시지 입력하여 경험치 획득</p>
+                                <h4>자본주의의 노예</h4><p>NEXUS COIN 거래소에서 매수/매도 1회 완료하기</p>
                             </div>
-                            <div class="quest-reward">+50 EXP</div>
+                            <div class="quest-reward">+10,000 C</div>
                         </div>
                         <div class="quest-item">
                             <div class="quest-info">
-                                <h4>자본주의 맛</h4><p>오토 채굴 봇 1대 구매하기</p>
+                                <h4>은행장</h4><p>스위스 은행 계좌 개설 (상점)</p>
                             </div>
-                            <div class="quest-reward">칭호 보상</div>
+                            <div class="quest-reward">칭호 [VVIP]</div>
                         </div>
                     `;
                 }
@@ -951,12 +1064,12 @@
                 },
                 nukeServer: () => {
                     let data = db.get();
-                    data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b>경고: 서버 핵융합 시스템 폭주. 5초 뒤 서버 폭파!</b> ☢️` });
+                    data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b>경고: 서버 코어 융합 시스템 폭주. 5초 뒤 서버 폭파!</b> ☢️` });
                     db.save(data); App.Chat.renderAll();
                     setTimeout(() => {
                         document.body.style.animation = 'blink 0.1s infinite';
                         document.body.style.filter = 'invert(1)';
-                        setTimeout(() => alert("서버가 증발했습니다. (연출 끝)"), 2000);
+                        setTimeout(() => alert("서버 멸망 (연출 끝)"), 2000);
                         setTimeout(() => { document.body.style.animation=''; document.body.style.filter=''; }, 2500);
                     }, 3000);
                 }
@@ -976,7 +1089,7 @@
                     };
 
                     if(type === 'status') {
-                        title.innerText = '상태 메시지'; body.innerHTML = `<input type="text" id="m-val" class="form-control" maxlength="20">`;
+                        title.innerText = '상태 메시지 수정'; body.innerHTML = `<input type="text" id="m-val" class="form-control" maxlength="20">`;
                         btn.onclick = () => {
                             let data = db.get(); let me = data.users.find(u=>u.name === App.user.name);
                             me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status;
@@ -990,13 +1103,13 @@
                         let mode = type === 'promoteDev' ? 'promote' : type === 'demoteDev' ? 'demote' : 'kick';
                         btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode);
                     } else if(type === 'sysNotice') {
-                        title.innerText = '공지 방송'; body.innerHTML = `<textarea id="m-val" class="form-control" style="height:80px;"></textarea>`;
+                        title.innerText = '전체 공지'; body.innerHTML = `<textarea id="m-val" class="form-control" style="height:80px;"></textarea>`;
                         btn.onclick = () => {
                             let data = db.get(); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `📢 <b>공지</b>: ${document.getElementById('m-val').value}` });
                             db.save(data); App.Chat.renderAll(); App.Modal.close();
                         };
                     } else if(type === 'changePw') {
-                        title.innerText = '서버 접속 암호 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control">`;
+                        title.innerText = '암호 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control">`;
                         btn.onclick = () => { let data = db.get(); data.password = document.getElementById('m-val').value; db.save(data); App.Modal.close(); App.UI.toast('암호 변경됨'); };
                     }
                     overlay.classList.add('active');
@@ -1015,7 +1128,10 @@
                 App.UI.renderLogs();
                 App.UI.renderQuests();
                 App.Chat.renderAll();
+                
                 App.Logic.startAutoMiner();
+                App.Logic.startBank();
+                App.Trade.startMarket();
             }
         };
 
