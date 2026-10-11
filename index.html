@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AndPlayZone | V3.7 (Full Features Restored)</title>
+    <title>AndPlayZone | V4.0 Next-Gen Edition</title>
     <!-- FontAwesome & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <!-- P2P 멀티플레이어 라이브러리 -->
+    <!-- P2P 멀티플레이어 -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     
     <style>
@@ -40,7 +40,6 @@
 
         html { font-size: calc(16px * var(--base-scale)); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body { background-color: var(--bg-deep); color: #f8fafc; height: 100dvh; width: 100vw; overflow: hidden; }
 
         /* 커스텀 스크롤바 */
@@ -52,7 +51,7 @@
         .bg-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #1a1c29 0%, #050608 100%); }
 
         /* =========================================================
-           [2] COMPONENTS & SCREENS
+           [2] UTILITIES & SCREENS
            ========================================================= */
         .glass { background: var(--bg-panel); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-light); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
 
@@ -62,6 +61,8 @@
         .btn { padding: 1rem 1.5rem; border: none; border-radius: var(--radius-md); font-weight: 800; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden; font-size: 1rem; transition: 0.3s; }
         .btn-cyber { background: linear-gradient(135deg, var(--neon-blue), var(--primary)); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); text-transform: uppercase; }
         .btn-cyber:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 243, 255, 0.6); }
+        .btn-casino { background: linear-gradient(135deg, #ff00a0, #7928ca); box-shadow: 0 0 15px rgba(255, 0, 160, 0.3); text-transform: uppercase; }
+        .btn-casino:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(255, 0, 160, 0.6); }
         
         .input-group { position: relative; width: 100%; margin-bottom: 1.5rem; }
         .input-group i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--neon-blue); font-size: 1.2rem; }
@@ -75,36 +76,29 @@
         .term-line { font-size: 1.1rem; margin-bottom: 8px; text-shadow: 0 0 5px var(--neon-green); }
         .cursor-blink { animation: blink 1s step-end infinite; background: var(--neon-green); color: black; padding: 0 5px; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        .auth-box { width: 90%; max-width: 400px; padding: 2.5rem; border-radius: var(--radius-lg); text-align: center; border: 1px solid var(--neon-blue); }
-        .auth-title { font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .progress-bar-wrap { width: 100%; max-width: 500px; height: 20px; border: 1px solid var(--neon-green); margin-top: 20px; padding: 2px; display: none; }
         .progress-bar-fill { height: 100%; background: var(--neon-green); width: 0%; transition: 0.1s linear; }
 
+        .auth-box { width: 90%; max-width: 400px; padding: 2.5rem; border-radius: var(--radius-lg); text-align: center; border: 1px solid var(--neon-blue); }
+        .auth-title { font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
         /* =========================================================
-           [4] MEGA DASHBOARD (🔥 GRID SYSTEM: 완벽한 반응형 & 찌그러짐 방지)
+           [4] MEGA DASHBOARD (GRID SYSTEM 유지)
            ========================================================= */
         #screen-main { display: none; height: 100dvh; width: 100vw; background: var(--bg-deep); }
-        
         @media (min-width: 1025px) {
-            #screen-main.active { 
-                display: grid; 
-                grid-template-columns: 280px minmax(350px, 1fr) 340px; 
-                grid-template-rows: 100%; 
-                padding: 1rem; gap: 1rem; box-sizing: border-box; 
-            }
+            #screen-main.active { display: grid; grid-template-columns: 280px minmax(350px, 1fr) 340px; grid-template-rows: 100%; padding: 1rem; gap: 1rem; box-sizing: border-box; }
             .mobile-header { display: none !important; }
         }
 
-        .layout-panel { 
-            background: var(--bg-panel); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--border-light); border-radius: var(--radius-lg); 
-            display: flex; flex-direction: column; overflow: hidden; height: 100%; 
-        }
-
-        /* 공통 패널 UI */
+        .layout-panel { background: var(--bg-panel); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-light); border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; height: 100%; }
+        
         .server-header { padding: 1.2rem; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
         .server-tag { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        
+        /* 런타임 시계 HUD */
+        .hud-clock { font-family: var(--font-mono); font-size: 0.85rem; color: var(--success); margin-top: 5px; }
+
         .user-list { list-style: none; overflow-y: auto; flex: 1; padding: 1rem; margin: 0; }
         .user-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--radius-md); margin-bottom: 8px; background: rgba(255,255,255,0.02); }
         .user-item.dev { border: 1px solid rgba(255, 215, 0, 0.3); background: rgba(255, 215, 0, 0.05); }
@@ -114,7 +108,7 @@
         .user-info { flex: 1; overflow: hidden; }
         .user-name-txt { font-weight: 800; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 4px; align-items: center; }
 
-        /* 중앙 탭 및 네비게이션 */
+        /* 중앙 패널 & 탭 */
         .panel-center { flex: 1; min-width: 0; position: relative; }
         .nav-tabs-wrapper { background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border-light); overflow-x: auto; flex-shrink: 0; }
         .nav-tabs { display: flex; min-width: max-content; }
@@ -134,12 +128,11 @@
         .msg-bubble { background: rgba(255,255,255,0.05); border: 1px solid var(--border-light); padding: 0.8rem; border-radius: 0 15px 15px 15px; font-size: 0.95rem; word-break: break-word; }
         .chat-msg.me .msg-bubble { background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(0,243,255,0.1)); border-color: rgba(0,243,255,0.3); border-radius: 15px 0 15px 15px; }
         .msg-sys { align-self: center; background: rgba(255, 215, 0, 0.1); color: var(--dev-color); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--dev-color); }
-
         .chat-input-area { padding: 0.8rem; background: rgba(0,0,0,0.5); display: flex; gap: 8px; flex-shrink: 0; }
         .chat-input-area input { flex: 1; padding: 0.8rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); color: white; outline: none; }
         .btn-circle { width: 45px; height: 45px; border-radius: 50%; border: none; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
 
-        /* 복구된 모든 기능들의 스타일 */
+        /* 기타 탭 내용 */
         .minigame-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%); }
         .mining-core { width: 150px; height: 150px; background: url('https://cdn-icons-png.flaticon.com/512/1198/1198305.png') center/cover; filter: drop-shadow(0 0 30px var(--neon-blue)); cursor: pointer; animation: pulseCore 2s infinite; margin-bottom: 1.5rem; }
         .mining-core:active { transform: scale(0.9); }
@@ -148,25 +141,25 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
 
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; padding: 1rem; }
-        .shop-item { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1rem; text-align: center; transition: 0.3s; }
+        .shop-item { background: rgba(0,0,0,0.4); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.2rem; text-align: center; transition: 0.3s; }
         .shop-item:hover { border-color: var(--neon-purple); transform: translateY(-3px); }
         .shop-price { font-family: var(--font-mono); color: var(--dev-color); font-weight: 900; margin: 10px 0; }
 
         .trade-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
         .coin-box { background: rgba(0,0,0,0.5); border: 1px solid var(--dev-color); border-radius: var(--radius-md); padding: 2rem; width: 90%; max-width: 400px; }
-        .trade-actions { display: flex; gap: 10px; margin-top: 20px; }
-
-        .roulette-box { background: rgba(0,0,0,0.5); border: 1px solid var(--neon-purple); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; max-width: 400px; margin: auto; }
-        .roulette-icon { font-size: 4rem; color: var(--neon-purple); margin-bottom: 1.5rem; animation: spin 10s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .casino-box { background: rgba(0,0,0,0.5); border: 1px solid var(--neon-pink); border-radius: var(--radius-md); padding: 2rem; width: 90%; max-width: 400px; text-align: center; margin: auto; box-shadow: 0 0 30px rgba(255, 0, 160, 0.1); }
 
         .quest-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1rem; margin: 1rem; display: flex; justify-content: space-between; align-items: center; }
         .log-container { background: #000; padding: 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: #a0a0a0; }
-        .log-entry { border-bottom: 1px dashed #333; padding-bottom: 5px; margin-bottom: 5px; }
 
-        /* 우측 프로필 및 마스터 패널 */
+        /* 우측 프로필 */
         .profile-header { padding: 1.5rem; background: linear-gradient(180deg, rgba(99,102,241,0.15) 0%, transparent 100%); display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
-        .avatar-mega { width: 80px; height: 80px; border-radius: 20px; background: var(--bg-deep); border: 2px solid var(--neon-blue); font-size: 2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+        .avatar-mega { width: 80px; height: 80px; border-radius: 20px; background: var(--bg-deep); border: 2px solid var(--neon-blue); font-size: 2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; position: relative; }
+        
+        /* 🔥 부스터 아이콘 */
+        .booster-badge { position: absolute; top: -10px; right: -10px; font-size: 1.5rem; color: var(--neon-pink); filter: drop-shadow(0 0 10px var(--neon-pink)); display: none; animation: pulseCore 1s infinite; }
+        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 1rem; flex-shrink: 0; }
         .stat-box { background: rgba(0,0,0,0.3); padding: 0.8rem; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .exp-container { width: 100%; margin-top: 10px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 3px; position: relative; }
@@ -176,29 +169,18 @@
         .dev-panel.active { display: block; }
         .dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .dev-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,215,0,0.3); padding: 0.6rem; border-radius: var(--radius-sm); color: white; font-size: 0.8rem; cursor: pointer; text-align: center; transition: 0.3s; }
-        .dev-btn:hover { background: var(--dev-color); color: black; }
 
         /* =========================================================
-           [5] 📱 MOBILE RESPONSIVE (서랍형 구조 및 오버레이 버그 해결)
+           [5] 📱 MOBILE RESPONSIVE 
            ========================================================= */
         @media (max-width: 1024px) {
             #screen-main.active { display: flex; flex-direction: column; }
             .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); flex-shrink: 0; z-index: 100; }
-            
-            /* 패널들을 모바일용 양옆 서랍으로 분리 (z-index 최상위) */
-            .panel-left, .panel-right { 
-                position: fixed; top: 0; bottom: 0; height: 100dvh; 
-                z-index: 10000; background: rgba(12, 14, 20, 0.98); 
-                transition: transform 0.3s ease; border-radius: 0;
-            }
+            .panel-left, .panel-right { position: fixed; top: 0; bottom: 0; height: 100dvh; z-index: 10000; background: rgba(12, 14, 20, 0.98); transition: transform 0.3s ease; border-radius: 0; }
             .panel-left { left: 0; transform: translateX(-100%); width: 85%; max-width: 320px; border-right: 1px solid var(--neon-blue); }
             .panel-right { right: 0; transform: translateX(100%); width: 85%; max-width: 320px; border-left: 1px solid var(--neon-purple); }
             .panel-left.open, .panel-right.open { transform: translateX(0); }
-            
-            /* 중앙 패널은 남은 세로 공간 모두 채움 */
             .panel-center { flex: 1; border-radius: 0; border: none; height: auto; position: relative; }
-            
-            /* 🐛 오버레이 (센터 패널만 어둡게 덮음. z-index는 사이드바보다 낮게 9000 설정) */
             .mobile-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(3px); z-index: 9000; display: none; opacity: 0; transition: opacity 0.3s ease; }
             .mobile-overlay.active { display: block; opacity: 1; }
         }
@@ -217,7 +199,6 @@
         .toast.success { border-color: var(--success); }
         .toast.error { border-color: var(--danger); }
         @keyframes slideDownToast { from { opacity: 0; transform: translateY(-50px) translateX(-50%); } to { opacity: 1; transform: translateY(0) translateX(-50%); } }
-        @keyframes fadeOutToast { to { opacity: 0; transform: translateY(-20px) translateX(-50%); } }
     </style>
 </head>
 <body>
@@ -258,10 +239,9 @@
 
     <!-- MEGA DASHBOARD -->
     <div id="screen-main" class="screen">
-        <!-- Mobile Header -->
         <div class="mobile-header">
             <button class="btn-circle" onclick="App.UI.toggleLeft()" style="width:40px; height:40px;"><i class="fa-solid fa-server"></i></button>
-            <h2 style="font-size: 1.1rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-mono);">NEXUS_CORE V3.7</h2>
+            <h2 style="font-size: 1.1rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-mono);">NEXUS_CORE V4.0</h2>
             <button class="btn-circle" onclick="App.UI.toggleRight()" style="width:40px; height:40px;"><i class="fa-solid fa-user-shield"></i></button>
         </div>
 
@@ -270,39 +250,37 @@
             <div class="server-header">
                 <div class="server-tag"><i class="fa-solid fa-globe"></i> 접속된 채널</div>
                 <h3 style="font-size: 1.1rem; font-weight: 900;">[서버-1] 메인 라운지</h3>
+                <div class="hud-clock" id="server-uptime">UPTIME: 00:00:00:000</div>
             </div>
             
-            <!-- P2P 멀티플레이 연결 UI -->
             <div style="padding: 1rem; background: rgba(0, 243, 255, 0.05); border-bottom: 1px solid var(--border-light);">
                 <div style="font-size:0.85rem; color:var(--neon-blue); margin-bottom:8px; font-weight:bold;"><i class="fa-solid fa-link"></i> 멀티플레이 P2P 초대</div>
                 <button class="btn btn-cyber" style="width: 100%; padding: 0.6rem; font-size: 0.85rem; margin-bottom: 5px;" onclick="P2P.copyInviteLink()">
                     <i class="fa-regular fa-copy"></i> 서버 초대 링크 복사
                 </button>
-                <div style="font-size:0.75rem; color:#888;">이 링크를 다른 기기로 열면 연동됩니다. (동일 기기는 자동 연동)</div>
             </div>
 
             <ul class="user-list" id="list-users"></ul>
         </div>
 
-        <!-- CENTER PANEL (기능 복구의 핵심 영역) -->
+        <!-- CENTER PANEL -->
         <div class="layout-panel panel-center">
-            <!-- 모바일 중앙 오버레이 -->
             <div class="mobile-overlay" id="mobile-overlay" onclick="App.UI.closePanels()"></div>
 
             <div class="nav-tabs-wrapper">
                 <div class="nav-tabs">
                     <button class="tab-btn active" onclick="App.UI.switchTab('tab-chat', this)"><i class="fa-solid fa-message"></i> 채널 통신</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-game', this)"><i class="fa-solid fa-gem"></i> 코어 채굴</button>
+                    <button class="tab-btn" onclick="App.UI.switchTab('tab-casino', this)"><i class="fa-solid fa-dice"></i> <b>다이스 카지노</b></button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-trade', this)"><i class="fa-solid fa-chart-line"></i> 가상 거래소</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-shop', this)"><i class="fa-solid fa-store"></i> 상점 & 은행</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-roulette', this)"><i class="fa-solid fa-dharmachakra"></i> 룰렛</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-quest', this)"><i class="fa-solid fa-list-check"></i> 퀘스트</button>
                     <button class="tab-btn" onclick="App.UI.switchTab('tab-rank', this)"><i class="fa-solid fa-trophy"></i> 랭킹</button>
-                    <button class="tab-btn" id="tab-log-btn" style="display:none;" onclick="App.UI.switchTab('tab-logs', this)"><i class="fa-solid fa-terminal"></i> 터미널 로그</button>
+                    <button class="tab-btn" id="tab-log-btn" style="display:none;" onclick="App.UI.switchTab('tab-logs', this)"><i class="fa-solid fa-terminal"></i> 서버 로그</button>
                 </div>
             </div>
 
-            <!-- Tab: 채팅 -->
             <div id="tab-chat" class="tab-content active">
                 <div class="chat-messages" id="chat-box"></div>
                 <div class="chat-input-area">
@@ -311,11 +289,10 @@
                 </div>
             </div>
 
-            <!-- Tab: 게임 (오토봇 현황 표시 추가) -->
             <div id="tab-game" class="tab-content">
                 <div class="minigame-wrapper">
                     <div style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.6); padding:10px; border-radius:10px; border:1px solid var(--success); display:flex; align-items:center; gap:10px; font-family:var(--font-mono);">
-                        <i class="fa-solid fa-gear" style="color:var(--success); animation:spin 4s linear infinite;"></i> 오토 봇: <span id="miner-count">0</span>대
+                        <i class="fa-solid fa-gear" style="color:var(--success); animation:spin 4s linear infinite;"></i> 봇: <span id="miner-count">0</span>대
                     </div>
                     <h2 style="font-family: var(--font-mono); color: var(--neon-blue); margin-bottom: 20px;">MANUAL MINING</h2>
                     <div class="mining-core" onclick="App.Game.clickCore(event)"></div>
@@ -325,16 +302,30 @@
                 </div>
             </div>
 
-            <!-- Tab: 가상 거래소 -->
+            <!-- ★ 신규: 다이스 카지노 ★ -->
+            <div id="tab-casino" class="tab-content" style="align-items:center; justify-content:center;">
+                <div class="casino-box">
+                    <h2 style="color: var(--neon-pink); margin-bottom: 10px;"><i class="fa-solid fa-dice"></i> 언더오버 다이스</h2>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">주사위를 굴려 1~3(언더), 4~6(오버)를 맞추면 2배!</p>
+                    <div style="font-size: 4rem; margin-bottom: 20px; color: white;" id="dice-display"><i class="fa-solid fa-dice-d6"></i></div>
+                    
+                    <input type="number" id="bet-amount" class="form-control" placeholder="베팅할 크레딧 입력..." style="text-align:center;">
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-casino" style="flex:1;" onclick="App.Casino.roll('under')">언더 (1~3)</button>
+                        <button class="btn btn-casino" style="flex:1;" onclick="App.Casino.roll('over')">오버 (4~6)</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="tab-trade" class="tab-content">
                 <div class="trade-wrapper">
                     <h2 style="color: var(--neon-purple); margin-bottom: 10px;"><i class="fa-brands fa-bitcoin"></i> NEXUS COIN 거래소</h2>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">시세는 5초마다 실시간 변동</p>
                     <div class="coin-box">
                         <div style="font-size: 0.8rem; color: #aaa;">현재 시세 (1 COIN)</div>
                         <div style="font-size: 2.5rem; font-weight: 900; font-family: var(--font-mono); margin: 15px 0; color: var(--dev-color);" id="trade-price">1,000 C</div>
                         <div style="margin-top: 15px; font-size: 1.1rem;">보유 코인: <strong id="trade-owned" style="color: var(--neon-blue);">0</strong> 개</div>
-                        <div class="trade-actions">
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
                             <button class="btn" style="flex:1; background: var(--success); color: black;" onclick="App.Trade.buy()">매수</button>
                             <button class="btn" style="flex:1; background: var(--danger); color: white;" onclick="App.Trade.sell()">매도</button>
                         </div>
@@ -342,62 +333,55 @@
                 </div>
             </div>
 
-            <!-- Tab: 상점 & 은행 -->
             <div id="tab-shop" class="tab-content">
                 <div class="shop-grid">
                     <div class="shop-item">
-                        <i class="fa-solid fa-robot shop-icon" style="color: var(--success);"></i>
-                        <h3 style="font-size:1.1rem;">오토 채굴 봇</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px;">매 5초마다 50C 자동 채굴</p>
-                        <div class="shop-price">50,000 C</div>
-                        <button class="btn btn-cyber" style="padding:0.8rem; font-size:0.9rem;" onclick="App.Shop.buy('bot', 50000)">구매하기</button>
+                        <i class="fa-solid fa-fire shop-icon" style="color: var(--danger);"></i>
+                        <h3 style="font-size:1.1rem;">EXP 부스터 (10분)</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">획득하는 경험치가 2배가 됩니다.</p>
+                        <div class="shop-price">30,000 C</div>
+                        <button class="btn btn-cyber" onclick="App.Shop.buy('booster', 30000)">구매</button>
+                    </div>
+                    <div class="shop-item">
+                        <i class="fa-solid fa-palette shop-icon" style="color: var(--success);"></i>
+                        <h3 style="font-size:1.1rem;">VIP 네임 컬러</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">채팅창 닉네임을 형광 녹색으로 변경</p>
+                        <div class="shop-price">100,000 C</div>
+                        <button class="btn btn-cyber" onclick="App.Shop.buy('color_green', 100000)">구매</button>
+                    </div>
+                    <div class="shop-item">
+                        <i class="fa-solid fa-user-ninja shop-icon" style="color: var(--neon-pink);"></i>
+                        <h3 style="font-size:1.1rem;">[도박사] 칭호 획득</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">인벤토리에 도박사 칭호 추가</p>
+                        <div class="shop-price">150,000 C</div>
+                        <button class="btn btn-cyber" onclick="App.Shop.buy('title_gambler', 150000)">구매</button>
                     </div>
                     <div class="shop-item">
                         <i class="fa-solid fa-building-columns shop-icon" style="color: var(--neon-blue);"></i>
                         <h3 style="font-size:1.1rem;">스위스 은행 계좌</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px;">30초마다 자산의 1% 이자 지급</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">30초마다 자산 1% 이자</p>
                         <div class="shop-price">1,000,000 C</div>
-                        <button class="btn btn-cyber" style="padding:0.8rem; font-size:0.9rem;" onclick="App.Shop.buy('bank', 1000000)">계좌 개설</button>
-                    </div>
-                    <div class="shop-item">
-                        <i class="fa-solid fa-star shop-icon" style="color: var(--dev-color);"></i>
-                        <h3 style="font-size:1.1rem;">레벨 점핑권</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px;">즉시 5레벨 상승</p>
-                        <div class="shop-price">300,000 C</div>
-                        <button class="btn btn-cyber" style="padding:0.8rem; font-size:0.9rem;" onclick="App.Shop.buy('level_jump', 300000)">구매하기</button>
-                    </div>
-                    <div class="shop-item">
-                        <i class="fa-solid fa-user-ninja shop-icon" style="color: var(--neon-pink);"></i>
-                        <h3 style="font-size:1.1rem;">[해커] 칭호</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px;">채팅창 영구 칭호 장착</p>
-                        <div class="shop-price">150,000 C</div>
-                        <button class="btn btn-cyber" style="padding:0.8rem; font-size:0.9rem;" onclick="App.Shop.buy('title_hacker', 150000)">구매하기</button>
+                        <button class="btn btn-cyber" onclick="App.Shop.buy('bank', 1000000)">개설</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab: 룰렛 -->
             <div id="tab-roulette" class="tab-content" style="align-items:center; justify-content:center;">
-                <div class="roulette-box" style="margin-top: 3rem;">
+                <div class="roulette-box" style="margin: auto;">
                     <i class="fa-solid fa-dharmachakra roulette-icon" id="roulette-wheel"></i>
                     <h2 style="margin-bottom: 10px; color: var(--neon-blue);">일일 럭키 룰렛</h2>
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">1회 회전 비용: 500 C<br>초대박 확률로 레벨업 당첨!</p>
-                    <button class="btn btn-cyber" onclick="App.Game.spinRoulette()" style="width: 100%;">돌리기 (500 C)</button>
+                    <button class="btn btn-cyber" onclick="App.Game.spinRoulette()" style="width: 100%;">돌리기</button>
                 </div>
             </div>
 
-            <!-- Tab: 퀘스트 -->
             <div id="tab-quest" class="tab-content">
                 <div id="quest-container"></div>
             </div>
-
-            <!-- Tab: 글로벌 랭킹 -->
             <div id="tab-rank" class="tab-content" style="padding: 1.5rem;">
-                <h2 style="color: var(--dev-color); margin-bottom: 20px;"><i class="fa-solid fa-trophy"></i> 글로벌 랭킹 (레벨/크레딧 종합)</h2>
+                <h2 style="color: var(--dev-color); margin-bottom: 20px;"><i class="fa-solid fa-trophy"></i> 글로벌 랭킹 (레벨순)</h2>
                 <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
-
-            <!-- Tab: 개발자 터미널 로그 -->
             <div id="tab-logs" class="tab-content log-container">
                 <div style="color: var(--danger); font-weight: bold; margin-bottom: 15px;">[ROOT TERMINAL] AUDIT LOGS...</div>
                 <div id="log-list"></div>
@@ -407,9 +391,12 @@
         <!-- RIGHT PANEL -->
         <div class="layout-panel panel-right" id="panel-right">
             <div class="profile-header">
-                <div class="avatar-mega" id="my-avatar">U</div>
+                <div class="avatar-mega" id="my-avatar">
+                    U
+                    <i class="fa-solid fa-fire booster-badge" id="booster-badge"></i>
+                </div>
                 <div class="profile-name" id="my-name">User</div>
-                <div style="font-size: 0.85rem; color: var(--dev-color); background: rgba(255,215,0,0.1); padding: 4px 12px; border-radius: 20px; margin-top: 5px; font-weight:bold;" id="my-role">LV.1 | 시민</div>
+                <div style="font-size: 0.85rem; color: var(--dev-color); background: rgba(255,215,0,0.1); padding: 4px 12px; border-radius: 20px; margin-top: 5px; font-weight:bold;" id="my-role">LV.1 | 초보자</div>
             </div>
             
             <div class="stats-grid">
@@ -430,19 +417,24 @@
                 </div>
             </div>
 
-            <div style="padding: 1.5rem; flex-shrink: 0;">
-                <button class="btn btn-cyber" style="width: 100%; margin-bottom: 10px;" onclick="App.UI.changeScale()">
+            <!-- ★ 신규: 칭호 인벤토리 장착기 ★ -->
+            <div style="padding: 1rem 1rem 0 1rem; flex-shrink: 0;">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px;"><i class="fa-solid fa-tag"></i> 내 칭호 장착</div>
+                <select id="title-selector" class="form-control" style="margin-bottom:0; padding:0.6rem;" onchange="App.UI.changeTitle(this.value)"></select>
+            </div>
+
+            <div style="padding: 1rem; flex-shrink: 0; border-bottom: 1px solid var(--border-light);">
+                <button class="btn btn-cyber" style="width: 100%; margin-bottom: 8px; padding: 0.8rem;" onclick="App.UI.changeScale()">
                     <i class="fa-solid fa-magnifying-glass-plus"></i> GUI 크기 조절
                 </button>
-                <button class="btn" style="width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);" onclick="App.Modal.open('status')">
-                    <i class="fa-solid fa-pen-to-square"></i> 상태 변경
+                <button class="btn" style="width: 100%; margin-bottom: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);" onclick="App.Modal.open('status')">
+                    <i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경
                 </button>
                 <button class="btn" style="width: 100%; background: rgba(255,23,68,0.2); border: 1px solid rgba(255,23,68,0.5); color: var(--danger);" onclick="App.Auth.logout()">
-                    <i class="fa-solid fa-power-off"></i> 서버 접속 종료
+                    <i class="fa-solid fa-power-off"></i> 시스템 로그아웃
                 </button>
             </div>
 
-            <!-- 풀버전 루트 마스터 패널 복구 -->
             <div class="dev-panel" id="dev-panel">
                 <div style="font-size: 1rem; font-weight: 900; color: var(--dev-color); margin-bottom: 15px;"><i class="fa-solid fa-wand-magic-sparkles"></i> ROOT 마스터 패널</div>
                 <div class="dev-grid">
@@ -451,9 +443,9 @@
                     <button class="dev-btn" onclick="App.Modal.open('promoteDev')"><i class="fa-solid fa-user-tie"></i> 관리자 임명</button>
                     <button class="dev-btn" style="border-color: var(--danger); color: var(--danger);" onclick="App.Modal.open('kickUser')"><i class="fa-solid fa-gavel"></i> 유저 추방</button>
                     <button class="dev-btn" onclick="App.Modal.open('sysNotice')"><i class="fa-solid fa-bullhorn"></i> 긴급 공지 방송</button>
-                    <button class="dev-btn" onclick="App.Dev.freezeChat()"><i class="fa-solid fa-snowflake"></i> 전체 채팅 얼리기</button>
-                    <button class="dev-btn" style="border-color: var(--danger); color: var(--danger);" onclick="App.Dev.nukeServer()"><i class="fa-solid fa-radiation"></i> 서버 폭파 연출</button>
-                    <button class="dev-btn" style="background: var(--danger); color: white;" onclick="App.Dev.wipeDB()"><i class="fa-solid fa-skull"></i> DB 공장 초기화</button>
+                    <button class="dev-btn" onclick="App.Dev.freezeChat()"><i class="fa-solid fa-snowflake"></i> 채팅 얼리기</button>
+                    <button class="dev-btn" style="border-color: var(--danger); color: var(--danger);" onclick="App.Dev.nukeServer()"><i class="fa-solid fa-radiation"></i> 서버 폭파</button>
+                    <button class="dev-btn" style="background: var(--danger); color: white;" onclick="App.Dev.wipeDB()"><i class="fa-solid fa-skull"></i> 공장 초기화</button>
                 </div>
             </div>
         </div>
@@ -474,15 +466,14 @@
     <div id="toast-box"></div>
 
     <script>
-        // 전역 에러 핸들러 (자바스크립트 충돌로 인한 화면 먹통 방지)
         window.onerror = function() { return true; };
 
         /**
-         * [안전 장벽] 100% 무중단 MegaDB (V3 유지 보장)
+         * [DB Safety] AndPlayZone_Ultimate_V3 호환 유지 및 신규 기능 마이그레이션
          */
         class MegaDB {
             constructor() {
-                this.dbName = 'AndPlayZone_Ultimate_V3'; // DB 키 완벽 유지
+                this.dbName = 'AndPlayZone_Ultimate_V3';
                 this.init();
             }
             init() {
@@ -490,7 +481,6 @@
                     let current = localStorage.getItem(this.dbName);
                     if (!current) this.reset();
                     else {
-                        // 손상된 DB 자동 복구
                         let data = JSON.parse(current);
                         if (!Array.isArray(data.users)) data.users = [];
                         if (!Array.isArray(data.chats)) data.chats = [];
@@ -511,6 +501,12 @@
                         u.miners = Number(u.miners) || 0;
                         u.hasBank = Boolean(u.hasBank);
                         if(!u.name) u.name = "Unknown";
+                        
+                        // ★ V4.0 신규 데이터 자동 마이그레이션 (기존 유저 데이터 유지)
+                        if(!u.titles) u.titles = ['초보자'];
+                        if(!u.title) u.title = u.titles[0];
+                        if(!u.textColor) u.textColor = ''; // 기본색
+                        if(!u.boosterUntil) u.boosterUntil = 0;
                     });
                     if(!data.logs) data.logs = [];
                     return data;
@@ -531,12 +527,10 @@
         const db = new MegaDB();
 
         /**
-         * [초대 링크 동기화] P2P URL 파라미터 매칭
+         * P2P 멀티플레이어 연동 (초대 링크)
          */
         const P2P = {
-            peer: null,
-            conns: [],
-            myId: '',
+            peer: null, conns: [], myId: '',
             init: () => {
                 if(typeof Peer === 'undefined') return;
                 try {
@@ -546,16 +540,15 @@
                         const urlParams = new URLSearchParams(window.location.search);
                         if(urlParams.has('join')) {
                             const target = urlParams.get('join');
-                            App.UI.toast(`초대받은 서버에 연결 중...`, "info");
+                            App.UI.toast(`서버 동기화 중...`, "info");
                             setTimeout(() => P2P.connectTo(target), 1500);
                         } else {
                             window.history.replaceState(null, null, `?join=${id}`);
                         }
                     });
-
                     P2P.peer.on('connection', (c) => {
                         P2P.conns.push(c);
-                        App.UI.toast("🌐 친구가 내 서버에 접속했습니다!", "success");
+                        App.UI.toast("🌐 친구가 서버에 접속했습니다!", "success");
                         c.on('data', P2P.handleData);
                         c.on('open', () => c.send({ type: 'sync_user', user: App.user }));
                     });
@@ -570,7 +563,6 @@
                     c.on('data', P2P.handleData);
                     c.send({ type: 'sync_user', user: App.user });
                 });
-                c.on('error', () => App.UI.toast("서버 호스트가 오프라인입니다.", "error"));
             },
             handleData: (data) => {
                 let dbData = db.get();
@@ -584,55 +576,41 @@
                     db.save(dbData); App.UI.renderUsers(); App.UI.renderRank();
                 }
             },
-            broadcast: (msgObj) => {
-                P2P.conns.forEach(c => { if(c.open) c.send({ type: 'chat', msg: msgObj }); });
-            },
+            broadcast: (msgObj) => { P2P.conns.forEach(c => { if(c.open) c.send({ type: 'chat', msg: msgObj }); }); },
             copyInviteLink: () => {
                 const link = window.location.href;
-                navigator.clipboard.writeText(link).then(() => {
-                    App.UI.toast("초대 링크가 복사되었습니다! 친구에게 보내세요.", "success");
-                }).catch(() => {
-                    App.UI.toast("주소창 URL을 직접 복사해주세요.", "error");
-                });
+                navigator.clipboard.writeText(link).then(() => App.UI.toast("초대 링크 복사 완료!", "success"));
             }
         };
 
         /**
-         * Main Application (모든 기능 100% 복구 완료)
+         * Main Application V4.0
          */
         const App = {
             user: null,
-            autoMinerInterval: null,
-            tradeInterval: null,
-            bankInterval: null,
-            syncInterval: null,
-            currentScale: 1,
+            autoMinerInterval: null, tradeInterval: null, bankInterval: null, syncInterval: null, clockInterval: null,
+            currentScale: 1, startTime: Date.now(),
 
             Boot: {
                 start: () => {
                     const lines = [
-                        "CONNECTING TO NEXUS CORE V3.7...",
-                        "BYPASSING SECURITY PROTOCOLS...",
-                        "ESTABLISHING MULTIPLAYER SYNC TUNNEL...",
+                        "CONNECTING TO NEXUS CORE V4.0...",
                         "RESTORING SYSTEM FEATURES...",
+                        "LOADING NEXT-GEN PLUGINS...",
                         "SYSTEM READY."
                     ];
                     const container = document.getElementById('boot-text');
                     const barWrap = document.getElementById('boot-progress-wrap');
                     const barFill = document.getElementById('boot-progress');
                     let i = 0;
-                    
                     const typeLine = () => {
                         if (i < lines.length) {
-                            const p = document.createElement('div');
-                            p.className = 'term-line';
+                            const p = document.createElement('div'); p.className = 'term-line';
                             p.innerHTML = `> ${lines[i]}<span class="cursor-blink">_</span>`;
-                            container.appendChild(p);
-                            i++;
+                            container.appendChild(p); i++;
                             setTimeout(typeLine, Math.random() * 200 + 100);
                         } else {
-                            barWrap.style.display = 'block';
-                            let prog = 0;
+                            barWrap.style.display = 'block'; let prog = 0;
                             let intv = setInterval(() => {
                                 prog += Math.random() * 15;
                                 if(prog >= 100) { 
@@ -646,15 +624,13 @@
                             }, 50);
                         }
                     };
-                    
                     setTimeout(() => {
                         if(document.getElementById('screen-boot').classList.contains('active')) {
                             document.getElementById('screen-boot').classList.remove('active');
                             document.getElementById('screen-pw').classList.add('active');
                         }
-                    }, 8000);
-
-                    setTimeout(typeLine, 300);
+                    }, 5000);
+                    setTimeout(typeLine, 200);
                 }
             },
 
@@ -671,28 +647,26 @@
 
                     let data = db.get();
                     if (name.toLowerCase() === 'endvip') {
-                        name = '👑 최고 개발자'; // 지시사항: (Root) 표시 삭제
+                        name = '👑 최고 개발자';
                         let exist = data.users.find(u => u.name === name);
                         if (!exist) {
-                            data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, title: '창조주', status: 'God Mode', miners: 0, coins: 0, hasBank: false });
-                            db.log('NEW_DEV', 'CRITICAL', 'Backdoor used');
+                            data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, titles: ['창조주'], title: '창조주', status: 'God Mode', miners: 0, coins: 0, hasBank: false, textColor: 'var(--dev-color)' });
+                            db.log('NEW_DEV', 'CRITICAL');
                         }
                     }
                     
                     let userData = data.users.find(u => u.name === name);
                     if (!userData) {
-                        userData = { name, role: 'user', score: 0, level: 1, exp: 0, title: '초보자', status: '접속함', miners: 0, coins: 0, hasBank: false };
+                        userData = { name, role: 'user', score: 0, level: 1, exp: 0, titles: ['초보자'], title: '초보자', status: '접속함', miners: 0, coins: 0, hasBank: false, textColor: '' };
                         data.users.push(userData);
                         data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `[+] <b>${name}</b> 님이 접속했습니다!` });
-                        db.log('USER_JOIN', 'INFO', `User: ${name}`);
                     }
 
                     db.save(data); App.user = userData;
                     document.getElementById('screen-login').classList.remove('active');
                     document.getElementById('screen-main').classList.add('active');
                     
-                    App.initDashboard();
-                    P2P.init(); 
+                    App.initDashboard(); P2P.init(); 
                 },
                 logout: () => { location.reload(); }
             },
@@ -700,13 +674,18 @@
             Logic: {
                 addExp: (amount) => {
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
+                    
+                    // ★ 부스터 적용
+                    if(me.boosterUntil && Date.now() < me.boosterUntil) {
+                        amount *= 2;
+                    }
+
                     me.exp += amount;
                     let maxExp = me.level * 100;
                     if (me.exp >= maxExp && me.level < 999) {
                         me.exp -= maxExp; me.level += 1; me.score += 5000; 
-                        App.UI.toast(`🎉 레벨업! LV.${me.level} 달성! (5,000C 보상)`, "success");
+                        App.UI.toast(`🎉 레벨업! LV.${me.level} 달성!`, "success");
                         data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🎊 <b>${me.name}</b> 님이 LV.${me.level} 달성!` });
-                        db.log('LEVEL_UP', 'SYSTEM', `${me.name} -> Lv.${me.level}`);
                     }
                     db.save(data); App.user = me; App.UI.renderProfile(); App.UI.renderUsers(); App.UI.renderRank();
                 },
@@ -756,7 +735,6 @@
                     
                     const wheel = document.getElementById('roulette-wheel');
                     wheel.style.animation = 'spin 0.2s linear infinite';
-                    
                     setTimeout(() => {
                         wheel.style.animation = 'spin 10s linear infinite';
                         let r = Math.random();
@@ -769,6 +747,49 @@
                         
                         db.save(d); App.user = m; App.UI.renderProfile(); App.UI.renderRank();
                     }, 1500);
+                }
+            },
+
+            // ★ 다이스 카지노 로직
+            Casino: {
+                roll: (choice) => {
+                    const betInput = document.getElementById('bet-amount');
+                    let bet = parseInt(betInput.value);
+                    if(isNaN(bet) || bet <= 0) return App.UI.toast("올바른 금액을 입력하세요.", "error");
+                    
+                    let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
+                    if(me.score < bet) return App.UI.toast("크레딧이 부족합니다.", "error");
+
+                    me.score -= bet;
+                    db.save(data); App.user = me; App.UI.renderProfile();
+
+                    // 주사위 굴리는 애니메이션
+                    const diceEl = document.getElementById('dice-display');
+                    let rolls = 0;
+                    let rollIntv = setInterval(() => {
+                        diceEl.innerHTML = `<i class="fa-solid fa-dice-d${[6,20][Math.floor(Math.random()*2)]}"></i>`;
+                        rolls++;
+                        if(rolls > 10) {
+                            clearInterval(rollIntv);
+                            let result = Math.floor(Math.random() * 6) + 1; // 1~6
+                            
+                            // 주사위 눈 아이콘 표시
+                            const diceIcons = ['one','two','three','four','five','six'];
+                            diceEl.innerHTML = `<i class="fa-solid fa-dice-${diceIcons[result-1]}"></i>`;
+                            
+                            let isUnder = result <= 3;
+                            let win = (choice === 'under' && isUnder) || (choice === 'over' && !isUnder);
+
+                            let d = db.get(); let m = d.users.find(u => u.name === App.user.name);
+                            if(win) {
+                                m.score += (bet * 2);
+                                App.UI.toast(`🎉 [${result}] 성공! ${bet*2} C 획득!`, "success");
+                            } else {
+                                App.UI.toast(`💀 [${result}] 실패! 베팅금을 잃었습니다.`, "error");
+                            }
+                            db.save(d); App.user = m; App.UI.renderProfile();
+                        }
+                    }, 100);
                 }
             },
 
@@ -809,9 +830,21 @@
                     
                     me.score -= price;
                     if(itemId === 'bot') { me.miners = (me.miners || 0) + 1; App.Logic.startAutoMiner(); }
-                    else if(itemId === 'title_hacker') { me.title = '해커'; }
                     else if(itemId === 'level_jump') { me.level += 5; }
                     else if(itemId === 'bank') { me.hasBank = true; App.Logic.startBank(); }
+                    // 신규 아이템
+                    else if(itemId === 'booster') {
+                        me.boosterUntil = Date.now() + (10 * 60 * 1000); // 10분
+                        App.UI.toast("🔥 10분간 경험치 2배 적용!", "success");
+                    }
+                    else if(itemId === 'color_green') {
+                        me.textColor = 'var(--neon-green)';
+                        App.UI.toast("✅ 네임 컬러가 형광색으로 변경됨", "success");
+                    }
+                    else if(itemId === 'title_gambler') {
+                        if(!me.titles.includes('도박사')) me.titles.push('도박사');
+                        App.UI.toast("인벤토리에 칭호가 추가되었습니다.", "success");
+                    }
                     
                     db.save(data); App.user = me; App.initDashboard(); App.UI.toast("구매 완료", "success");
                 }
@@ -824,13 +857,14 @@
                         if (msg.type === 'sys') { box.innerHTML += `<div class="msg-sys">${msg.content}</div>`; }
                         else {
                             const isMe = msg.sender === App.user.name;
-                            const sData = data.users.find(u => u.name === msg.sender) || {level:1, role:'user', title:''};
+                            const sData = data.users.find(u => u.name === msg.sender) || {level:1, role:'user', title:'', textColor:''};
                             const tBadge = sData.title ? `<span class="user-title">[${sData.title}]</span>` : '';
-                            const dIcon = sData.role === 'dev' ? '<i class="fa-solid fa-crown" style="color:var(--dev-color)"></i> ' : '';
+                            const nameColor = sData.textColor ? `color:${sData.textColor};` : '';
+                            
                             box.innerHTML += `
                                 <div class="chat-msg ${isMe ? 'me' : ''}">
                                     <div class="msg-content">
-                                        ${!isMe ? `<div class="msg-sender"><span class="lvl">LV.${sData.level}</span> ${tBadge}${dIcon}${msg.sender} <span>${msg.time}</span></div>` : `<div class="msg-sender"><span>${msg.time}</span></div>`}
+                                        ${!isMe ? `<div class="msg-sender"><span class="lvl">LV.${sData.level}</span>${tBadge} <span style="${nameColor}">${msg.sender}</span> <span>${msg.time}</span></div>` : `<div class="msg-sender"><span>${msg.time}</span></div>`}
                                         <div class="msg-bubble">${msg.content}</div>
                                     </div>
                                 </div>`;
@@ -875,26 +909,48 @@
                     const u = App.user;
                     if(!u) return;
                     document.getElementById('my-name').innerText = u.name;
+                    document.getElementById('my-name').style.color = u.textColor || 'inherit';
                     document.getElementById('my-role').innerText = u.role === 'dev' ? '👑 ROOT 마스터' : `LV.${u.level} | ${u.title||'시민'}`;
                     document.getElementById('my-score').innerText = (u.score || 0).toLocaleString();
                     document.getElementById('game-score').innerText = (u.score || 0).toLocaleString();
                     document.getElementById('my-level').innerText = (u.level || 1);
                     document.getElementById('my-avatar').innerText = u.name.charAt(0);
                     if(u.role === 'dev') document.getElementById('my-avatar').style.borderColor = 'var(--dev-color)';
+                    
                     let maxExp = (u.level || 1) * 100;
                     document.getElementById('my-exp-bar').style.width = Math.min(100, ((u.exp || 0) / maxExp) * 100) + '%';
                     document.getElementById('my-exp-txt').innerText = `${u.exp||0}/${maxExp}`;
                     document.getElementById('dev-panel').classList.toggle('active', u.role === 'dev');
+                    
+                    // 칭호 셀렉터 업데이트
+                    const sel = document.getElementById('title-selector');
+                    sel.innerHTML = '';
+                    (u.titles || ['초보자']).forEach(t => {
+                        let opt = document.createElement('option');
+                        opt.value = t; opt.innerText = t;
+                        if(t === u.title) opt.selected = true;
+                        sel.appendChild(opt);
+                    });
+
+                    // 부스터 뱃지 업데이트
+                    if(u.boosterUntil && Date.now() < u.boosterUntil) document.getElementById('booster-badge').style.display = 'block';
+                    else document.getElementById('booster-badge').style.display = 'none';
+                },
+                changeTitle: (newTitle) => {
+                    let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
+                    me.title = newTitle; db.save(data); App.user = me; App.UI.renderProfile(); App.UI.renderUsers();
+                    App.UI.toast(`[${newTitle}] 칭호를 장착했습니다.`, "success");
                 },
                 renderUsers: () => {
                     const data = db.get(); const list = document.getElementById('list-users'); list.innerHTML = '';
                     data.users.sort((a, b) => b.level - a.level).forEach(u => {
-                        const isDev = u.role === 'dev'; const tBadge = u.title ? `<span class="user-title">${u.title}</span>` : '';
+                        const isDev = u.role === 'dev'; const tBadge = u.title ? `<span class="user-title">[${u.title}]</span>` : '';
+                        const nameColor = u.textColor ? `color:${u.textColor};` : (u.name === App.user.name ? 'color:var(--success);' : '');
                         list.innerHTML += `
                             <li class="user-item ${isDev ? 'dev' : ''}">
                                 <div class="avatar-wrap"><div class="avatar-sm" style="${isDev ? 'background:var(--dev-color); color:black;' : ''}">${u.name.charAt(0)}</div><div class="level-badge">${u.level}</div></div>
                                 <div class="user-info">
-                                    <div class="user-name-txt" style="color: ${u.name === App.user.name ? 'var(--success)' : 'inherit'}">${tBadge} ${u.name} ${isDev ? '<i class="fa-solid fa-crown" style="color:var(--dev-color);"></i>' : ''}</div>
+                                    <div class="user-name-txt" style="${nameColor}">${tBadge} ${u.name}</div>
                                     <div class="user-status">${u.status || '...'}</div>
                                 </div>
                             </li>`;
@@ -903,7 +959,7 @@
                 renderQuests: () => {
                     document.getElementById('quest-container').innerHTML = `
                         <div class="quest-item"><div class="quest-info"><h4 style="color:var(--neon-blue); margin-bottom:5px;">초보자의 길</h4><p style="color:var(--text-muted); font-size:0.8rem;">서버 접속 완료</p></div><button class="btn btn-cyber" style="padding:0.6rem; font-size:0.8rem;" onclick="App.UI.toast('이미 완료되었습니다.', 'success')">완료</button></div>
-                        <div class="quest-item"><div class="quest-info"><h4 style="color:var(--neon-blue); margin-bottom:5px;">코인 투자자</h4><p style="color:var(--text-muted); font-size:0.8rem;">가상 거래소 1회 이용</p></div><div style="font-family:var(--font-mono); color:var(--dev-color); font-weight:bold;">+10,000 C</div></div>
+                        <div class="quest-item"><div class="quest-info"><h4 style="color:var(--neon-blue); margin-bottom:5px;">도박 중독자</h4><p style="color:var(--text-muted); font-size:0.8rem;">카지노에서 1회 베팅하기</p></div><div style="font-family:var(--font-mono); color:var(--dev-color); font-weight:bold;">+10,000 C</div></div>
                         <div class="quest-item"><div class="quest-info"><h4 style="color:var(--neon-blue); margin-bottom:5px;">스위스 은행장</h4><p style="color:var(--text-muted); font-size:0.8rem;">계좌 개설 (상점)</p></div><div style="font-family:var(--font-mono); color:var(--dev-color); font-weight:bold;">칭호 보상</div></div>
                     `;
                 },
@@ -931,6 +987,17 @@
                     [...db.get().logs].reverse().forEach(log => {
                         box.innerHTML += `<div class="log-entry"><span style="color:var(--neon-blue);">[${log.time}]</span> <span style="color:${log.type==='CRITICAL'?'var(--danger)':'var(--dev-color)'}; font-weight:bold;">[${log.type}] ${log.action}</span> ${log.detail ? `<span>- ${log.detail}</span>` : ''}</div>`;
                     });
+                },
+                startClock: () => {
+                    if(App.clockInterval) clearInterval(App.clockInterval);
+                    App.clockInterval = setInterval(() => {
+                        let diff = Date.now() - App.startTime;
+                        let h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                        let m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                        let s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                        let ms = (diff % 1000).toString().padStart(3, '0');
+                        document.getElementById('server-uptime').innerText = `UPTIME: ${h}:${m}:${s}:${ms}`;
+                    }, 47);
                 }
             },
 
@@ -968,9 +1035,8 @@
 
             initDashboard: () => {
                 App.UI.renderProfile(); App.UI.renderUsers(); App.UI.renderRank(); App.UI.renderQuests(); App.UI.renderLogs(); App.Chat.renderAll();
-                App.Trade.startMarket(); App.Logic.startAutoMiner(); App.Logic.startBank();
+                App.Trade.startMarket(); App.Logic.startAutoMiner(); App.Logic.startBank(); App.UI.startClock();
                 
-                // ★ 동일 기기(창 여러개) 간 1초 단위 자동 동기화
                 if(App.syncInterval) clearInterval(App.syncInterval);
                 let lastDbString = localStorage.getItem(db.dbName);
                 App.syncInterval = setInterval(() => {
