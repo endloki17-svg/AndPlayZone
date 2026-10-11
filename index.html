@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AndPlayZone | V4.5 Clicker Revolution</title>
+    <title>AndPlayZone | V4.6 Bulletproof Edition</title>
     <!-- FontAwesome & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <!-- P2P 멀티플레이어 -->
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
+    <!-- P2P 멀티플레이어 라이브러리 (비동기 로드하여 화면 멈춤 방지) -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
     
     <style>
         /* =========================================================
@@ -87,7 +88,7 @@
         .auth-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
 
         /* =========================================================
-           [4] MEGA DASHBOARD (GRID SYSTEM 유지)
+           [4] MEGA DASHBOARD (GRID SYSTEM: 찌그러짐 원천 차단)
            ========================================================= */
         #screen-main { display: none; height: 100dvh; width: 100vw; background: var(--bg-deep); }
         @media (min-width: 1025px) {
@@ -122,7 +123,7 @@
         .tab-content { display: none; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; }
         .tab-content.active { display: flex; animation: fadeIn 0.3s ease; }
 
-        /* 채팅 스타일 */
+        /* 채팅 */
         .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; min-height: 0; }
         .chat-msg { display: flex; gap: 12px; max-width: 85%; }
         .chat-msg.me { align-self: flex-end; flex-direction: row-reverse; }
@@ -140,7 +141,7 @@
         .btn-circle:hover { background: var(--neon-blue); color: black; transform: scale(1.1); box-shadow: 0 0 15px var(--neon-blue); }
 
         /* =========================================================
-           [🔥] CLICKER REVOLUTION (업그레이드된 마이닝)
+           [🔥] CLICKER REVOLUTION & UI
            ========================================================= */
         .minigame-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); position: relative; }
         
@@ -158,12 +159,9 @@
         .click-score { position: absolute; font-size: 2rem; font-weight: 900; font-family: var(--font-mono); color: var(--success); text-shadow: 0 0 15px var(--success); pointer-events: none; animation: floatUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; z-index: 50; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 50% { transform: translateY(-30px) scale(1.2); } 100% { opacity: 0; transform: translateY(-60px) scale(1); } }
 
-        /* 클릭 파워 업그레이드 패널 */
         .upgrade-box { background: rgba(0,0,0,0.6); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.5rem; width: 90%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); margin-top: 1rem; }
 
-        /* =========================================================
-           [🔥] CASINO, ROULETTE, TRADE, SHOP (고퀄리티 UI)
-           ========================================================= */
+        /* CASINO, ROULETTE, TRADE, SHOP */
         .casino-box { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-pink); border-radius: var(--radius-lg); padding: 3rem 2rem; width: 90%; max-width: 450px; text-align: center; margin: auto; box-shadow: 0 0 40px rgba(255, 0, 160, 0.15), inset 0 0 20px rgba(255, 0, 160, 0.05); }
         .roulette-box { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-purple); border-radius: var(--radius-lg); padding: 3rem 2rem; text-align: center; max-width: 450px; margin: auto; box-shadow: 0 0 40px rgba(188,19,254,0.15), inset 0 0 20px rgba(188,19,254,0.05); }
         .roulette-icon { font-size: 6rem; color: var(--neon-purple); margin-bottom: 2rem; filter: drop-shadow(0 0 20px var(--neon-purple)); }
@@ -182,7 +180,6 @@
         /* 우측 프로필 */
         .profile-header { padding: 2rem; background: linear-gradient(180deg, rgba(99,102,241,0.2) 0%, transparent 100%); display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid var(--border-light); flex-shrink: 0; position: relative; }
         .avatar-mega { width: 100px; height: 100px; border-radius: 30px; background: var(--bg-deep); border: 3px solid var(--neon-blue); font-size: 3rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; box-shadow: 0 0 30px rgba(0,243,255,0.4); position: relative; }
-        
         .booster-badge { position: absolute; top: -10px; right: -10px; font-size: 1.8rem; color: var(--neon-pink); filter: drop-shadow(0 0 15px var(--neon-pink)); display: none; animation: pulseCore 1s infinite; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 1.5rem; flex-shrink: 0; }
@@ -273,7 +270,7 @@
     <div id="screen-main" class="screen">
         <div class="mobile-header">
             <button class="btn-circle" onclick="App.UI.toggleLeft()" style="width:45px; height:45px;"><i class="fa-solid fa-server"></i></button>
-            <h2 style="font-size: 1.2rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-mono);">NEXUS V4.5</h2>
+            <h2 style="font-size: 1.2rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-mono);">NEXUS V4.6</h2>
             <button class="btn-circle" onclick="App.UI.toggleRight()" style="width:45px; height:45px;"><i class="fa-solid fa-user-shield"></i></button>
         </div>
 
@@ -373,7 +370,7 @@
 
             <!-- 4. 거래소 -->
             <div id="tab-trade" class="tab-content" style="align-items:center; justify-content:center;">
-                <div class="trade-wrapper">
+                <div style="text-align:center; width:100%;">
                     <h2 style="color: var(--neon-purple); margin-bottom: 15px; font-size: 2rem;"><i class="fa-brands fa-bitcoin"></i> NEXUS COIN 거래소</h2>
                     <div class="coin-box">
                         <div style="font-size: 1rem; color: #aaa; text-transform: uppercase; letter-spacing: 2px;">현재 시세 (1 COIN)</div>
@@ -388,7 +385,7 @@
             </div>
 
             <!-- 5. 상점 -->
-            <div id="tab-shop" class="tab-content">
+            <div id="tab-shop" class="tab-content" style="overflow-y:auto; padding: 1.5rem;">
                 <div class="shop-grid">
                     <div class="shop-item">
                         <i class="fa-solid fa-robot shop-icon" style="color: var(--success);"></i>
@@ -421,7 +418,7 @@
                 </div>
             </div>
 
-            <!-- 6. 룰렛 (디자인 상향) -->
+            <!-- 6. 룰렛 -->
             <div id="tab-roulette" class="tab-content" style="align-items:center; justify-content:center;">
                 <div class="roulette-box">
                     <i class="fa-solid fa-dharmachakra roulette-icon" id="roulette-wheel"></i>
@@ -431,11 +428,15 @@
                 </div>
             </div>
 
-            <!-- 7. 퀘스트 & 랭킹 -->
-            <div id="tab-quest" class="tab-content"><div id="quest-container"></div></div>
-            <div id="tab-rank" class="tab-content" style="padding: 2rem;">
+            <!-- 7. 퀘스트 & 랭킹 & 로그 -->
+            <div id="tab-quest" class="tab-content" style="overflow-y:auto;"><div id="quest-container"></div></div>
+            <div id="tab-rank" class="tab-content" style="padding: 2rem; overflow-y:auto;">
                 <h2 style="color: var(--dev-color); margin-bottom: 25px; font-size: 1.8rem;"><i class="fa-solid fa-trophy"></i> 글로벌 서버 랭킹 (레벨순)</h2>
                 <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+            <div id="tab-logs" class="tab-content" style="padding: 1.5rem; background: #000; overflow-y:auto; font-family: var(--font-mono); font-size: 0.85rem; color: #a0a0a0;">
+                <div style="color: var(--danger); font-weight: bold; margin-bottom: 15px;">[ROOT TERMINAL] AUDIT LOGS...</div>
+                <div id="log-list"></div>
             </div>
         </div>
 
@@ -465,7 +466,7 @@
                 </div>
             </div>
 
-            <!-- 인벤토리 -->
+            <!-- 인벤토리 칭호 장착 -->
             <div style="padding: 1.5rem 1.5rem 0 1.5rem; flex-shrink: 0;">
                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-weight: bold;"><i class="fa-solid fa-tags"></i> 칭호 인벤토리 장착</div>
                 <select id="title-selector" class="form-control" style="margin-bottom:0; padding:0.8rem; font-weight: bold;" onchange="App.UI.changeTitle(this.value)"></select>
@@ -473,7 +474,7 @@
 
             <div style="padding: 1.5rem; flex-shrink: 0; border-bottom: 1px solid var(--border-light);">
                 <button class="btn btn-cyber" style="width: 100%; margin-bottom: 10px;" onclick="App.UI.changeScale()">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i> GUI 크기 조절
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> GUI 배율 조절
                 </button>
                 <button class="btn" style="width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);" onclick="App.Modal.open('status')">
                     <i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경
@@ -513,11 +514,11 @@
     <div id="toast-box"></div>
 
     <script>
-        // 전역 에러 방어
+        // 전역 에러 완벽 억제 (화면 먹통 원천 방지)
         window.onerror = function() { return true; };
 
         /**
-         * [DB Safety] AndPlayZone_Ultimate_V3 호환성 100% 보장
+         * [DB Safety] AndPlayZone_Ultimate_V3 호환성 100% 보장 방탄 DB
          */
         class MegaDB {
             constructor() {
@@ -530,32 +531,54 @@
                     if (!current) this.reset();
                     else {
                         let data = JSON.parse(current);
+                        if (!data || typeof data !== 'object') { this.reset(); return; }
                         if (!Array.isArray(data.users)) data.users = [];
                         if (!Array.isArray(data.chats)) data.chats = [];
+                        if (!Array.isArray(data.logs)) data.logs = [];
                         this.save(data);
                     }
                 } catch(e) { this.reset(); }
             }
-            reset() { this.save({ password: 'robuxlike', chatFrozen: false, users: [], chats: [] }); }
+            reset() { 
+                let d = { password: 'robuxlike', chatFrozen: false, users: [], chats: [], logs: [] };
+                this.save(d); return d;
+            }
             get() { 
                 try {
-                    let data = JSON.parse(localStorage.getItem(this.dbName)) || this.reset(); 
+                    let str = localStorage.getItem(this.dbName);
+                    let data = str ? JSON.parse(str) : this.reset();
+                    if (!data) data = this.reset();
+                    
+                    if(!Array.isArray(data.users)) data.users = [];
                     data.users.forEach(u => {
                         u.score = Number(u.score) || 0;
                         u.level = Number(u.level) || 1;
                         u.exp = Number(u.exp) || 0;
                         u.coins = Number(u.coins) || 0;
                         u.miners = Number(u.miners) || 0;
-                        u.clickPower = Number(u.clickPower) || 1; // 신규: 클릭 파워
+                        u.clickPower = Number(u.clickPower) || 1;
                         u.hasBank = Boolean(u.hasBank);
                         if(!u.name) u.name = "Unknown";
-                        if(!u.titles) u.titles = ['초보자'];
+                        if(!Array.isArray(u.titles)) u.titles = ['초보자'];
                         if(!u.title) u.title = u.titles[0];
+                        if(!u.textColor) u.textColor = '';
+                        if(!u.boosterUntil) u.boosterUntil = 0;
                     });
+                    if(!Array.isArray(data.chats)) data.chats = [];
+                    if(!Array.isArray(data.logs)) data.logs = [];
                     return data;
-                } catch(e) { return { users: [], chats: [] }; }
+                } catch(e) { return this.reset(); }
             }
             save(data) { localStorage.setItem(this.dbName, JSON.stringify(data)); }
+            log(action, type = 'INFO', detail = '') {
+                try {
+                    let data = this.get();
+                    data.logs.push({ time: App.Utils.timeSec(), type, action, detail });
+                    if(data.logs.length > 300) data.logs.shift();
+                    this.save(data);
+                    if(App.user && App.user.role === 'dev') App.UI.renderLogs();
+                } catch(e) {}
+            }
         }
         const db = new MegaDB();
 
@@ -617,15 +640,54 @@
         };
 
         /**
-         * Main Application V4.5 (Clicker Enhanced)
+         * Main Application V4.6
          */
         const App = {
             user: null,
             autoMinerInterval: null, tradeInterval: null, bankInterval: null, syncInterval: null, clockInterval: null,
             currentScale: 1, startTime: Date.now(),
-            
-            // 콤보 시스템 변수
             comboCount: 0, comboTimer: null, comboMultiplier: 1.0,
+
+            Boot: {
+                start: () => {
+                    const lines = [
+                        "CONNECTING TO NEXUS CORE V4.6...",
+                        "RESTORING SYSTEM FEATURES...",
+                        "LOADING NEXT-GEN PLUGINS...",
+                        "SYSTEM READY."
+                    ];
+                    const container = document.getElementById('boot-text');
+                    const barWrap = document.getElementById('boot-progress-wrap');
+                    const barFill = document.getElementById('boot-progress');
+                    let i = 0;
+                    const typeLine = () => {
+                        if (i < lines.length) {
+                            const p = document.createElement('div'); p.className = 'term-line';
+                            p.innerHTML = `> ${lines[i]}<span class="cursor-blink">_</span>`;
+                            container.appendChild(p); i++;
+                            setTimeout(typeLine, Math.random() * 150 + 100);
+                        } else {
+                            barWrap.style.display = 'block'; let prog = 0;
+                            let intv = setInterval(() => {
+                                prog += Math.random() * 15;
+                                if(prog >= 100) { 
+                                    prog = 100; clearInterval(intv); 
+                                    document.getElementById('screen-boot').classList.remove('active');
+                                    document.getElementById('screen-pw').classList.add('active');
+                                }
+                                barFill.style.width = prog + '%';
+                            }, 50);
+                        }
+                    };
+                    setTimeout(() => {
+                        if(document.getElementById('screen-boot').classList.contains('active')) {
+                            document.getElementById('screen-boot').classList.remove('active');
+                            document.getElementById('screen-pw').classList.add('active');
+                        }
+                    }, 5000);
+                    setTimeout(typeLine, 100);
+                }
+            },
 
             Auth: {
                 checkPassword: () => {
@@ -642,7 +704,10 @@
                     if (name.toLowerCase() === 'endvip') {
                         name = '👑 최고 개발자';
                         let exist = data.users.find(u => u.name === name);
-                        if (!exist) data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, titles: ['창조주'], title: '창조주', clickPower: 99 });
+                        if (!exist) {
+                            data.users.push({ name, role: 'dev', score: 9999999, level: 999, exp: 0, titles: ['창조주'], title: '창조주', clickPower: 99 });
+                            db.log('NEW_DEV', 'CRITICAL');
+                        }
                     }
                     
                     let userData = data.users.find(u => u.name === name);
@@ -650,6 +715,7 @@
                         userData = { name, role: 'user', score: 0, level: 1, exp: 0, titles: ['초보자'], title: '초보자', clickPower: 1 };
                         data.users.push(userData);
                         data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `[+] <b>${name}</b> 님이 접속했습니다!` });
+                        db.log('USER_JOIN', 'INFO', name);
                     }
 
                     db.save(data); App.user = userData;
@@ -702,9 +768,8 @@
 
             Game: {
                 clickCore: (e) => {
-                    // ★ 콤보 시스템 처리
                     App.comboCount++;
-                    App.comboMultiplier = Math.min(5.0, 1.0 + (App.comboCount * 0.1)); // 최대 5배
+                    App.comboMultiplier = Math.min(5.0, 1.0 + (App.comboCount * 0.1));
                     
                     const comboBox = document.getElementById('combo-container');
                     const comboBar = document.getElementById('combo-bar');
@@ -712,31 +777,16 @@
                     
                     comboBox.classList.add('active');
                     comboMult.innerText = `x${App.comboMultiplier.toFixed(1)}`;
-                    
-                    // 애니메이션 초기화 꼼수
-                    comboMult.style.animation = 'none';
-                    comboMult.offsetHeight; // reflow
-                    comboMult.style.animation = 'pulseCore 0.2s';
+                    comboMult.style.animation = 'none'; comboMult.offsetHeight; comboMult.style.animation = 'pulseCore 0.2s';
 
-                    // 콤보 게이지 바 (1초 뒤 초기화)
-                    comboBar.style.transition = 'none';
-                    comboBar.style.width = '100%';
-                    
+                    comboBar.style.transition = 'none'; comboBar.style.width = '100%';
                     if(App.comboTimer) clearTimeout(App.comboTimer);
-                    
-                    // 게이지 줄어드는 애니메이션 시작
-                    setTimeout(() => {
-                        comboBar.style.transition = 'width 1s linear';
-                        comboBar.style.width = '0%';
-                    }, 50);
+                    setTimeout(() => { comboBar.style.transition = 'width 1s linear'; comboBar.style.width = '0%'; }, 50);
 
                     App.comboTimer = setTimeout(() => {
-                        App.comboCount = 0;
-                        App.comboMultiplier = 1.0;
-                        comboBox.classList.remove('active');
+                        App.comboCount = 0; App.comboMultiplier = 1.0; comboBox.classList.remove('active');
                     }, 1000);
 
-                    // ★ 수익 계산 (레벨 * 클릭파워 * 콤보배수)
                     let baseEarn = App.user.level * 5;
                     let powerEarn = baseEarn * (App.user.clickPower || 1);
                     let finalEarn = Math.floor(powerEarn * App.comboMultiplier);
@@ -747,14 +797,9 @@
                     document.getElementById('game-score').innerText = me.score.toLocaleString();
                     document.getElementById('my-score').innerText = me.score.toLocaleString();
                     
-                    // 데미지 텍스트 렌더링
-                    const t = document.createElement('div'); t.className = 'click-score'; 
-                    t.innerText = `+${finalEarn}`;
-                    if(App.comboMultiplier > 2.0) {
-                        t.style.color = 'var(--danger)'; t.style.fontSize = '3rem'; t.style.textShadow = '0 0 20px var(--danger)';
-                    }
-                    t.style.left = `${e.clientX - 20 + (Math.random()*40)}px`; 
-                    t.style.top = `${e.clientY - 20}px`;
+                    const t = document.createElement('div'); t.className = 'click-score'; t.innerText = `+${finalEarn}`;
+                    if(App.comboMultiplier > 2.0) { t.style.color = 'var(--danger)'; t.style.fontSize = '3rem'; t.style.textShadow = '0 0 20px var(--danger)'; }
+                    t.style.left = `${e.clientX - 20 + (Math.random()*40)}px`; t.style.top = `${e.clientY - 20}px`;
                     document.body.appendChild(t); setTimeout(()=> t.remove(), 800);
                     
                     if(Math.random() > 0.7) App.Logic.addExp(2);
@@ -763,17 +808,14 @@
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
                     let currentLv = me.clickPower || 1;
                     let cost = currentLv * 1000;
-                    
-                    if(me.score < cost) return App.UI.toast(`비용이 부족합니다. (${cost}C 필요)`, "error");
-                    
-                    me.score -= cost;
-                    me.clickPower = currentLv + 1;
+                    if(me.score < cost) return App.UI.toast(`비용 부족 (${cost}C 필요)`, "error");
+                    me.score -= cost; me.clickPower = currentLv + 1;
                     db.save(data); App.user = me; App.UI.renderProfile(); App.UI.renderUpgrades();
-                    App.UI.toast(`클릭 파워가 LV.${me.clickPower}(으)로 상승했습니다!`, "success");
+                    App.UI.toast(`클릭 파워 상승! (LV.${me.clickPower})`, "success");
                 },
                 spinRoulette: () => {
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
-                    if(me.score < 500) return App.UI.toast("크레딧이 부족합니다.", "error");
+                    if(me.score < 500) return App.UI.toast("크레딧 부족", "error");
                     me.score -= 500; db.save(data); App.user = me; App.UI.renderProfile();
                     
                     const wheel = document.getElementById('roulette-wheel');
@@ -784,9 +826,9 @@
                         let d = db.get(); let m = d.users.find(u => u.name === App.user.name);
                         
                         if(r < 0.05) { m.score += 10000; App.UI.toast("🎉 대박! 10,000 C 당첨!", "success"); }
-                        else if(r < 0.1) { m.level += 1; App.UI.toast("🚀 초초대박! 1 레벨 상승!", "success"); }
+                        else if(r < 0.1) { m.level += 1; App.UI.toast("🚀 초대박! 레벨 상승!", "success"); }
                         else if(r < 0.4) { m.score += 1000; App.UI.toast("✨ 1,000 C 당첨!", "success"); }
-                        else { m.score += 100; App.UI.toast("100 C 획득. (꽝)", "info"); }
+                        else { m.score += 100; App.UI.toast("100 C (꽝)", "info"); }
                         
                         db.save(d); App.user = m; App.UI.renderProfile(); App.UI.renderRank();
                     }, 1500);
@@ -797,13 +839,11 @@
                 roll: (choice) => {
                     const betInput = document.getElementById('bet-amount');
                     let bet = parseInt(betInput.value);
-                    if(isNaN(bet) || bet <= 0) return App.UI.toast("올바른 금액을 입력하세요.", "error");
+                    if(isNaN(bet) || bet <= 0) return App.UI.toast("올바른 금액 입력", "error");
                     
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
-                    if(me.score < bet) return App.UI.toast("크레딧이 부족합니다.", "error");
-
-                    me.score -= bet;
-                    db.save(data); App.user = me; App.UI.renderProfile();
+                    if(me.score < bet) return App.UI.toast("크레딧 부족", "error");
+                    me.score -= bet; db.save(data); App.user = me; App.UI.renderProfile();
 
                     const diceEl = document.getElementById('dice-display');
                     let rolls = 0;
@@ -820,12 +860,8 @@
                             let win = (choice === 'under' && isUnder) || (choice === 'over' && !isUnder);
 
                             let d = db.get(); let m = d.users.find(u => u.name === App.user.name);
-                            if(win) {
-                                m.score += (bet * 2);
-                                App.UI.toast(`🎉 [${result}] 성공! ${bet*2} C 획득!`, "success");
-                            } else {
-                                App.UI.toast(`💀 [${result}] 실패! 베팅금을 잃었습니다.`, "error");
-                            }
+                            if(win) { m.score += (bet * 2); App.UI.toast(`🎉 [${result}] 성공! ${bet*2} C 획득!`, "success"); } 
+                            else { App.UI.toast(`💀 [${result}] 실패! 베팅금을 잃었습니다.`, "error"); }
                             db.save(d); App.user = m; App.UI.renderProfile();
                         }
                     }, 100);
@@ -904,6 +940,7 @@
                     box.scrollTop = box.scrollHeight;
                 },
                 send: () => {
+                    if (db.get().chatFrozen && App.user.role !== 'dev') return App.UI.toast("채팅 동결됨", "error");
                     const inp = document.getElementById('inp-chat'); const text = inp.value.trim();
                     if (!text) return;
                     if (text === '/clear') { document.getElementById('chat-box').innerHTML = ''; inp.value=''; return; }
@@ -1023,6 +1060,12 @@
                         let ms = (diff % 1000).toString().padStart(3, '0');
                         document.getElementById('server-uptime').innerText = `UPTIME: ${h}:${m}:${s}:${ms}`;
                     }, 47);
+                },
+                renderLogs: () => {
+                    const box = document.getElementById('log-list'); if(!box) return; box.innerHTML = '';
+                    [...db.get().logs].reverse().forEach(log => {
+                        box.innerHTML += `<div class="log-entry"><span style="color:var(--neon-blue);">[${log.time}]</span> <span style="color:${log.type==='CRITICAL'?'var(--danger)':'var(--dev-color)'}; font-weight:bold;">[${log.type}] ${log.action}</span> ${log.detail ? `<span>- ${log.detail}</span>` : ''}</div>`;
+                    });
                 }
             },
 
@@ -1048,7 +1091,7 @@
                     
                     if(type === 'status') { title.innerText = '상태 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control" maxlength="20">`; btn.onclick = () => { let data = db.get(); let me = data.users.find(u=>u.name === App.user.name); me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status; App.initDashboard(); App.Modal.close(); }; }
                     else if(type === 'giveScore' || type === 'giveExp') { title.innerText = '에디터'; body.innerHTML = genSelect() + `<input type="number" id="m-val" class="form-control" placeholder="수량">`; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, type, parseInt(document.getElementById('m-val').value||0)); }
-                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerText = '권한'; body.innerHTML = genSelect(true); let mode = type==='promoteDev'?'promote':'kick'; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
+                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerText = '권한 관리'; body.innerHTML = genSelect(true); let mode = type==='promoteDev'?'promote':'kick'; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
                     else if(type === 'sysNotice') { title.innerText = '전체 공지'; body.innerHTML = `<textarea id="m-val" class="form-control" style="height:80px;"></textarea>`; btn.onclick = () => { let data = db.get(); const msgObj = { sender: 'SYSTEM', type: 'sys', content: `📢 <b>공지</b>: ${document.getElementById('m-val').value}` }; data.chats.push(msgObj); db.save(data); App.Chat.renderAll(); P2P.broadcast(msgObj); App.Modal.close(); }; }
                     overlay.classList.add('active');
                 },
@@ -1058,7 +1101,6 @@
             Utils: { time: () => { const d = new Date(); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }, timeSec: () => { const d = new Date(); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`; } },
 
             initDashboard: () => {
-                // UI 초기화 부하를 줄이기 위해 setTimeout 분할 실행 (최적화)
                 setTimeout(() => App.UI.renderProfile(), 0);
                 setTimeout(() => App.UI.renderUpgrades(), 0);
                 setTimeout(() => App.UI.renderUsers(), 10);
@@ -1085,13 +1127,13 @@
             }
         };
 
-        // 로딩 화면을 위해 window onload 대기
-        window.addEventListener('load', () => {
+        // 완전 비동기 이벤트 등록 (화면 멈춤 완전 차단)
+        document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inp-pw').addEventListener('keypress', e => e.key === 'Enter' && App.Auth.checkPassword());
             document.getElementById('inp-name').addEventListener('keypress', e => e.key === 'Enter' && App.Auth.login());
             document.getElementById('inp-chat').addEventListener('keypress', e => e.key === 'Enter' && App.Chat.send());
-            // 로딩 시작
-            setTimeout(App.Boot.start, 300);
+            
+            setTimeout(App.Boot.start, 100);
         });
 
     </script>
