@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AndPlayZone | V6.0 OMEGA FULL EDITION</title>
+    <title>AndPlayZone | V6.5 OMEGA PERFECT</title>
+    <!-- FontAwesome & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- P2P MultiPlayer -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
     
     <style>
-        /* [1] OMEGA DESIGN SYSTEM & VARIABLES */
+        /* =========================================================
+           [1] DESIGN SYSTEM & THEME
+           ========================================================= */
         :root {
             --bg-deep: #020305; --bg-panel: rgba(8, 10, 15, 0.85); --bg-panel-solid: #090b10;
             --neon-blue: #00f3ff; --neon-purple: #bc13fe; --neon-pink: #ff00a0; --neon-green: #00ff66;
@@ -25,11 +29,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-deep); color: var(--text-main); height: 100dvh; width: 100vw; overflow: hidden; perspective: 1200px; }
 
-        /* Scrollbar & Global Animations */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.8); border-radius: 10px; margin: 4px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple)); border-radius: 10px; }
 
+        /* Background Effects */
         .cyber-grid { position: absolute; top: 0; left: -50%; width: 200%; height: 150%; z-index: -2; background-image: linear-gradient(rgba(0, 243, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.15) 1px, transparent 1px); background-size: 50px 50px; transform: rotateX(65deg) translateY(-100px) translateZ(-250px); animation: gridMove 4s linear infinite; }
         @keyframes gridMove { 0% { transform: rotateX(65deg) translateY(0) translateZ(-250px); } 100% { transform: rotateX(65deg) translateY(50px) translateZ(-250px); } }
         .bg-gradient { position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 50% 30%, transparent 10%, #020305 85%); z-index: -1; }
@@ -40,31 +44,31 @@
         .orb-2 { width: 500px; height: 500px; background: var(--neon-purple); bottom: -150px; right: -100px; animation-delay: -5s; }
         @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(100px, 100px) scale(1.4); } }
 
+        /* Animations */
         @keyframes blink { 50% { opacity: 0; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes rgbGlow { 0%{color:#ff0000; text-shadow:0 0 30px #ff0000;} 33%{color:#00ff00; text-shadow:0 0 30px #00ff00;} 66%{color:#0000ff; text-shadow:0 0 30px #0000ff;} 100%{color:#ff0000; text-shadow:0 0 30px #ff0000;} }
         @keyframes shake { 0% { transform: translate(2px, 1px) rotate(0deg); } 50% { transform: translate(-2px, -2px) rotate(-1deg); } 100% { transform: translate(-1px, 2px) rotate(1deg); } }
         .screen-shake { animation: shake 0.2s infinite; }
 
-        /* [3] GLASSMORPHISM & SCREENS */
+        /* [2] BASE UI COMPONENTS */
         .glass { background: var(--bg-panel); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border-light); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(0, 243, 255, 0.05); }
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100dvh; display: none; opacity: 0; transform: scale(1.05) translateY(20px); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10; align-items: center; justify-content: center; }
-        .screen.active { display: flex; opacity: 1; transform: scale(1) translateY(0); z-index: 20; }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100dvh; display: none; opacity: 0; transform: scale(1.05); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10; align-items: center; justify-content: center; }
+        .screen.active { display: flex; opacity: 1; transform: scale(1); z-index: 20; }
         
         .btn { padding: 1.2rem 1.8rem; border: none; border-radius: var(--radius-md); font-weight: 900; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; font-size: 1.05rem; transition: 0.3s; z-index: 1; }
         .btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: 0.5s; z-index: -1; }
         .btn:hover::before { transform: translateX(100%); }
+        .btn:active { transform: scale(0.95); }
         .btn-cyber { background: linear-gradient(135deg, var(--neon-blue), #0051ff); box-shadow: 0 8px 25px rgba(0, 243, 255, 0.3); border: 1px solid rgba(0, 243, 255, 0.6); }
-        .btn-cyber:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 40px rgba(0, 243, 255, 0.6); }
-        .btn-legend { background: linear-gradient(135deg, var(--dev-color), #ff4500); box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3); border: 1px solid rgba(255, 215, 0, 0.6); color: black; }
+        .btn-cyber:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0, 243, 255, 0.6); }
         
         .input-group { position: relative; width: 100%; margin-bottom: 1.8rem; }
         .input-group i { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--neon-blue); font-size: 1.3rem; }
-        .input-field { width: 100%; padding: 1.5rem 1.5rem 1.5rem 4.2rem; border-radius: var(--radius-md); background: rgba(0,0,0,0.8); border: 2px solid rgba(0, 243, 255, 0.2); color: white; outline: none; font-size: 1.15rem; transition: 0.3s; font-family: var(--font-mono); }
+        .input-field { width: 100%; padding: 1.5rem 1.5rem 1.5rem 4.2rem; border-radius: var(--radius-md); background: rgba(0,0,0,0.8); border: 2px solid rgba(0, 243, 255, 0.2); color: white; outline: none; font-size: 1.15rem; transition: 0.3s; font-family: var(--font-mono); box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
         .input-field:focus { border-color: var(--neon-blue); box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); }
 
-        /* [4] BOOT & AUTH SCREENS */
+        /* [3] BOOT & AUTH */
         #screen-boot { flex-direction: column; background: #000; color: var(--neon-green); font-family: var(--font-mono); justify-content: center; align-items: flex-start; padding: 2rem; z-index: 999; }
         .term-line { font-size: 1.25rem; margin-bottom: 12px; text-shadow: 0 0 10px var(--neon-green); font-weight: bold; }
         .cursor-blink { animation: blink 1s step-end infinite; background: var(--neon-green); color: black; padding: 0 5px; }
@@ -74,15 +78,41 @@
         .auth-box { width: 90%; max-width: 450px; padding: 3.5rem; border-radius: var(--radius-lg); text-align: center; border: 2px solid var(--neon-blue); }
         .auth-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 0.5rem; font-family: var(--font-scifi); background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* [5] MEGA DASHBOARD LAYOUT (GRID - 찌그러짐 원천 차단) */
-        #screen-main { display: none; height: 100dvh; width: 100vw; background: transparent; }
-        @media (min-width: 1025px) {
-            #screen-main.active { display: grid; grid-template-columns: 320px minmax(450px, 1fr) 380px; grid-template-rows: 100%; padding: 1.5rem; gap: 1.5rem; box-sizing: border-box; }
+        /* =========================================================
+           [4] 🔥 BULLETPROOF MEGA DASHBOARD LAYOUT (찌그러짐 완벽 방어)
+           ========================================================= */
+        #screen-main { display: none; height: 100dvh; width: 100vw; background: transparent; padding: 1.5rem; gap: 1.5rem; box-sizing: border-box; }
+        
+        /* [PC 화면: 1201px 이상] 넓은 화면에서만 3단 패널 사용 */
+        @media (min-width: 1201px) {
+            #screen-main.active { display: flex; flex-direction: row; justify-content: center; align-items: stretch; }
+            .panel-left { width: 320px; flex-shrink: 0; }
+            .panel-center { flex: 1; min-width: 400px; max-width: 1200px; flex-shrink: 0; display: flex; flex-direction: column; }
+            .panel-right { width: 380px; flex-shrink: 0; }
             .mobile-header { display: none !important; }
         }
 
-        .layout-panel { background: var(--bg-panel); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-light); border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; height: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        /* [태블릿/모바일 화면: 1200px 이하] 태블릿 가로모드 포함. 패널들이 좁아져 찌그러지지 않도록 서랍형 UI로 강제 전환 */
+        @media (max-width: 1200px) {
+            #screen-main { padding: 0; gap: 0; }
+            #screen-main.active { display: flex; flex-direction: column; }
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); flex-shrink: 0; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
+            
+            .panel-left, .panel-right { position: fixed; top: 0; bottom: 0; height: 100dvh; z-index: 10000; background: rgba(8, 10, 15, 0.98); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 0; border: none; }
+            .panel-left { left: 0; transform: translateX(-100%); width: 85%; max-width: 360px; border-right: 2px solid var(--neon-blue); }
+            .panel-right { right: 0; transform: translateX(100%); width: 85%; max-width: 380px; border-left: 2px solid var(--neon-purple); }
+            .panel-left.open, .panel-right.open { transform: translateX(0); }
+            
+            /* 중앙 패널은 남은 화면 100% 꽉 채우기 */
+            .panel-center { flex: 1; height: calc(100dvh - 75px); width: 100%; border-radius: 0; border: none; display: flex; flex-direction: column; position: relative; }
+            
+            .mobile-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9000; display: none; opacity: 0; transition: 0.3s; }
+            .mobile-overlay.active { display: block; opacity: 1; }
+        }
+
+        .layout-panel { background: var(--bg-panel); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-light); border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         
+        /* 공통 패널 UI */
         .server-header { padding: 2rem; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,243,255,0.2); flex-shrink: 0; }
         .server-tag { background: rgba(0, 243, 255, 0.15); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 900; display: inline-block; margin-bottom: 12px; font-family: var(--font-scifi); }
         .hud-clock { font-family: var(--font-mono); font-size: 1.1rem; color: var(--success); margin-top: 10px; text-shadow: 0 0 10px var(--success); font-weight: bold; }
@@ -97,19 +127,18 @@
         .user-name-txt { font-weight: 900; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 8px; align-items: center; }
         .user-title { font-size: 0.75rem; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 2px 6px; border-radius: 5px; font-weight: bold; background: rgba(188,19,254,0.1); }
         
-        /* Center Panel Tabs */
-        .panel-center { flex: 1; min-width: 0; position: relative; }
+        /* 중앙 탭 기능 */
         .nav-tabs-wrapper { background: rgba(0,0,0,0.7); border-bottom: 1px solid rgba(255,255,255,0.1); overflow-x: auto; flex-shrink: 0; }
         .nav-tabs { display: flex; min-width: max-content; }
         .tab-btn { padding: 1.5rem 1.8rem; background: none; border: none; color: var(--text-muted); font-weight: 900; font-size: 1.05rem; cursor: pointer; display: flex; gap: 10px; border-bottom: 4px solid transparent; transition: 0.3s; font-family: var(--font-scifi); }
         .tab-btn.active { color: var(--neon-blue); border-bottom-color: var(--neon-blue); background: rgba(0, 243, 255, 0.1); text-shadow: 0 0 20px rgba(0,243,255,0.8); }
 
-        .tab-content { display: none; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; }
-        .tab-content.active { display: flex; animation: fadeIn 0.4s ease; }
+        .tab-content { display: none; flex: 1; flex-direction: column; overflow-y: auto; overflow-x: hidden; min-height: 0; }
+        .tab-content.active { display: flex; animation: fadeIn 0.3s ease; }
 
         /* CHAT UI */
-        .chat-messages { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.8rem; min-height: 0; scroll-behavior: smooth; }
-        .chat-msg { display: flex; gap: 15px; max-width: 85%; animation: slideInRight 0.3s ease-out; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.8rem; scroll-behavior: smooth; }
+        .chat-msg { display: flex; gap: 15px; max-width: 85%; }
         .chat-msg.me { align-self: flex-end; flex-direction: row-reverse; }
         .msg-content { display: flex; flex-direction: column; gap: 6px; }
         .chat-msg.me .msg-content { align-items: flex-end; }
@@ -125,12 +154,12 @@
 
         /* HYPER CLICKER MINIGAME */
         .minigame-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); position: relative; overflow: hidden; }
-        .combo-container { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; }
+        .combo-container { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; width: 80%; max-width: 400px; }
         .combo-container.active { opacity: 1; transform: translateX(-50%) scale(1.1); }
         .combo-text { font-size: 4rem; font-weight: 900; font-family: var(--font-scifi); color: var(--danger); text-shadow: 0 0 40px var(--danger); font-style: italic; letter-spacing: 3px; }
         .combo-container.max .combo-text { animation: rgbGlow 0.5s infinite, shake 0.2s infinite; font-size: 5rem; }
         .combo-multiplier { font-size: 2rem; color: white; font-weight: 900; background: rgba(0,0,0,0.8); padding: 8px 20px; border-radius: 12px; border: 2px solid var(--danger); font-family: var(--font-mono); }
-        .combo-bar-bg { width: 350px; height: 18px; background: rgba(0,0,0,0.8); border-radius: 10px; margin-top: 20px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); }
+        .combo-bar-bg { width: 100%; height: 18px; background: rgba(0,0,0,0.8); border-radius: 10px; margin-top: 20px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); }
         .combo-bar-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ff1744, #ff00a0); transition: width 0.1s linear; }
 
         .mining-core { width: 250px; height: 250px; background: url('https://cdn-icons-png.flaticon.com/512/1198/1198305.png') center/cover; filter: drop-shadow(0 0 60px var(--neon-blue)); cursor: pointer; animation: pulseCore 2.5s infinite; margin-top: 4rem; margin-bottom: 3rem; z-index: 5; user-select: none; transition: 0.05s; }
@@ -148,10 +177,10 @@
         .upgrade-box { background: rgba(0,0,0,0.85); border: 2px solid rgba(0,243,255,0.4); border-radius: var(--radius-lg); padding: 2rem; width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 40px rgba(0,0,0,0.8); margin-top: 2rem; }
 
         /* CASINO, TRADE, SHOP, ROULETTE */
-        .casino-box { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-pink); border-radius: var(--radius-lg); padding: 4rem 3rem; width: 90%; max-width: 550px; text-align: center; margin: auto; box-shadow: inset 0 0 40px rgba(255, 0, 160, 0.2); }
-        .roulette-box { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-purple); border-radius: var(--radius-lg); padding: 4rem 3rem; text-align: center; max-width: 550px; margin: auto; }
+        .casino-box { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-pink); border-radius: var(--radius-lg); padding: 4rem 2rem; width: 90%; max-width: 550px; text-align: center; margin: auto; box-shadow: inset 0 0 40px rgba(255, 0, 160, 0.2); }
+        .roulette-box { background: rgba(0,0,0,0.8); border: 2px solid var(--neon-purple); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center; max-width: 550px; width: 90%; margin: auto; }
         .roulette-icon { font-size: 9rem; color: var(--neon-purple); margin-bottom: 3rem; filter: drop-shadow(0 0 50px var(--neon-purple)); }
-        .coin-box { background: rgba(0,0,0,0.8); border: 2px solid var(--dev-color); border-radius: var(--radius-lg); padding: 4rem; width: 90%; max-width: 550px; margin: auto; text-align: center; }
+        .coin-box { background: rgba(0,0,0,0.8); border: 2px solid var(--dev-color); border-radius: var(--radius-lg); padding: 4rem 2rem; width: 90%; max-width: 550px; margin: auto; text-align: center; }
 
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 2.5rem; }
         .shop-item { background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: 0.4s; position: relative; overflow: hidden; }
@@ -169,7 +198,7 @@
         .shop-item:hover .shop-icon { transform: scale(1.1); }
         .shop-price { font-family: var(--font-mono); color: var(--dev-color); font-weight: 900; font-size: 1.6rem; margin: 25px 0; }
 
-        .quest-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 2.5rem; margin: 2rem; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; }
+        .quest-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 2.5rem; margin: 2rem; display: flex; justify-content: space-between; align-items: center; transition: 0.4s; flex-wrap: wrap; gap: 15px; }
         .quest-item:hover { border-color: var(--neon-blue); transform: translateX(10px); }
 
         /* RIGHT PANEL PROFILE */
@@ -178,7 +207,7 @@
         .booster-badge { position: absolute; top: -15px; right: -15px; font-size: 2.8rem; color: var(--neon-pink); display: none; animation: pulseCore 1s infinite; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 2rem; flex-shrink: 0; }
-        .stat-box { background: rgba(0,0,0,0.7); padding: 2rem 1rem; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-box { background: rgba(0,0,0,0.7); padding: 2rem 1rem; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;}
         .exp-container { width: 100%; margin-top: 20px; background: rgba(0,0,0,0.8); border-radius: 15px; padding: 6px; position: relative; }
         .exp-bar { height: 16px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); border-radius: 12px; width: 0%; transition: 0.6s; }
         .exp-text { position: absolute; top: -28px; right: 0; font-size: 0.95rem; color: #fff; font-family: var(--font-mono); font-weight: 900; }
@@ -189,31 +218,18 @@
         .dev-btn { background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; font-size: 1rem; cursor: pointer; text-align: center; font-weight: 900; }
         .dev-btn:hover { background: var(--dev-color); color: black; }
 
-        /* [6] MOBILE OVERLAY & RESPONSIVE */
-        @media (max-width: 1100px) {
-            #screen-main.active { display: flex; flex-direction: column; padding: 0; gap: 0; }
-            .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 1.8rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); flex-shrink: 0; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
-            .panel-left, .panel-right { position: fixed; top: 0; bottom: 0; height: 100dvh; z-index: 10000; background: rgba(8, 10, 15, 0.98); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 0; }
-            .panel-left { left: 0; transform: translateX(-100%); width: 88%; max-width: 380px; border-right: 2px solid var(--neon-blue); }
-            .panel-right { right: 0; transform: translateX(100%); width: 88%; max-width: 420px; border-left: 2px solid var(--neon-purple); }
-            .panel-left.open, .panel-right.open { transform: translateX(0); }
-            .panel-center { flex: 1; border-radius: 0; border: none; height: auto; position: relative; background: transparent; }
-            .mobile-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 9000; display: none; opacity: 0; transition: 0.4s ease; }
-            .mobile-overlay.active { display: block; opacity: 1; }
-        }
-
         /* [7] MODALS & TOASTS */
         .modal-overlay-global { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 20000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
         .modal-overlay-global.active { opacity: 1; pointer-events: all; }
-        .modal-content { width: 90%; max-width: 550px; background: var(--bg-panel-solid); border: 2px solid var(--neon-blue); border-radius: var(--radius-lg); padding: 4rem; transform: scale(0.9) translateY(40px); transition: 0.4s; text-align: center; }
+        .modal-content { width: 90%; max-width: 550px; background: var(--bg-panel-solid); border: 2px solid var(--neon-blue); border-radius: var(--radius-lg); padding: 4rem; transform: scale(0.9) translateY(40px); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,243,255,0.15); text-align: center; }
         .modal-overlay-global.active .modal-content { transform: scale(1) translateY(0); }
+        .form-control { width: 100%; padding: 1.4rem; background: rgba(0,0,0,0.7); border: 1px solid rgba(0,243,255,0.3); color: white; border-radius: var(--radius-md); margin-bottom: 1.5rem; outline:none; font-size: 1.15rem; font-family: var(--font-mono); }
 
         #toast-box { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 30000; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 500px; pointer-events: none; }
         .toast { background: rgba(10, 12, 20, 0.98); border-left: 8px solid var(--neon-blue); padding: 20px 30px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; display: flex; align-items: center; gap: 20px; animation: slideDownToast 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; font-family: var(--font-mono); }
         .toast.success { border-color: var(--success); color: var(--success); }
         .toast.error { border-color: var(--danger); color: var(--danger); }
         @keyframes slideDownToast { from { opacity: 0; transform: translateY(-100px) translateX(-50%); } to { opacity: 1; transform: translateY(0) translateX(-50%); } }
-        @keyframes fadeOutToast { to { opacity: 0; transform: translateY(-30px) translateX(-50%); } }
     </style>
 </head>
 <body>
@@ -259,7 +275,7 @@
     <div id="screen-main" class="screen">
         <div class="mobile-header">
             <button class="btn-circle" onclick="App.UI.toggleLeft()" style="width:55px; height:55px;"><i class="fa-solid fa-server"></i></button>
-            <h2 style="font-size: 1.5rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-scifi); letter-spacing: 3px;">NEXUS V6.0</h2>
+            <h2 style="font-size: 1.5rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-scifi); letter-spacing: 3px;">NEXUS V6.5</h2>
             <button class="btn-circle" onclick="App.UI.toggleRight()" style="width:55px; height:55px;"><i class="fa-solid fa-user-shield"></i></button>
         </div>
 
@@ -272,7 +288,7 @@
             </div>
             <div style="padding: 1.8rem; background: rgba(0, 243, 255, 0.03); border-bottom: 1px solid var(--border-light);">
                 <div style="font-size:1.05rem; color:var(--neon-blue); margin-bottom:15px; font-weight:900;"><i class="fa-solid fa-link"></i> 멀티플레이 P2P 초대</div>
-                <button class="btn btn-cyber" style="width: 100%; padding: 1.2rem; font-size: 1.05rem;" onclick="P2P.copyInviteLink()"><i class="fa-regular fa-copy"></i> 서버 초대 링크 복사</button>
+                <button class="btn btn-cyber" style="width: 100%; padding: 1.2rem; font-size: 1.05rem;" onclick="P2P.copyInviteLink()"><i class="fa-regular fa-copy"></i> 초대 링크 복사</button>
             </div>
             <ul class="user-list" id="list-users"></ul>
         </div>
@@ -321,7 +337,7 @@
                     <div class="upgrade-box" style="background: rgba(0,0,0,0.85); border: 2px solid rgba(0,243,255,0.4); border-radius: var(--radius-lg); padding: 2rem; width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
                         <div>
                             <div style="color: var(--neon-blue); font-weight: 900; font-size: 1.5rem; margin-bottom: 8px;">클릭 파워 LV.<span id="click-power-lv">1</span></div>
-                            <div style="color: var(--text-muted); font-size: 1.05rem;">기본 클릭 수익을 영구 증가시킵니다.</div>
+                            <div style="color: var(--text-muted); font-size: 1.05rem;">기본 클릭 수익 영구 증가</div>
                         </div>
                         <button class="btn btn-cyber" style="padding: 1.4rem 1.8rem; font-size: 1.2rem;" onclick="App.Game.upgradeClick()"><span id="upgrade-cost">1,000</span> C</button>
                     </div>
@@ -347,7 +363,7 @@
 
             <!-- TRADE -->
             <div id="tab-trade" class="tab-content" style="align-items:center; justify-content:center;">
-                <div class="trade-wrapper" style="text-align:center;">
+                <div class="trade-wrapper" style="text-align:center; width: 100%;">
                     <h2 style="color: var(--neon-purple); margin-bottom: 25px; font-size: 3rem; font-family: var(--font-scifi);"><i class="fa-brands fa-bitcoin"></i> 코인 거래소</h2>
                     <div class="coin-box" style="background: rgba(0,0,0,0.8); border: 2px solid var(--dev-color); border-radius: var(--radius-lg); padding: 4rem; width: 90%; max-width: 550px; margin: auto;">
                         <div style="font-size: 1.3rem; color: rgba(255,255,255,0.6); font-weight: bold;">현재 시세 (1 COIN)</div>
@@ -362,37 +378,44 @@
             </div>
 
             <!-- SHOP -->
-            <div id="tab-shop" class="tab-content">
-                <div class="shop-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 2.5rem;">
+            <div id="tab-shop" class="tab-content" style="overflow-y:auto; padding: 1.5rem;">
+                <div class="shop-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
                     <div class="shop-item" style="background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <i class="fa-solid fa-robot shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--success);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi);">오토 채굴 봇</h3>
-                        <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">자동으로 크레딧 채굴. 구매 시 비용 상승.</p>
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">자동으로 크레딧 채굴. 비용 상승.</p>
                         <div class="shop-price" id="shop-bot-cost" style="font-size: 1.6rem; color: var(--dev-color); font-weight: 900; margin: 20px 0;">50,000 C</div>
                         <button class="btn btn-cyber" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('bot')">구매하기</button>
                     </div>
-                    <div class="shop-item">
+                    <div class="shop-item" style="background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <i class="fa-solid fa-fire shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--danger);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi);">EXP 부스터</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">10분간 모든 경험치 2배 획득</p>
                         <div class="shop-price" style="font-size: 1.6rem; color: var(--dev-color); font-weight: 900; margin: 20px 0;">30,000 C</div>
                         <button class="btn btn-cyber" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('booster', 30000)">구매하기</button>
                     </div>
-                    <div class="shop-item tier-epic" style="border-color: var(--tier-epic);">
+                    <div class="shop-item tier-epic" style="border: 1px solid var(--tier-epic); background: rgba(0,0,0,0.7); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <i class="fa-solid fa-building-columns shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--tier-epic);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-epic);">스위스 은행 계좌</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">30초마다 자산의 1% 이자 지급</p>
                         <div class="shop-price" style="font-size: 1.6rem; color: var(--dev-color); font-weight: 900; margin: 20px 0;">1,000,000 C</div>
                         <button class="btn" style="background: var(--tier-epic); color:white; padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('bank', 1000000)">계좌 개설</button>
                     </div>
-                    <div class="shop-item tier-legend" style="border-color: var(--tier-legend);">
+                    <div class="shop-item tier-legend" style="border: 1px solid var(--tier-legend); background: rgba(0,0,0,0.7); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+                        <i class="fa-solid fa-gauge-high shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--tier-legend);"></i>
+                        <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-legend);">오버클럭 칩셋</h3>
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">콤보 한계치를 20배로 확장</p>
+                        <div class="shop-price" style="font-size: 1.6rem; color: var(--dev-color); font-weight: 900; margin: 20px 0;">5,000,000 C</div>
+                        <button class="btn btn-legend" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('limit_break', 5000000)">오버클럭</button>
+                    </div>
+                    <div class="shop-item tier-legend" style="border: 1px solid var(--tier-legend); background: rgba(0,0,0,0.7); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <i class="fa-brands fa-bitcoin shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--tier-legend);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-legend);">ASIC 채굴기</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">접속 중일 때 1분마다 1 COIN 자동 채굴</p>
                         <div class="shop-price" style="font-size: 1.6rem; color: var(--dev-color); font-weight: 900; margin: 20px 0;">10,000,000 C</div>
                         <button class="btn btn-legend" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('coin_miner', 10000000)">설치하기</button>
                     </div>
-                    <div class="shop-item tier-mythic" style="border-color: var(--tier-mythic);">
+                    <div class="shop-item tier-mythic" style="border: 1px solid var(--tier-mythic); background: rgba(0,0,0,0.7); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <i class="fa-solid fa-infinity shop-icon" style="font-size: 4.5rem; margin-bottom: 2rem; color: var(--tier-mythic);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-mythic);">NEXUS CORE</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">모든 크레딧 및 경험치 1.5배 영구 증폭</p>
@@ -412,12 +435,12 @@
                 </div>
             </div>
 
-            <div id="tab-quest" class="tab-content"><div id="quest-container"></div></div>
-            <div id="tab-rank" class="tab-content" style="padding: 3rem;">
+            <div id="tab-quest" class="tab-content" style="overflow-y:auto;"><div id="quest-container"></div></div>
+            <div id="tab-rank" class="tab-content" style="padding: 3rem; overflow-y:auto;">
                 <h2 style="color: var(--dev-color); margin-bottom: 40px; font-size: 2.8rem; font-family: var(--font-scifi);"><i class="fa-solid fa-trophy"></i> 글로벌 서버 랭킹 (레벨순)</h2>
                 <div id="ranking-list" style="display: flex; flex-direction: column; gap: 18px;"></div>
             </div>
-            <div id="tab-logs" class="tab-content" style="padding: 2rem; background: #000; font-family: var(--font-mono); font-size: 1rem; color: #a0a0a0;">
+            <div id="tab-logs" class="tab-content" style="padding: 2rem; background: #000; font-family: var(--font-mono); font-size: 1rem; color: #a0a0a0; overflow-y:auto;">
                 <div style="color: var(--danger); font-weight: bold; margin-bottom: 20px; font-size: 1.2rem;">[ROOT TERMINAL] AUDIT LOGS...</div>
                 <div id="log-list"></div>
             </div>
@@ -433,11 +456,11 @@
             
             <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 2rem; flex-shrink: 0;">
                 <div class="stat-box" style="background: rgba(0,0,0,0.7); padding: 2rem 1rem; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-size: 1.8rem; font-weight: 900; color: var(--success); font-family: var(--font-mono);" id="my-score">0</div>
+                    <div style="font-size: 1.8rem; font-weight: 900; color: var(--success); font-family: var(--font-mono); text-shadow: 0 0 15px rgba(0,230,118,0.5);" id="my-score">0</div>
                     <div style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; font-weight:bold;">Credit (C)</div>
                 </div>
                 <div class="stat-box" style="background: rgba(0,0,0,0.7); padding: 2rem 1rem; border-radius: var(--radius-md); text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="font-size: 1.8rem; font-weight: 900; color: var(--success); font-family: var(--font-mono);" id="my-level">1</div>
+                    <div style="font-size: 1.8rem; font-weight: 900; color: var(--success); font-family: var(--font-mono); text-shadow: 0 0 15px rgba(0,230,118,0.5);" id="my-level">1</div>
                     <div style="font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; font-weight:bold;">Level</div>
                 </div>
             </div>
@@ -451,7 +474,7 @@
 
             <div style="padding: 2rem 1.8rem 0 1.8rem; flex-shrink: 0;">
                 <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 900;"><i class="fa-solid fa-tags"></i> 칭호 인벤토리 장착</div>
-                <select id="title-selector" class="form-control" style="width: 100%; padding: 1.4rem; background: rgba(0,0,0,0.7); border: 1px solid rgba(0,243,255,0.3); color: white; border-radius: var(--radius-md); outline:none; font-size: 1.15rem; font-weight: 900;" onchange="App.UI.changeTitle(this.value)"></select>
+                <select id="title-selector" class="form-control" style="width: 100%; padding: 1.4rem; background: rgba(0,0,0,0.7); border: 1px solid rgba(0,243,255,0.3); color: white; border-radius: var(--radius-md); outline:none; font-size: 1.15rem; font-weight: 900; font-family: var(--font-mono);" onchange="App.UI.changeTitle(this.value)"></select>
             </div>
 
             <div style="padding: 2rem; flex-shrink: 0; border-bottom: 1px solid var(--border-light);">
@@ -491,7 +514,7 @@
     <div id="toast-box"></div>
 
     <script>
-        // 전역 에러 완벽 억제 (화면 먹통 원천 방지)
+        // 에러 억제
         window.onerror = function() { return true; };
 
         // [1] 방탄 DB (AndPlayZone_Ultimate_V3 호환)
@@ -526,12 +549,9 @@
                     
                     if(!Array.isArray(data.users)) data.users = [];
                     data.users.forEach(u => {
-                        u.score = Number(u.score) || 0;
-                        u.level = Number(u.level) || 1;
-                        u.exp = Number(u.exp) || 0;
-                        u.coins = Number(u.coins) || 0;
-                        u.miners = Number(u.miners) || 0;
-                        u.clickPower = Number(u.clickPower) || 1;
+                        u.score = Number(u.score) || 0; u.level = Number(u.level) || 1;
+                        u.exp = Number(u.exp) || 0; u.coins = Number(u.coins) || 0;
+                        u.miners = Number(u.miners) || 0; u.clickPower = Number(u.clickPower) || 1;
                         u.hasBank = Boolean(u.hasBank);
                         if(!u.name) u.name = "Unknown";
                         if(!Array.isArray(u.titles)) u.titles = ['초보자'];
@@ -627,7 +647,7 @@
 
             Boot: {
                 start: () => {
-                    const lines = ["CONNECTING TO OMEGA NEXUS V6.0...", "BYPASSING QUANTUM FIREWALLS...", "INITIALIZING MYTHIC ITEM DATABASE...", "LOADING HYPER-VFX SHADERS [SUCCESS]", "SYSTEM READY."];
+                    const lines = ["CONNECTING TO OMEGA NEXUS V6.5...", "BYPASSING QUANTUM FIREWALLS...", "INITIALIZING MYTHIC ITEM DATABASE...", "LOADING HYPER-VFX SHADERS [SUCCESS]", "SYSTEM READY."];
                     const container = document.getElementById('boot-text');
                     const barWrap = document.getElementById('boot-progress-wrap');
                     const barFill = document.getElementById('boot-progress');
@@ -785,7 +805,6 @@
 
                     comboBar.style.transition = 'none'; comboBar.style.width = '100%';
                     if(App.comboTimer) clearTimeout(App.comboTimer);
-                    
                     setTimeout(() => { comboBar.style.transition = 'width 2.5s linear'; comboBar.style.width = '0%'; }, 50);
 
                     App.comboTimer = setTimeout(() => {
@@ -827,11 +846,10 @@
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
                     let currentLv = me.clickPower || 1;
                     let cost = App.getUpgradeCost(currentLv);
-                    
-                    if(me.score < cost) return App.UI.toast(`비용 부족 (${cost.toLocaleString()}C 필요)`, "error");
+                    if(me.score < cost) return App.UI.toast(`크레딧 부족 (${cost.toLocaleString()}C 필요)`, "error");
                     me.score -= cost; me.clickPower = currentLv + 1;
                     db.save(data); App.user = me; App.UI.renderProfile(); App.UI.renderUpgrades();
-                    App.UI.toast(`🔥 클릭 파워 LV.${me.clickPower} 상승!`, "success");
+                    App.UI.toast(`🔥 클릭 파워 LV.${me.clickPower} 달성!`, "success");
                 },
                 spinRoulette: () => {
                     let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
@@ -840,12 +858,9 @@
                     
                     const wheel = document.getElementById('roulette-wheel');
                     wheel.style.animation = 'spin 0.1s linear infinite';
-                    document.getElementById('tab-roulette').style.transform = 'scale(1.05)';
                     
                     setTimeout(() => {
                         wheel.style.animation = 'spin 15s cubic-bezier(0.1, 0.7, 0.1, 1) forwards';
-                        document.getElementById('tab-roulette').style.transform = 'scale(1)';
-                        
                         let r = Math.random();
                         let d = db.get(); let m = d.users.find(u => u.name === App.user.name);
                         
@@ -853,10 +868,10 @@
                         else if(r < 0.05) { m.level += 3; App.UI.toast("🚀 [대박] 3 레벨 상승!!", "success"); }
                         else if(r < 0.20) { m.score += 5000; App.UI.toast("✨ [중박] 5,000 C 당첨!", "success"); }
                         else if(r < 0.60) { m.score += 500; App.UI.toast("😕 [손해] 500 C 획득.", "info"); }
-                        else { App.UI.toast("💀 [파산] 꽝입니다. 1000 C 증발.", "error"); }
+                        else { App.UI.toast("💀 [파산] 꽝입니다.", "error"); }
                         
                         db.save(d); App.user = m; App.UI.renderProfile(); App.UI.renderRank();
-                    }, 1800);
+                    }, 1500);
                 }
             },
 
@@ -890,7 +905,7 @@
 
                             let d = db.get(); let m = d.users.find(u => u.name === App.user.name);
                             if(win) { m.score += (bet * 2); App.UI.toast(`🎉 [${result}] 승리! ${bet*2} C 획득!`, "success"); } 
-                            else { App.UI.toast(`💀 [${result}] 패배... 베팅금 증발.`, "error"); }
+                            else { App.UI.toast(`💀 [${result}] 패배...`, "error"); }
                             db.save(d); App.user = m; App.UI.renderProfile();
                         }
                     }, 80);
@@ -938,8 +953,7 @@
                     if(itemId === 'coin_miner' && me.hasCoinMiner) return App.UI.toast("이미 채굴기 설치함", "error");
                     if(itemId === 'mythic_core' && me.hasMythicCore) return App.UI.toast("이미 코어 융합함", "error");
                     if(itemId === 'title_omega' && me.titles.includes('[OMEGA]')) return App.UI.toast("이미 칭호 보유함", "error");
-                    if(itemId === 'title_gambler' && me.titles.includes('도박사')) return App.UI.toast("이미 칭호 보유함", "error");
-
+                    
                     me.score -= realPrice;
                     if(itemId === 'bot') { me.miners = (me.miners || 0) + 1; App.Logic.startAutoMiner(); App.UI.toast(`봇 증가! (총 ${me.miners}대)`, "success"); }
                     else if(itemId === 'bank') { me.hasBank = true; App.Logic.startBank(); App.UI.toast("스위스 은행 계좌 개설!", "success"); }
@@ -949,7 +963,6 @@
                     else if(itemId === 'coin_miner') { me.hasCoinMiner = true; App.Logic.startCoinMiner(); App.UI.toast("💻 [전설] ASIC 채굴기 가동!", "success"); }
                     else if(itemId === 'mythic_core') { me.hasMythicCore = true; App.UI.toast("👑 [신화] 코어 융합 완료! 모든 획득 1.5배", "success"); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 <b>${me.name}</b> 님이 신화 등급 [NEXUS CORE] 융합! 🚨` }); P2P.broadcast({ sender: 'SYSTEM', type: 'sys', content: `🚨 <b>${me.name}</b> 님이 신화 등급 [NEXUS CORE] 융합! 🚨` }); }
                     else if(itemId === 'title_omega') { me.titles.push('[OMEGA]'); App.UI.toast("👑 [신화] [OMEGA] 칭호 획득", "success"); }
-                    else if(itemId === 'title_gambler') { me.titles.push('도박사'); App.UI.toast("칭호 획득", "success"); }
                     
                     db.save(data); App.user = me; App.initDashboard(); 
                 }
@@ -989,7 +1002,10 @@
                     const msgObj = { sender: App.user.name, type: 'text', content: text, time: App.Utils.time() };
                     let data = db.get(); data.chats.push(msgObj);
                     if(data.chats.length > 300) data.chats.shift();
-                    db.save(data); App.Chat.renderAll(); inp.value = ''; App.Logic.addExp(App.user.level * 2); P2P.broadcast(msgObj); 
+                    db.save(data); 
+                    
+                    App.Chat.renderAll(); 
+                    inp.value = ''; App.Logic.addExp(App.user.level * 2); P2P.broadcast(msgObj); 
                 }
             },
 
@@ -1065,7 +1081,6 @@
                                 <div class="avatar-wrap"><div class="avatar-sm" style="${isDev ? 'background:var(--dev-color); color:black;' : ''}">${u.name.charAt(0)}</div><div class="level-badge">${u.level.toLocaleString()}</div></div>
                                 <div class="user-info">
                                     <div class="user-name-txt" style="${nameColorStyle}">${tBadge} ${u.name}</div>
-                                    <div class="user-status" style="color:var(--text-muted); font-size:0.8rem; font-family: var(--font-mono);">${u.status || 'ONLINE'}</div>
                                 </div>
                             </li>`;
                     });
@@ -1127,31 +1142,21 @@
             },
 
             Dev: {
-                action: (targetName, mode, value = 0) => {
-                    let data = db.get(); let target = data.users.find(u => u.name === targetName); 
-                    if(!target) return App.UI.toast("유저를 찾을 수 없습니다.", "error");
-                    if(mode === 'giveScore') { target.score += value; App.UI.toast(`${value.toLocaleString()}C 지급 완료`, "success"); } 
-                    else if(mode === 'giveExp') { target.exp += value; App.UI.toast(`${value.toLocaleString()}EXP 지급 완료`, "success"); }
-                    else if(mode === 'promote') { target.role = 'dev'; target.titles.push('관리자'); App.UI.toast(`최고 관리자 승격 완료`, "success"); } 
-                    else if(mode === 'kick') { data.users = data.users.filter(u => u.name !== targetName); App.UI.toast(`영구 추방 완료`, "error"); }
-                    db.save(data); if(target && target.name === App.user.name) { App.user = target; }
-                    App.initDashboard(); App.Modal.close(); db.log('ADMIN_ACTION', 'CRITICAL', `${mode} -> ${targetName}`);
+                action: (targetName, mode, value=0) => {
+                    let data = db.get(); let target = data.users.find(u => u.name === targetName); if(!target) return;
+                    if(mode==='giveScore') target.score += value; else if(mode==='giveExp') target.exp += value;
+                    else if(mode==='promote') target.role = 'dev'; else if(mode==='kick') data.users = data.users.filter(u=>u.name!==targetName);
+                    db.save(data); if(target.name === App.user.name) App.user = target; App.initDashboard(); App.Modal.close(); db.log('DEV', 'CRITICAL', mode);
                 },
-                freezeChat: () => { let data = db.get(); data.chatFrozen = !data.chatFrozen; db.save(data); App.UI.toast(data.chatFrozen ? "채팅 동결됨" : "채팅 해제됨", "info"); db.log('CHAT_FREEZE', 'CRITICAL', '상태 변경'); },
-                wipeDB: () => { if(prompt("모든 데이터 삭제. '초기화' 입력") === '초기화') { db.reset(); alert("초기화 완료"); location.reload(); } },
+                freezeChat: () => { let data = db.get(); data.chatFrozen = !data.chatFrozen; db.save(data); App.UI.toast(data.chatFrozen?"얼림":"해제", "info"); },
+                wipeDB: () => { if(prompt("복구 불가. '초기화' 치세요") === '초기화') { db.reset(); location.reload(); } },
                 nukeServer: () => {
-                    let data = db.get(); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b style="color:var(--danger);">CRITICAL WARNING: 서버 폭파 시퀀스 가동!</b> ☢️` }); 
-                    db.save(data); App.Chat.renderAll(); App.Modal.close(); db.log('NUKE', 'CRITICAL');
+                    let data = db.get(); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b style="color:var(--danger);">서버 폭파 시퀀스 가동!</b> ☢️` }); db.save(data); App.Chat.renderAll(); App.Modal.close();
                     let count = 5;
-                    let countdown = setInterval(() => {
-                        let d = db.get(); d.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 서버 붕괴까지... ${count}초 🚨` }); db.save(d); App.Chat.renderAll();
-                        document.body.style.boxShadow = `inset 0 0 ${300 - (count * 40)}px rgba(255, 23, 68, 0.9)`;
-                        document.body.classList.add('screen-shake'); count--;
-                        if(count < 0) {
-                            clearInterval(countdown);
-                            document.body.style.transition = 'all 0.1s'; document.body.style.filter = 'invert(1) contrast(2.5) hue-rotate(180deg) blur(2px)'; document.body.style.transform = 'scale(1.2) rotate(3deg)';
-                            setTimeout(() => { alert("☢️ 서버가 우주 단위로 증발했습니다. ☢️"); location.reload(); }, 1500);
-                        }
+                    let intv = setInterval(() => {
+                        let d = db.get(); d.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 붕괴까지... ${count}초 🚨` }); db.save(d); App.Chat.renderAll();
+                        document.body.style.boxShadow = `inset 0 0 ${300-(count*40)}px rgba(255,23,68,0.9)`; document.body.classList.add('screen-shake'); count--;
+                        if(count<0) { clearInterval(intv); document.body.style.transition = 'all 0.1s'; document.body.style.filter = 'invert(1) contrast(2.5) hue-rotate(180deg) blur(2px)'; document.body.style.transform = 'scale(1.2) rotate(3deg)'; setTimeout(() => { alert("☢️ 증발했습니다 ☢️"); location.reload(); }, 1500); }
                     }, 1000);
                 }
             },
@@ -1159,10 +1164,11 @@
             Modal: {
                 open: (type) => {
                     const overlay = document.getElementById('global-modal'); const title = document.getElementById('modal-title'); const body = document.getElementById('modal-body'); const btn = document.getElementById('modal-confirm');
-                    const genSelect = (ex = false) => { let h = `<select id="m-target" class="form-control" style="font-family:var(--font-mono); font-weight:bold;">`; db.get().users.forEach(u => { if(!(ex && u.name === App.user.name)) h += `<option value="${u.name}">[LV.${u.level}] ${u.name}</option>`; }); return h + `</select>`; };
-                    if(type === 'status') { title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control" placeholder="상태 입력..." maxlength="30">`; btn.onclick = () => { let data = db.get(); let me = data.users.find(u => u.name === App.user.name); me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status; App.initDashboard(); App.Modal.close(); App.UI.toast("업데이트 완료", "success"); }; }
-                    else if(type === 'giveScore' || type === 'giveExp') { title.innerHTML = type === 'giveScore' ? '<i class="fa-solid fa-coins"></i> 자산 에디터' : '<i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작'; body.innerHTML = genSelect() + `<input type="number" id="m-val" class="form-control" style="font-family:var(--font-mono);">`; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, type, parseInt(document.getElementById('m-val').value || 0)); }
-                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerHTML = type === 'promoteDev' ? '<i class="fa-solid fa-user-tie"></i> 관리자 임명' : '<i class="fa-solid fa-gavel"></i> 영구 추방'; body.innerHTML = genSelect(true); let mode = type === 'promoteDev' ? 'promote' : 'kick'; if(mode === 'kick') { btn.style.background = 'var(--danger)'; } else { btn.style.background = 'linear-gradient(135deg, var(--neon-blue), var(--primary))'; } btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
+                    const genSelect = (ex = false) => { let h = `<select id="m-target" class="form-control" style="font-family:var(--font-mono); font-weight:bold;">`; db.get().users.forEach(u => { if(!(ex && u.name===App.user.name)) h += `<option value="${u.name}">[LV.${u.level}] ${u.name}</option>`; }); return h + `</select>`; };
+                    
+                    if(type === 'status') { title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control" placeholder="상태 입력..." maxlength="30">`; btn.onclick = () => { let data = db.get(); let me = data.users.find(u=>u.name === App.user.name); me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status; App.initDashboard(); App.Modal.close(); }; }
+                    else if(type === 'giveScore' || type === 'giveExp') { title.innerHTML = type === 'giveScore' ? '<i class="fa-solid fa-coins"></i> 자산 에디터' : '<i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작'; body.innerHTML = genSelect() + `<input type="number" id="m-val" class="form-control" placeholder="수량" style="font-family:var(--font-mono);">`; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, type, parseInt(document.getElementById('m-val').value||0)); }
+                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerHTML = type === 'promoteDev' ? '<i class="fa-solid fa-user-tie"></i> 관리자 임명' : '<i class="fa-solid fa-gavel"></i> 영구 추방'; body.innerHTML = genSelect(true); let mode = type==='promoteDev'?'promote':'kick'; if(mode === 'kick') { btn.style.background = 'var(--danger)'; } else { btn.style.background = 'linear-gradient(135deg, var(--neon-blue), var(--primary))'; } btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
                     else if(type === 'sysNotice') { title.innerHTML = '<i class="fa-solid fa-bullhorn"></i> 긴급 공지 방송'; body.innerHTML = `<textarea id="m-val" class="form-control" style="height:120px; resize:none;"></textarea>`; btn.onclick = () => { let data = db.get(); let val = document.getElementById('m-val').value.trim(); if(!val) return; const msgObj = { sender: 'SYSTEM', type: 'sys', content: `📢 <b>[전체 공지]</b><br>${val}` }; data.chats.push(msgObj); db.save(data); App.Chat.renderAll(); P2P.broadcast(msgObj); App.Modal.close(); }; }
                     overlay.classList.add('active');
                 },
@@ -1198,14 +1204,13 @@
             }
         };
 
-        // DOM 로드 후 시스템 부팅
+        // 완벽한 비동기 시작
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inp-pw').addEventListener('keypress', e => { if(e.key === 'Enter') App.Auth.checkPassword(); });
             document.getElementById('inp-name').addEventListener('keypress', e => { if(e.key === 'Enter') App.Auth.login(); });
             document.getElementById('inp-chat').addEventListener('keypress', e => { if(e.key === 'Enter') App.Chat.send(); });
-            setTimeout(App.Boot.start, 150);
+            setTimeout(App.Boot.start, 100);
         });
-
     </script>
 </body>
 </html>
