@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AndPlayZone | V7.0 OMEGA PERFECT</title>
+    <title>AndPlayZone | V7.5 BUG-FIXED OMEGA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
     
     <style>
         /* =========================================================
-           [1] OMEGA DESIGN SYSTEM & VARIABLES
+           [1] OMEGA DESIGN SYSTEM
            ========================================================= */
         :root {
             --bg-deep: #020305; --bg-panel: rgba(8, 10, 15, 0.85); --bg-panel-solid: #090b10;
@@ -20,19 +20,19 @@
             --tier-epic: #a335ee; --tier-legend: #ff8c00; --tier-mythic: #ff007f;
             --border-light: rgba(255, 255, 255, 0.15); --text-main: #f8fafc; --text-muted: #64748b;
             --font-mono: 'Share Tech Mono', monospace; --font-scifi: 'Orbitron', sans-serif;
-            --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px; --base-scale: 1;
+            --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px;
         }
 
-        html { font-size: calc(16px * var(--base-scale)); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* 🐛 화면 잘림 방지를 위해 position: fixed 및 100% 꽉 채움 유지 */
-        body { background-color: var(--bg-deep); color: var(--text-main); height: 100%; width: 100vw; overflow: hidden; position: fixed; top:0; left:0; perspective: 1200px; }
+        /* 🐛 화면 잘림 및 스케일링 버그 완벽 수정 */
+        body { background-color: var(--bg-deep); color: var(--text-main); height: 100dvh; width: 100vw; overflow: hidden; position: fixed; top:0; left:0; perspective: 1200px; transition: zoom 0.3s; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.8); border-radius: 10px; margin: 4px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple)); border-radius: 10px; }
 
+        /* Background Effects */
         .cyber-grid { position: absolute; top: 0; left: -50%; width: 200%; height: 150%; z-index: -2; background-image: linear-gradient(rgba(0, 243, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.15) 1px, transparent 1px); background-size: 50px 50px; transform: rotateX(65deg) translateY(-100px) translateZ(-250px); animation: gridMove 4s linear infinite; }
         @keyframes gridMove { 0% { transform: rotateX(65deg) translateY(0) translateZ(-250px); } 100% { transform: rotateX(65deg) translateY(50px) translateZ(-250px); } }
         .bg-gradient { position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 50% 30%, transparent 10%, #020305 85%); z-index: -1; }
@@ -52,9 +52,6 @@
         .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; opacity: 0; transform: scale(1.05); transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10; align-items: center; justify-content: center; }
         .screen.active { display: flex; opacity: 1; transform: scale(1); z-index: 20; }
         
-        /* 🐛 중요: 메인 화면 잘림 방지 오버라이드 (화면 위로 올라가지 않도록 top부터 나열) */
-        #screen-main.active { align-items: stretch !important; justify-content: flex-start !important; }
-
         .btn { padding: 1.2rem 1.8rem; border: none; border-radius: var(--radius-md); font-weight: 900; color: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; font-size: 1.05rem; transition: 0.3s; z-index: 1; }
         .btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: 0.5s; z-index: -1; }
         .btn:hover::before { transform: translateX(100%); }
@@ -77,34 +74,32 @@
         .auth-box { width: 90%; max-width: 450px; padding: 3.5rem; border-radius: var(--radius-lg); text-align: center; border: 2px solid var(--neon-blue); }
         .auth-title { font-size: 2.8rem; font-weight: 900; margin-bottom: 0.5rem; font-family: var(--font-scifi); background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* [4] BULLETPROOF MEGA DASHBOARD (찌그러짐, 잘림 원천 차단) */
+        /* [4] DASHBOARD LAYOUT */
         #screen-main { display: none; height: 100%; width: 100%; background: transparent; padding: 1.5rem; gap: 1.5rem; box-sizing: border-box; }
         
-        /* PC 환경 (Grid 시스템 유지) */
         @media (min-width: 1201px) {
-            #screen-main.active { display: grid !important; grid-template-columns: 320px minmax(400px, 1fr) 380px; grid-template-rows: 100%; padding: 1.5rem; gap: 1.5rem; box-sizing: border-box; align-items: stretch !important; justify-content: stretch !important; }
+            #screen-main.active { display: grid !important; grid-template-columns: 320px minmax(400px, 1fr) 380px; grid-template-rows: 100%; align-items: stretch !important; }
             .mobile-header { display: none !important; }
         }
 
-        /* 모바일 & 태블릿 환경 (서랍형 UI로 강제 전환하여 화면 초과 방어) */
         @media (max-width: 1200px) {
             #screen-main { padding: 0; gap: 0; }
-            #screen-main.active { display: flex !important; flex-direction: column !important; align-items: stretch !important; justify-content: flex-start !important; }
+            #screen-main.active { display: flex !important; flex-direction: column !important; align-items: stretch !important; }
             .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; background: var(--bg-panel-solid); border-bottom: 1px solid var(--border-light); flex-shrink: 0; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
             
-            .panel-left, .panel-right { position: fixed; top: 0; bottom: 0; height: 100%; z-index: 10000; background: rgba(8, 10, 15, 0.98) !important; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 0 !important; border: none !important; }
+            .panel-left, .panel-right { position: fixed; top: 0; bottom: 0; height: 100%; z-index: 10000; background: rgba(8, 10, 15, 0.98) !important; transition: transform 0.4s; border-radius: 0 !important; border: none !important; }
             .panel-left { left: 0; transform: translateX(-100%); width: 85%; max-width: 360px; border-right: 2px solid var(--neon-blue) !important; }
             .panel-right { right: 0; transform: translateX(100%); width: 85%; max-width: 380px; border-left: 2px solid var(--neon-purple) !important; }
             .panel-left.open, .panel-right.open { transform: translateX(0); }
             
-            /* 중앙 패널이 모바일 헤더 아래 공간을 꽉 채움 */
-            .panel-center { flex: 1; height: calc(100% - 75px); width: 100%; border-radius: 0 !important; border: none !important; display: flex; flex-direction: column; position: relative; }
+            .panel-center { flex: 1; height: calc(100dvh - 75px); width: 100%; border-radius: 0 !important; border: none !important; display: flex; flex-direction: column; position: relative; }
             .mobile-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9000; display: none; opacity: 0; transition: 0.3s; }
             .mobile-overlay.active { display: block; opacity: 1; }
         }
 
         .layout-panel { background: var(--bg-panel); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border-light); border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); height: 100%; }
         
+        /* Left Panel */
         .server-header { padding: 2rem; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,243,255,0.2); flex-shrink: 0; }
         .server-tag { background: rgba(0, 243, 255, 0.15); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 900; display: inline-block; margin-bottom: 12px; font-family: var(--font-scifi); }
         .hud-clock { font-family: var(--font-mono); font-size: 1.1rem; color: var(--success); margin-top: 10px; text-shadow: 0 0 10px var(--success); font-weight: bold; }
@@ -116,8 +111,9 @@
         .level-badge { position: absolute; bottom: -8px; right: -8px; background: var(--primary); color: white; font-size: 0.75rem; padding: 3px 8px; border-radius: 10px; font-weight: 900; border: 2px solid var(--bg-panel-solid); font-family: var(--font-mono); }
         .user-info { flex: 1; overflow: hidden; }
         .user-name-txt { font-weight: 900; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 8px; align-items: center; }
-
-        /* 중앙 탭 패널 */
+        .user-title { font-size: 0.75rem; color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 2px 6px; border-radius: 5px; font-weight: bold; background: rgba(188,19,254,0.1); }
+        
+        /* Center Panel Tabs */
         .panel-center { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
         .nav-tabs-wrapper { background: rgba(0,0,0,0.7); border-bottom: 1px solid rgba(255,255,255,0.1); overflow-x: auto; flex-shrink: 0; }
         .nav-tabs { display: flex; min-width: max-content; }
@@ -139,12 +135,10 @@
         .msg-sys { align-self: center; background: rgba(255, 215, 0, 0.15); color: var(--dev-color); padding: 0.8rem 2.5rem; border-radius: 30px; font-size: 0.95rem; font-weight: 900; border: 1px solid var(--dev-color); font-family: var(--font-mono); }
 
         .chat-input-area { padding: 1.5rem; background: rgba(0,0,0,0.8); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 15px; flex-shrink: 0; z-index: 10; }
-        .chat-input-area input { flex: 1; padding: 1.4rem 1.8rem; border-radius: 30px; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.9); color: white; outline: none; font-size: 1.15rem; transition: 0.3s; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .chat-input-area input:focus { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.4); }
+        .chat-input-area input { flex: 1; padding: 1.4rem 1.8rem; border-radius: 30px; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.9); color: white; outline: none; font-size: 1.15rem; }
         .btn-circle { width: 60px; height: 60px; border-radius: 50%; border: none; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 1.4rem; transition: 0.3s; }
-        .btn-circle:hover { background: var(--neon-blue); color: black; transform: scale(1.1); box-shadow: 0 0 20px var(--neon-blue); }
 
-        /* HYPER CLICKER MINIGAME */
+        /* 🐛 HYPER CLICKER MINIGAME (버튼 증발 오류 완벽 해결) */
         .minigame-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); position: relative; overflow: hidden; }
         .combo-container { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; width: 80%; max-width: 400px; }
         .combo-container.active { opacity: 1; transform: translateX(-50%) scale(1.1); }
@@ -153,18 +147,33 @@
         .combo-bar-bg { width: 100%; height: 18px; background: rgba(0,0,0,0.8); border-radius: 10px; margin-top: 20px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); }
         .combo-bar-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ff1744, #ff00a0); transition: width 0.1s linear; }
 
-        .mining-core { width: 250px; height: 250px; background: url('https://cdn-icons-png.flaticon.com/512/1198/1198305.png') center/cover; filter: drop-shadow(0 0 60px var(--neon-blue)); cursor: pointer; animation: pulseCore 2.5s infinite; margin-top: 4rem; margin-bottom: 3rem; z-index: 5; user-select: none; transition: 0.05s; }
-        .mining-core:active { transform: scale(0.85); filter: drop-shadow(0 0 100px var(--neon-purple)) brightness(1.5); }
+        /* 🔥 외부 이미지 대신 100% 자체 CSS + FontAwesome으로 만든 영구적인 코어 버튼 */
+        .mining-core { 
+            width: 220px; height: 220px; 
+            background: radial-gradient(circle at 30% 30%, #ffffff, var(--neon-blue) 40%, #0022ff 100%); 
+            border-radius: 50%; 
+            box-shadow: 0 0 60px var(--neon-blue), inset 0 0 40px rgba(255,255,255,0.8); 
+            cursor: pointer; animation: pulseCore 2.5s infinite; 
+            margin: 4rem auto 3rem auto; z-index: 5; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 6rem; color: white; text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            user-select: none; transition: transform 0.05s;
+        }
+        .mining-core i { pointer-events: none; }
+        .mining-core:active { transform: scale(0.85); box-shadow: 0 0 100px var(--neon-purple); filter: hue-rotate(45deg); }
         @keyframes pulseCore { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         
         .click-particle { position: absolute; width: 15px; height: 15px; background: var(--neon-blue); border-radius: 3px; pointer-events: none; z-index: 4; box-shadow: 0 0 20px var(--neon-blue); animation: explode 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes explode { 0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0) rotate(720deg); } }
 
         .click-score { position: absolute; font-size: 3rem; font-weight: 900; font-family: var(--font-mono); color: var(--success); text-shadow: 0 0 30px var(--success); pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 50; }
-        .click-score.crit { font-size: 5rem; color: #fff; text-shadow: 0 0 50px var(--danger); z-index: 51; }
+        .click-score.crit { font-size: 5rem; color: #fff; text-shadow: 0 0 50px var(--danger); z-index: 51; animation: critUp 1s forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 50% { transform: translateY(-40px) scale(1.2); } 100% { opacity: 0; transform: translateY(-100px) scale(1); } }
+        @keyframes critUp { 0% { opacity: 1; transform: translateY(0) scale(0.8); } 50% { transform: translateY(-80px) scale(1.5) rotate(5deg); } 100% { opacity: 0; transform: translateY(-150px) scale(1) rotate(-5deg); } }
 
-        /* CASINO, TRADE, SHOP, ROULETTE (스크롤 가능 래퍼 포함) */
+        .upgrade-box { background: rgba(0,0,0,0.85); border: 2px solid rgba(0,243,255,0.4); border-radius: var(--radius-lg); padding: 2rem; width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 0 0 40px rgba(0,0,0,0.8); margin-top: 2rem; }
+
+        /* CASINO, TRADE, SHOP, ROULETTE */
         .content-wrap { padding: 2rem; overflow-y: auto; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .casino-box, .roulette-box, .coin-box { background: rgba(0,0,0,0.8); border-radius: var(--radius-lg); padding: 4rem 2rem; width: 100%; max-width: 550px; text-align: center; margin: auto; }
         .casino-box { border: 2px solid var(--neon-pink); box-shadow: inset 0 0 40px rgba(255, 0, 160, 0.2); }
@@ -181,11 +190,11 @@
         .shop-item.tier-legend::before { background: var(--tier-legend); box-shadow: 0 0 15px var(--tier-legend); }
         .shop-item.tier-mythic:hover { border-color: var(--tier-mythic); transform: translateY(-10px); }
         .shop-item.tier-mythic::before { background: var(--tier-mythic); box-shadow: 0 0 20px var(--tier-mythic); }
-        
         .shop-price { font-family: var(--font-mono); color: var(--dev-color); font-weight: 900; font-size: 1.6rem; margin: 25px 0; }
 
-        .quest-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 2.5rem; margin: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        
+        .quest-item { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 2.5rem; margin: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; transition: 0.3s; }
+        .quest-item:hover { border-color: var(--neon-blue); transform: translateX(10px); }
+
         /* RIGHT PANEL PROFILE */
         .profile-header { padding: 3rem 2rem; background: linear-gradient(180deg, rgba(99,102,241,0.3) 0%, transparent 100%); display: flex; flex-direction: column; align-items: center; border-bottom: 1px solid var(--border-light); flex-shrink: 0; position: relative; }
         .avatar-mega { width: 130px; height: 130px; border-radius: 40px; background: var(--bg-deep); border: 4px solid var(--neon-blue); font-size: 4.5rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-bottom: 1.8rem; box-shadow: 0 0 60px rgba(0,243,255,0.6); position: relative; }
@@ -199,6 +208,8 @@
         
         .dev-panel { display: none; padding: 2rem; background: rgba(255, 215, 0, 0.04); overflow-y: auto; flex: 1; border-top: 1px solid rgba(255,215,0,0.3); min-height: 0; }
         .dev-panel.active { display: block; }
+        .dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .dev-btn { background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; font-size: 1rem; cursor: pointer; text-align: center; font-weight: 900; }
 
         /* [7] MODALS & TOASTS */
         .modal-overlay-global { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 20000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s; }
@@ -208,7 +219,7 @@
         .form-control { width: 100%; padding: 1.4rem; background: rgba(0,0,0,0.7); border: 1px solid rgba(0,243,255,0.3); color: white; border-radius: var(--radius-md); margin-bottom: 1.5rem; outline:none; font-size: 1.15rem; font-family: var(--font-mono); }
 
         #toast-box { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 30000; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 500px; pointer-events: none; }
-        .toast { background: rgba(10, 12, 20, 0.98); border-left: 8px solid var(--neon-blue); padding: 20px 30px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; display: flex; align-items: center; gap: 20px; animation: slideDownToast 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; font-family: var(--font-mono); }
+        .toast { background: rgba(10, 12, 20, 0.98); border-left: 8px solid var(--neon-blue); padding: 20px 30px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; display: flex; align-items: center; gap: 20px; animation: slideDownToast 0.5s forwards; font-family: var(--font-mono); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .toast.success { border-color: var(--success); color: var(--success); }
         .toast.error { border-color: var(--danger); color: var(--danger); }
         @keyframes slideDownToast { from { opacity: 0; transform: translateY(-100px) translateX(-50%); } to { opacity: 1; transform: translateY(0) translateX(-50%); } }
@@ -218,7 +229,7 @@
 
     <div class="bg-gradient"></div>
     <div class="cyber-grid"></div>
-    <div class="bg-particles"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+    <div class="bg-particles"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
 
     <!-- BOOT SEQUENCE -->
     <div id="screen-boot" class="screen active">
@@ -253,11 +264,11 @@
         </div>
     </div>
 
-    <!-- MEGA DASHBOARD (Bulletproof Layout) -->
+    <!-- MEGA DASHBOARD -->
     <div id="screen-main" class="screen">
         <div class="mobile-header">
             <button class="btn-circle" style="width:45px; height:45px;" onclick="App.UI.toggleLeft()"><i class="fa-solid fa-server"></i></button>
-            <h2 style="font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-scifi); letter-spacing: 2px;">NEXUS V7.0</h2>
+            <h2 style="font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--neon-blue); font-family: var(--font-scifi); letter-spacing: 2px;">NEXUS V7.5</h2>
             <button class="btn-circle" style="width:45px; height:45px;" onclick="App.UI.toggleRight()"><i class="fa-solid fa-user-shield"></i></button>
         </div>
 
@@ -301,22 +312,28 @@
                 </div>
             </div>
 
-            <!-- GAME (CLICKER) -->
+            <!-- GAME (CLICKER) - BUG FIXED CORE -->
             <div id="tab-game" class="tab-content">
                 <div class="minigame-wrapper" id="game-area">
-                    <div style="position:absolute; top:30px; right:30px; background:rgba(0,0,0,0.8); padding:15px 25px; border-radius:15px; border:2px solid var(--success); display:flex; align-items:center; gap:15px; font-family:var(--font-mono); font-size: 1.4rem; font-weight:bold;">
+                    <div style="position:absolute; top:30px; right:30px; background:rgba(0,0,0,0.8); padding:15px 25px; border-radius:15px; border:2px solid var(--success); display:flex; align-items:center; gap:15px; font-family:var(--font-mono); font-size: 1.4rem; font-weight:bold; z-index:10;">
                         <i class="fa-solid fa-gear" style="color:var(--success); animation:spin 4s linear infinite;"></i> 봇: <span id="miner-count">0</span>대
                     </div>
                     <div class="combo-container" id="combo-container">
                         <div class="combo-text">COMBO! <span class="combo-multiplier" id="combo-multiplier">x1.0</span></div>
                         <div class="combo-bar-bg"><div class="combo-bar-fill" id="combo-bar"></div></div>
                     </div>
-                    <h2 style="font-family: var(--font-scifi); color: var(--neon-blue); margin-top: 100px; font-size: 2.5rem; letter-spacing: 4px;">CORE MINING</h2>
-                    <div class="mining-core" id="core-btn" onclick="App.Game.clickCore(event)"></div>
-                    <div style="font-size: 3.5rem; font-weight: 900; font-family: var(--font-mono); color: var(--dev-color);">
+                    <h2 style="font-family: var(--font-scifi); color: var(--neon-blue); margin-top: 80px; font-size: 2.5rem; letter-spacing: 4px;">CORE MINING</h2>
+                    
+                    <!-- 🔥 마이닝 버튼: 외부 이미지에 의존하지 않는 자체 CSS 렌더링 방식 도입 (영구적) -->
+                    <div class="mining-core" id="core-btn" onclick="App.Game.clickCore(event)">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+
+                    <div style="font-size: 3.5rem; font-weight: 900; font-family: var(--font-mono); color: var(--dev-color); margin-bottom: 2rem;">
                         <span id="game-score">0</span> C
                     </div>
-                    <div style="background: rgba(0,0,0,0.85); border: 2px solid rgba(0,243,255,0.4); border-radius: var(--radius-lg); padding: 2rem; width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+                    
+                    <div class="upgrade-box" style="background: rgba(0,0,0,0.85); border: 2px solid rgba(0,243,255,0.4); border-radius: var(--radius-lg); padding: 2rem; width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; z-index:10;">
                         <div>
                             <div style="color: var(--neon-blue); font-weight: 900; font-size: 1.5rem; margin-bottom: 8px;">클릭 파워 LV.<span id="click-power-lv">1</span></div>
                             <div style="color: var(--text-muted); font-size: 1.05rem;">기본 클릭 수익 영구 증가</div>
@@ -349,7 +366,7 @@
             <div id="tab-trade" class="tab-content">
                 <div class="content-wrap">
                     <h2 style="color: var(--neon-purple); margin-bottom: 25px; font-size: 3rem; font-family: var(--font-scifi);"><i class="fa-brands fa-bitcoin"></i> 코인 거래소</h2>
-                    <div class="coin-box">
+                    <div class="coin-box" style="background: rgba(0,0,0,0.8); border: 2px solid var(--dev-color); border-radius: var(--radius-lg); padding: 4rem; width: 90%; max-width: 550px; margin: auto;">
                         <div style="font-size: 1.3rem; color: rgba(255,255,255,0.6); font-weight: bold;">현재 시세 (1 COIN)</div>
                         <div style="font-size: 5rem; font-weight: 900; font-family: var(--font-mono); margin: 30px 0; color: var(--dev-color);" id="trade-price">1,000 C</div>
                         <div style="margin-top: 30px; font-size: 1.6rem; font-weight: bold;">보유 코인: <strong id="trade-owned" style="color: var(--neon-blue); font-size: 2.2rem;">0</strong> 개</div>
@@ -362,12 +379,12 @@
             </div>
 
             <!-- SHOP -->
-            <div id="tab-shop" class="tab-content" style="overflow-y:auto;">
+            <div id="tab-shop" class="tab-content" style="overflow-y:auto; padding: 1.5rem;">
                 <div class="shop-grid">
                     <div class="shop-item">
                         <i class="fa-solid fa-robot shop-icon" style="color: var(--success);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi);">오토 채굴 봇</h3>
-                        <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">자동으로 크레딧 채굴.</p>
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">자동으로 크레딧 채굴. 비용 상승.</p>
                         <div class="shop-price" id="shop-bot-cost">50,000 C</div>
                         <button class="btn btn-cyber" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('bot')">구매하기</button>
                     </div>
@@ -378,28 +395,28 @@
                         <div class="shop-price">30,000 C</div>
                         <button class="btn btn-cyber" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('booster', 30000)">구매하기</button>
                     </div>
-                    <div class="shop-item tier-epic" style="border: 1px solid var(--tier-epic);">
+                    <div class="shop-item tier-epic" style="border-color: var(--tier-epic);">
                         <i class="fa-solid fa-building-columns shop-icon" style="color: var(--tier-epic);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-epic);">스위스 은행 계좌</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">30초마다 자산의 1% 이자 지급</p>
                         <div class="shop-price">1,000,000 C</div>
                         <button class="btn" style="background: var(--tier-epic); color:white; padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('bank', 1000000)">계좌 개설</button>
                     </div>
-                    <div class="shop-item tier-legend" style="border: 1px solid var(--tier-legend);">
+                    <div class="shop-item tier-legend" style="border-color: var(--tier-legend);">
                         <i class="fa-solid fa-gauge-high shop-icon" style="color: var(--tier-legend);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-legend);">오버클럭 칩셋</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">콤보 한계치를 20배로 확장</p>
                         <div class="shop-price">5,000,000 C</div>
                         <button class="btn btn-legend" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('limit_break', 5000000)">오버클럭</button>
                     </div>
-                    <div class="shop-item tier-legend" style="border: 1px solid var(--tier-legend);">
+                    <div class="shop-item tier-legend" style="border-color: var(--tier-legend);">
                         <i class="fa-brands fa-bitcoin shop-icon" style="color: var(--tier-legend);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-legend);">ASIC 채굴기</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">접속 중 1분마다 1 COIN 자동 채굴</p>
                         <div class="shop-price">10,000,000 C</div>
                         <button class="btn btn-legend" style="padding: 1.2rem; font-size: 1.1rem;" onclick="App.Shop.buy('coin_miner', 10000000)">설치하기</button>
                     </div>
-                    <div class="shop-item tier-mythic" style="border: 1px solid var(--tier-mythic);">
+                    <div class="shop-item tier-mythic" style="border-color: var(--tier-mythic);">
                         <i class="fa-solid fa-infinity shop-icon" style="color: var(--tier-mythic);"></i>
                         <h3 style="font-size:1.5rem; font-family: var(--font-scifi); color: var(--tier-mythic);">NEXUS CORE</h3>
                         <p style="font-size: 1rem; color: var(--text-muted); margin-top:10px;">모든 크레딧 및 경험치 1.5배 영구 증폭</p>
@@ -476,10 +493,10 @@
                     <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Modal.open('giveExp')"><i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작</button>
                     <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Modal.open('promoteDev')"><i class="fa-solid fa-user-tie"></i> 관리자 임명</button>
                     <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,23,68,0.5); color: var(--danger); padding: 1.4rem; border-radius: var(--radius-sm); cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Modal.open('kickUser')"><i class="fa-solid fa-gavel"></i> 유저 추방</button>
-                    <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Modal.open('sysNotice')"><i class="fa-solid fa-bullhorn"></i> 긴급 공지</button>
+                    <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Modal.open('sysNotice')"><i class="fa-solid fa-bullhorn"></i> 긴급 공지 방송</button>
                     <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,215,0,0.5); padding: 1.4rem; border-radius: var(--radius-sm); color: white; cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Dev.freezeChat()"><i class="fa-solid fa-snowflake"></i> 채팅 얼리기</button>
                     <button class="dev-btn" style="background: rgba(0,0,0,0.8); border: 1px solid rgba(255,23,68,0.5); color: var(--danger); padding: 1.4rem; border-radius: var(--radius-sm); cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Dev.nukeServer()"><i class="fa-solid fa-radiation"></i> 서버 폭파</button>
-                    <button class="dev-btn" style="background: var(--danger); color: white; border: none; padding: 1.4rem; border-radius: var(--radius-sm); cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Dev.wipeDB()"><i class="fa-solid fa-skull"></i> DB 초기화</button>
+                    <button class="dev-btn" style="background: var(--danger); color: white; border: none; padding: 1.4rem; border-radius: var(--radius-sm); cursor: pointer; text-align: center; font-weight: 900;" onclick="App.Dev.wipeDB()"><i class="fa-solid fa-skull"></i> 공장 초기화</button>
                 </div>
             </div>
         </div>
@@ -500,10 +517,9 @@
     <div id="toast-box"></div>
 
     <script>
-        // 전역 에러 완벽 억제
         window.onerror = function() { return true; };
 
-        // [1] 방탄 DB (AndPlayZone_Ultimate_V3 호환)
+        // [1] 방탄 DB (AndPlayZone_Ultimate_V3 호환 보장)
         class MegaDB {
             constructor() { this.dbName = 'AndPlayZone_Ultimate_V3'; this.init(); }
             init() {
@@ -559,7 +575,7 @@
         }
         const db = new MegaDB();
 
-        // [2] P2P 멀티플레이어
+        // [2] P2P 멀티플레이어 소켓
         const P2P = {
             peer: null, conns: [], myId: '',
             init: () => {
@@ -573,9 +589,7 @@
                             const target = urlParams.get('join');
                             App.UI.toast(`서버 동기화 중...`, "info");
                             setTimeout(() => P2P.connectTo(target), 1500);
-                        } else {
-                            window.history.replaceState(null, null, `?join=${id}`);
-                        }
+                        } else { window.history.replaceState(null, null, `?join=${id}`); }
                     });
                     P2P.peer.on('connection', (c) => {
                         P2P.conns.push(c);
@@ -597,10 +611,8 @@
             },
             handleData: (data) => {
                 let dbData = db.get();
-                if(data.type === 'chat') {
-                    dbData.chats.push(data.msg);
-                    db.save(dbData); App.Chat.renderAll();
-                } else if(data.type === 'sync_user') {
+                if(data.type === 'chat') { dbData.chats.push(data.msg); db.save(dbData); App.Chat.renderAll(); } 
+                else if(data.type === 'sync_user') {
                     let existIdx = dbData.users.findIndex(u => u.name === data.user.name);
                     if(existIdx > -1) dbData.users[existIdx] = data.user;
                     else dbData.users.push(data.user);
@@ -611,7 +623,7 @@
             copyInviteLink: () => { navigator.clipboard.writeText(window.location.href).then(() => App.UI.toast("초대 링크가 복사되었습니다!", "success")); }
         };
 
-        // [3] OMEGA Main Application
+        // [3] OMEGA Main Application Engine
         const App = {
             user: null,
             autoMinerInterval: null, tradeInterval: null, bankInterval: null, syncInterval: null, clockInterval: null, coinMinerInterval: null,
@@ -624,7 +636,7 @@
 
             Boot: {
                 start: () => {
-                    const lines = ["CONNECTING TO OMEGA NEXUS V7.0...", "BYPASSING QUANTUM FIREWALLS...", "INITIALIZING MYTHIC ITEM DATABASE...", "LOADING HYPER-VFX SHADERS [SUCCESS]", "SYSTEM READY."];
+                    const lines = ["CONNECTING TO OMEGA NEXUS V7.5...", "BYPASSING QUANTUM FIREWALLS...", "RECALIBRATING RESOLUTION ENGINES...", "LOADING HYPER-VFX SHADERS [SUCCESS]", "SYSTEM READY."];
                     const container = document.getElementById('boot-text');
                     const barWrap = document.getElementById('boot-progress-wrap');
                     const barFill = document.getElementById('boot-progress');
@@ -665,11 +677,7 @@
                     if (document.getElementById('inp-pw').value === db.get().password) {
                         document.getElementById('screen-pw').classList.remove('active');
                         document.getElementById('screen-login').classList.add('active');
-                    } else {
-                        App.UI.toast("암호가 틀렸습니다.", "error");
-                        document.body.style.boxShadow = "inset 0 0 100px rgba(255,23,68,0.8)";
-                        setTimeout(() => document.body.style.boxShadow = "none", 300);
-                    }
+                    } else { App.UI.toast("암호가 틀렸습니다.", "error"); }
                 },
                 login: () => {
                     let name = document.getElementById('inp-name').value.trim();
@@ -749,10 +757,9 @@
                     if(App.user.hasCoinMiner) {
                         App.coinMinerInterval = setInterval(() => {
                             let data = db.get(); let me = data.users.find(u => u.name === App.user.name);
-                            me.coins = (me.coins || 0) + 1;
-                            db.save(data); App.user = me; App.UI.renderProfile();
+                            me.coins = (me.coins || 0) + 1; db.save(data); App.user = me; App.UI.renderProfile();
                             document.getElementById('trade-owned').innerText = me.coins;
-                            App.UI.toast(`💻 ASIC 채굴기: 1 COIN 채굴 완료!`, 'info');
+                            App.UI.toast(`💻 ASIC 채굴기: 1 COIN 자동 채굴 완료!`, 'info');
                         }, 60000);
                     }
                 }
@@ -770,11 +777,9 @@
                     
                     comboBox.classList.add('active');
                     if(App.comboMultiplier >= limit) {
-                        comboBox.classList.add('max');
-                        document.getElementById('panel-center').classList.add('screen-shake');
+                        comboBox.classList.add('max'); document.getElementById('panel-center').classList.add('screen-shake');
                     } else {
-                        comboBox.classList.remove('max');
-                        document.getElementById('panel-center').classList.remove('screen-shake');
+                        comboBox.classList.remove('max'); document.getElementById('panel-center').classList.remove('screen-shake');
                     }
 
                     comboMult.innerText = `x${App.comboMultiplier.toFixed(1)}`;
@@ -848,7 +853,7 @@
                         else { App.UI.toast("💀 [파산] 꽝입니다.", "error"); }
                         
                         db.save(d); App.user = m; App.UI.renderProfile(); App.UI.renderRank();
-                    }, 1800);
+                    }, 1500);
                 }
             },
 
@@ -939,7 +944,6 @@
                     else if(itemId === 'limit_break') { me.comboMax = 20.0; App.UI.toast("🔥 [전설] 콤보 한계 20배 확장!", "success"); }
                     else if(itemId === 'coin_miner') { me.hasCoinMiner = true; App.Logic.startCoinMiner(); App.UI.toast("💻 [전설] ASIC 채굴기 가동!", "success"); }
                     else if(itemId === 'mythic_core') { me.hasMythicCore = true; App.UI.toast("👑 [신화] 코어 융합 완료! 모든 획득 1.5배", "success"); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 <b>${me.name}</b> 님이 신화 등급 [NEXUS CORE] 융합! 🚨` }); P2P.broadcast({ sender: 'SYSTEM', type: 'sys', content: `🚨 <b>${me.name}</b> 님이 신화 등급 [NEXUS CORE] 융합! 🚨` }); }
-                    else if(itemId === 'title_omega') { me.titles.push('[OMEGA]'); App.UI.toast("👑 [신화] [OMEGA] 칭호 획득", "success"); }
                     
                     db.save(data); App.user = me; App.initDashboard(); 
                 }
@@ -1028,7 +1032,6 @@
                     document.getElementById('my-exp-txt').innerText = `${Math.floor(u.exp||0).toLocaleString()} / ${maxExp.toLocaleString()}`;
                     
                     document.getElementById('dev-panel').classList.toggle('active', u.role === 'dev');
-                    document.getElementById('tab-log-btn').style.display = u.role === 'dev' ? 'flex' : 'none';
 
                     const sel = document.getElementById('title-selector'); sel.innerHTML = '';
                     (u.titles || ['초보자']).forEach(t => { let opt = document.createElement('option'); opt.value = t; opt.innerText = t; if(t === u.title) opt.selected = true; sel.appendChild(opt); });
@@ -1058,7 +1061,7 @@
                                 <div class="avatar-wrap"><div class="avatar-sm" style="${isDev ? 'background:var(--dev-color); color:black;' : ''}">${u.name.charAt(0)}</div><div class="level-badge">${u.level.toLocaleString()}</div></div>
                                 <div class="user-info">
                                     <div class="user-name-txt" style="${nameColorStyle}">${tBadge} ${u.name}</div>
-                                    <div class="user-status" style="color:var(--text-muted); font-size:0.8rem; font-family: var(--font-mono);">${u.status || 'ONLINE'}</div>
+                                    <div class="user-status" style="color:var(--text-muted); font-size:0.8rem; font-family: var(--font-mono); margin-top:4px;">${u.status || 'ONLINE'}</div>
                                 </div>
                             </li>`;
                     });
@@ -1078,7 +1081,7 @@
                         else if(idx === 1) { rankColor = '#C0C0C0'; shadow = '0 0 20px rgba(192,192,192,0.4)'; scale = '1.02'; bgAlpha = '0.7'; }
                         else if(idx === 2) { rankColor = '#CD7F32'; shadow = '0 0 20px rgba(205,127,50,0.4)'; scale = '1.01'; bgAlpha = '0.6'; }
                         box.innerHTML += `
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding: 1.5rem 2rem; background: rgba(0,0,0,${bgAlpha}); border-left: 8px solid ${rankColor}; border-radius: var(--radius-md); box-shadow: inset 0 0 20px rgba(0,0,0,0.8), ${shadow}; transform: scale(${scale}); margin-bottom: 5px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding: 1.5rem 2rem; background: rgba(0,0,0,${bgAlpha}); border-left: 8px solid ${rankColor}; border-radius: var(--radius-md); box-shadow: inset 0 0 20px rgba(0,0,0,0.8), ${shadow}; transform: scale(${scale}); margin-bottom: 5px; transition: 0.3s;">
                                 <div style="font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 20px;">
                                     <strong style="color:${rankColor}; font-family: var(--font-scifi); font-size: 1.8rem; min-width: 60px; text-shadow: ${shadow};">${idx+1}위</strong> 
                                     <span style="color: #fff; font-size: 1.3rem;">${u.name}</span>
@@ -1091,10 +1094,18 @@
                         `;
                     });
                 },
+                
+                // ★ GUI 배율 조정 시스템 도입 (Zoom)
                 changeScale: () => {
-                    if(App.currentScale === 1) App.currentScale = 0.85; else if(App.currentScale === 0.85) App.currentScale = 1.15; else App.currentScale = 1;
-                    document.documentElement.style.setProperty('--base-scale', App.currentScale); App.UI.toast(`GUI 배율: ${App.currentScale}x`, "info");
+                    if(App.currentScale === 1) App.currentScale = 0.85; 
+                    else if(App.currentScale === 0.85) App.currentScale = 1.15; 
+                    else App.currentScale = 1;
+                    
+                    // Body에 zoom 속성을 부여하여 픽셀 깨짐 없이 모든 것을 동기화 축소/확대
+                    document.body.style.zoom = App.currentScale; 
+                    App.UI.toast(`GUI 배율: ${App.currentScale}x`, "info");
                 },
+                
                 startClock: () => {
                     if(App.clockInterval) clearInterval(App.clockInterval);
                     App.clockInterval = setInterval(() => {
@@ -1120,21 +1131,24 @@
             },
 
             Dev: {
-                action: (targetName, mode, value=0) => {
-                    let data = db.get(); let target = data.users.find(u => u.name === targetName); if(!target) return;
-                    if(mode==='giveScore') target.score += value; else if(mode==='giveExp') target.exp += value;
-                    else if(mode==='promote') target.role = 'dev'; else if(mode==='kick') data.users = data.users.filter(u=>u.name!==targetName);
-                    db.save(data); if(target.name === App.user.name) App.user = target; App.initDashboard(); App.Modal.close(); db.log('DEV', 'CRITICAL', mode);
+                action: (targetName, mode, value = 0) => {
+                    let data = db.get(); let target = data.users.find(u => u.name === targetName); if(!target) return App.UI.toast("유저를 찾을 수 없습니다.", "error");
+                    if(mode === 'giveScore') { target.score += value; App.UI.toast(`${value.toLocaleString()}C 지급 완료`, "success"); } 
+                    else if(mode === 'giveExp') { target.exp += value; App.UI.toast(`${value.toLocaleString()}EXP 지급 완료`, "success"); }
+                    else if(mode === 'promote') { target.role = 'dev'; target.titles.push('관리자'); App.UI.toast(`최고 관리자 승격 완료`, "success"); } 
+                    else if(mode === 'kick') { data.users = data.users.filter(u => u.name !== targetName); App.UI.toast(`영구 추방 완료`, "error"); }
+                    db.save(data); if(target && target.name === App.user.name) { App.user = target; }
+                    App.initDashboard(); App.Modal.close(); db.log('ADMIN_ACTION', 'CRITICAL', `${mode} -> ${targetName}`);
                 },
-                freezeChat: () => { let data = db.get(); data.chatFrozen = !data.chatFrozen; db.save(data); App.UI.toast(data.chatFrozen?"얼림":"해제", "info"); db.log('CHAT_FREEZE', 'CRITICAL'); },
-                wipeDB: () => { if(prompt("복구 불가. '초기화' 치세요") === '초기화') { db.reset(); location.reload(); } },
+                freezeChat: () => { let data = db.get(); data.chatFrozen = !data.chatFrozen; db.save(data); App.UI.toast(data.chatFrozen?"얼림":"해제", "info"); db.log('CHAT_FREEZE', 'CRITICAL', '상태 변경'); },
+                wipeDB: () => { if(prompt("경고: 모든 유저 데이터 영구 삭제. '초기화' 입력") === '초기화') { db.reset(); alert("초기화 완료"); location.reload(); } },
                 nukeServer: () => {
-                    let data = db.get(); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b style="color:var(--danger);">서버 폭파 시퀀스 가동!</b> ☢️` }); db.save(data); App.Chat.renderAll(); App.Modal.close();
+                    let data = db.get(); data.chats.push({ sender: 'SYSTEM', type: 'sys', content: `☢️ <b style="color:var(--danger); font-size:1.3rem;">CRITICAL WARNING: 폭파 시퀀스 가동!</b> ☢️` }); db.save(data); App.Chat.renderAll(); App.Modal.close(); db.log('NUKE', 'CRITICAL');
                     let count = 5;
                     let intv = setInterval(() => {
-                        let d = db.get(); d.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 붕괴까지... ${count}초 🚨` }); db.save(d); App.Chat.renderAll();
-                        document.body.style.boxShadow = `inset 0 0 ${300-(count*40)}px rgba(255,23,68,0.9)`; document.body.classList.add('screen-shake'); count--;
-                        if(count<0) { clearInterval(intv); document.body.style.transition = 'all 0.1s'; document.body.style.filter = 'invert(1) contrast(2.5) hue-rotate(180deg) blur(2px)'; document.body.style.transform = 'scale(1.2) rotate(3deg)'; setTimeout(() => { alert("☢️ 증발했습니다 ☢️"); location.reload(); }, 1500); }
+                        let d = db.get(); d.chats.push({ sender: 'SYSTEM', type: 'sys', content: `🚨 서버 붕괴까지... ${count}초 🚨` }); db.save(d); App.Chat.renderAll();
+                        document.body.style.boxShadow = `inset 0 0 ${300 - (count * 40)}px rgba(255, 23, 68, 0.9)`; document.body.classList.add('screen-shake'); count--;
+                        if(count < 0) { clearInterval(intv); document.body.style.transition = 'all 0.1s'; document.body.style.filter = 'invert(1) contrast(2.5) hue-rotate(180deg) blur(2px)'; document.body.style.transform = 'scale(1.2) rotate(3deg)'; setTimeout(() => { alert("☢️ 서버가 우주 단위로 증발했습니다. ☢️"); location.reload(); }, 1500); }
                     }, 1000);
                 }
             },
@@ -1143,10 +1157,9 @@
                 open: (type) => {
                     const overlay = document.getElementById('global-modal'); const title = document.getElementById('modal-title'); const body = document.getElementById('modal-body'); const btn = document.getElementById('modal-confirm');
                     const genSelect = (ex = false) => { let h = `<select id="m-target" class="form-control" style="font-family:var(--font-mono); font-weight:bold;">`; db.get().users.forEach(u => { if(!(ex && u.name===App.user.name)) h += `<option value="${u.name}">[LV.${u.level}] ${u.name}</option>`; }); return h + `</select>`; };
-                    
-                    if(type === 'status') { title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control" placeholder="상태 입력..." maxlength="30">`; btn.onclick = () => { let data = db.get(); let me = data.users.find(u=>u.name === App.user.name); me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status; App.initDashboard(); App.Modal.close(); }; }
-                    else if(type === 'giveScore' || type === 'giveExp') { title.innerHTML = type === 'giveScore' ? '<i class="fa-solid fa-coins"></i> 자산 에디터' : '<i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작'; body.innerHTML = genSelect() + `<input type="number" id="m-val" class="form-control" placeholder="수량" style="font-family:var(--font-mono);">`; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, type, parseInt(document.getElementById('m-val').value||0)); }
-                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerHTML = type === 'promoteDev' ? '<i class="fa-solid fa-user-tie"></i> 관리자 임명' : '<i class="fa-solid fa-gavel"></i> 영구 추방'; body.innerHTML = genSelect(true); let mode = type==='promoteDev'?'promote':'kick'; if(mode === 'kick') { btn.style.background = 'var(--danger)'; } else { btn.style.background = 'linear-gradient(135deg, var(--neon-blue), var(--primary))'; } btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
+                    if(type === 'status') { title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 상태 메시지 변경'; body.innerHTML = `<input type="text" id="m-val" class="form-control" placeholder="상태 입력..." maxlength="30">`; btn.onclick = () => { let data = db.get(); let me = data.users.find(u=>u.name === App.user.name); me.status = document.getElementById('m-val').value; db.save(data); App.user.status = me.status; App.initDashboard(); App.Modal.close(); App.UI.toast("업데이트 완료", "success"); }; }
+                    else if(type === 'giveScore' || type === 'giveExp') { title.innerHTML = type === 'giveScore' ? '<i class="fa-solid fa-coins"></i> 자산 에디터' : '<i class="fa-solid fa-arrow-trend-up"></i> 경험치 조작'; body.innerHTML = genSelect() + `<input type="number" id="m-val" class="form-control" style="font-family:var(--font-mono);">`; btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, type, parseInt(document.getElementById('m-val').value || 0)); }
+                    else if(type === 'promoteDev' || type === 'kickUser') { title.innerHTML = type === 'promoteDev' ? '<i class="fa-solid fa-user-tie"></i> 관리자 임명' : '<i class="fa-solid fa-gavel"></i> 영구 추방'; body.innerHTML = genSelect(true); let mode = type === 'promoteDev' ? 'promote' : 'kick'; if(mode === 'kick') { btn.style.background = 'var(--danger)'; btn.style.color = 'white'; } else { btn.style.background = 'linear-gradient(135deg, var(--neon-blue), var(--primary))'; } btn.onclick = () => App.Dev.action(document.getElementById('m-target').value, mode); }
                     else if(type === 'sysNotice') { title.innerHTML = '<i class="fa-solid fa-bullhorn"></i> 긴급 공지 방송'; body.innerHTML = `<textarea id="m-val" class="form-control" style="height:120px; resize:none;"></textarea>`; btn.onclick = () => { let data = db.get(); let val = document.getElementById('m-val').value.trim(); if(!val) return; const msgObj = { sender: 'SYSTEM', type: 'sys', content: `📢 <b>[전체 공지]</b><br>${val}` }; data.chats.push(msgObj); db.save(data); App.Chat.renderAll(); P2P.broadcast(msgObj); App.Modal.close(); }; }
                     overlay.classList.add('active');
                 },
@@ -1182,13 +1195,14 @@
             }
         };
 
-        // 완벽한 비동기 시작
+        // DOM 안전 로딩
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inp-pw').addEventListener('keypress', e => { if(e.key === 'Enter') App.Auth.checkPassword(); });
             document.getElementById('inp-name').addEventListener('keypress', e => { if(e.key === 'Enter') App.Auth.login(); });
             document.getElementById('inp-chat').addEventListener('keypress', e => { if(e.key === 'Enter') App.Chat.send(); });
-            setTimeout(App.Boot.start, 100);
+            setTimeout(App.Boot.start, 150);
         });
+
     </script>
 </body>
 </html>
